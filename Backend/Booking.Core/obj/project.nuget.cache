@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "u6PLC+R/uPI=",
+  "success": true,
+  "projectFilePath": "E:\\[Проект 2024] Booking system\\Backend\\Booking.Core\\Booking.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Григорий\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.1\\microsoft.extensions.dependencyinjection.abstractions.8.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
