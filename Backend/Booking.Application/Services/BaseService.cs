@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Booking.Application.Services;
 
-public class BaseService<TEntity> where TEntity : class, IHasId, new()
+public class BaseService<TEntity> where TEntity : class, IHasId
 {
     private readonly IDbContextFactory<BookingDbContext> _dbContextFactory;
 
@@ -14,6 +14,12 @@ public class BaseService<TEntity> where TEntity : class, IHasId, new()
         _dbContextFactory = dbContextFactory;
     }
     
+    /// <summary>
+    /// Выполнить запрос на получение объектов к базе данных с указанным параметрами запроса.
+    /// </summary>
+    /// <returns>
+    /// Возвращается массив объектов, которые соответствуют запросу.
+    /// </returns>
     public virtual async Task<TEntity[]> GetAsync(DataQueryParams<TEntity> queryParams)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -44,6 +50,13 @@ public class BaseService<TEntity> where TEntity : class, IHasId, new()
         return set.ToArray();
     }
 
+    /// <summary>
+    /// Получить объект из базы данных по конкретному идентификатору id
+    /// </summary>
+    /// <param name="id">Идентификатор объекта в базе данных.</param>
+    /// <returns>
+    /// Возвращается объект с указанным id, если он был найден в базе данных. Иначе - null.
+    /// </returns>
     public virtual async Task<TEntity?> GetByIdOrDefaultAsync(Guid id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -51,6 +64,14 @@ public class BaseService<TEntity> where TEntity : class, IHasId, new()
         return set.FirstOrDefault(item => item.Id == id);
     }
     
+    /// <summary>
+    /// Удаляет сущность с указанным id из базы данных, если она существует.
+    /// </summary>
+    /// <param name="id">Идентификатор объекта в базе данных.</param>
+    /// <returns>
+    /// True - объект был найден и удален из базы данных.
+    /// False - объект с указанным id не был найден в базе данных.
+    /// </returns>
     public virtual async Task<bool> TryRemoveAsync(Guid id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -66,6 +87,9 @@ public class BaseService<TEntity> where TEntity : class, IHasId, new()
         return true;
     }
 
+    /// <summary>
+    /// Сохраняет сущность в соответствующую таблицу. Обновляет её поля, если она уже существует.
+    /// </summary>
     public virtual async Task<Guid> SaveAsync(TEntity entity)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();

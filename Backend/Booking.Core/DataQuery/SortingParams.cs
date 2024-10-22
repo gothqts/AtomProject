@@ -3,7 +3,7 @@ using Booking.Core.Interfaces;
 
 namespace Booking.Core.DataQuery;
 
-public class SortingParams<TEntity> where TEntity : class, IHasId, new()
+public class SortingParams<TEntity> where TEntity : class, IHasId
 {
     public Expression<Func<TEntity, object?>> OrderBy { get; set; } = null!;
     

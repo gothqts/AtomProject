@@ -3,7 +3,7 @@ using Booking.Core.Interfaces;
 
 namespace Booking.Core.DataQuery;
 
-public class DataQueryParams<TEntity> where TEntity : class, IHasId, new()
+public class DataQueryParams<TEntity> where TEntity : class, IHasId
 {
     public Expression<Func<TEntity, bool>>? Expression { get; set; }
     
