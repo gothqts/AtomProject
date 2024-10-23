@@ -147,7 +147,7 @@ public class UserAuthController : Controller
             return BadRequest(new BaseStatusResponse
             {
                 Status = "Failed",
-                Message = $"Registration failed. Exception: {e.Message}"
+                Message = $"Registration failed. Info: {e.Message}"
             });
         }
     }
