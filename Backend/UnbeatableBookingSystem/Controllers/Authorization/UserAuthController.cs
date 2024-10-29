@@ -35,20 +35,24 @@ public class UserAuthController : Controller
     {
         if (HttpContext.User.Identity.IsAuthenticated)
         {
-            return BadRequest(new BaseStatusResponse
+            return BadRequest(new LoginResponse
             {
+                UserId = null,
                 Status = "Failed",
-                Message = "User is already authorized."
+                Message = "User is already authorized.",
+                Completed = false
             });
         }
         
         var user = await _authService.TryLoginUserAsync(dto.Email, dto.Password);
         if (user == null)
         {
-            return BadRequest(new BaseStatusResponse
+            return BadRequest(new LoginResponse
             {
+                UserId = null,
                 Status = "Failed",
-                Message = "Authorization failed. No user with that email and password combination was found."
+                Message = "Authorization failed. No user with that email and password combination was found.",
+                Completed = false
             });
         }
         var claims = new List<Claim>
@@ -65,7 +69,8 @@ public class UserAuthController : Controller
         {
             UserId = user.Id,
             Status = "Success",
-            Message = "User successfully authorized."
+            Message = "User successfully authorized.",
+            Completed = true
         };
         return Ok(res);
     }
@@ -82,7 +87,8 @@ public class UserAuthController : Controller
             return BadRequest(new BaseStatusResponse
             {
                 Status = "Failed",
-                Message = "User is already logged out."
+                Message = "User is already logged out.",
+                Completed = false
             });
         }
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -90,7 +96,8 @@ public class UserAuthController : Controller
         var res = new BaseStatusResponse
         {
             Status = "Success",
-            Message = "User successfully logged out."
+            Message = "User successfully logged out.",
+            Completed = true
         };
         return Ok(res);
     }
@@ -111,14 +118,15 @@ public class UserAuthController : Controller
         var user = new User
         {
             Id = Guid.NewGuid(),
-            Phone = dto.Phone,
+            Phone = "",
             Fio = dto.FIO,
             Email = dto.Email,
             PasswordHash = PasswordHelper.HashPassword(dto.Password),
             RoleId = role[0].Id,
-            UserStatus = "Не установлен",
+            UserStatus = dto.Status ?? "",
             Description = "",
-            PathToAvatarImage = "/images/default-user-avatar.jpg"
+            City = dto.City ?? "",
+            AvatarImageFilepath = ""
         };
         try
         {
@@ -138,16 +146,19 @@ public class UserAuthController : Controller
             {
                 Status = "Success",
                 Message = "User successfully registered.",
-                UserId = registeredUser.Id
+                UserId = registeredUser.Id,
+                Completed = true
             };
             return Ok(res);
         }
         catch (Exception e)
         {
-            return BadRequest(new BaseStatusResponse
+            return BadRequest(new RegisterResponse
             {
                 Status = "Failed",
-                Message = $"Registration failed. Exception: {e.Message}"
+                Message = $"Registration failed. Info: {e.Message}",
+                UserId = null,
+                Completed = false
             });
         }
     }

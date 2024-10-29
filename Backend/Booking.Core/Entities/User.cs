@@ -25,5 +25,7 @@ public class User : IHasId
 
     public string Description { get; set; } = null!;
 
-    public string PathToAvatarImage { get; set; } = null!;
+    public string City { get; set; } = null!;
+    
+    public string AvatarImageFilepath { get; set; } = null!;
 }

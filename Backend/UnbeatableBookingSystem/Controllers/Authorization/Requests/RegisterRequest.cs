@@ -12,6 +12,7 @@ public class RegisterRequest
     
     public required string FIO { get; set; }
     
-    [DataType(DataType.PhoneNumber)]
-    public required string Phone { get; set; }
+    public string? City { get; set; }
+    
+    public string? Status { get; set; }
 }

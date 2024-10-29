@@ -4,5 +4,5 @@ namespace UnbeatableBookingSystem.Controllers.Authorization.Responses;
 
 public class RegisterResponse : BaseStatusResponse
 {
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
 }

@@ -17,7 +17,7 @@ public class UserEvent : IHasId
     
     public required string Title { get; set; }
 
-    public string PathToBannerImage { get; set; } = null!;
+    public string BannerImageFilepath { get; set; } = null!;
     
     public required bool IsOnline { get; set; }
     
