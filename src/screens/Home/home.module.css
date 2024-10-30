@@ -1,0 +1,42 @@
+.home_container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: 200px;
+    flex-direction: column;
+}
+
+.main_wrapper {
+    margin-top: 18vh;
+    margin-left: 40px;
+    background-image: url("src/assets/images/vector.svg");
+    background-position: right top;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: calc(100% - 40px); /* Установка ширины с учетом отступов */
+    height: 100%;
+
+}
+
+.title {
+    width: 100%;
+    height: 70%;
+    color: black;
+    font-size: 100px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.btn{
+    padding-bottom: 66px;
+}
+
+.section_about_event{
+    margin: 0 40px;
+}
+
+
+
+
+
+

@@ -1,0 +1,18 @@
+.btn {
+    width: 100%; /* Занимает всю ширину родительского элемента */
+    max-width: 505px; /* Максимальная ширина кнопки (чтобы она не раздувалась слишком сильно) */
+    height: auto;
+    min-height: 94px;
+    background-color: #33ADFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 42px;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    color: #FFFFFF;
+    border: none;
+    padding: 21px 93px;
+    cursor: pointer;
+    box-sizing: border-box; /* Убедитесь, что padding не увеличивает размер кнопки */
+}

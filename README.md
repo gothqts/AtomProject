@@ -1,1 +1,3 @@
-# AtomProject
+yarn 
+
+yarn dev

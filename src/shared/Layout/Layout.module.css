@@ -1,0 +1,37 @@
+.layout_wrapper {
+    display: flex;
+    justify-content: space-around;
+    height: 8vw;
+    align-items: center;
+    gap: 65px;
+    position: fixed;
+    top: 0;
+    left: 0; /* Указывает, чтобы элемент находился слева */
+    right: 0; /* Указывает, чтобы элемент занимал всю ширину */
+    background-color: white;
+    z-index: 1000;
+
+}
+
+.layout_wrapper .link_list{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 60px
+
+}
+.layout_wrapper .link{
+    font-size: 34px;
+    font-weight: 600 ;
+    word-wrap: break-word;
+    text-decoration: none;
+    color: inherit;
+}
+.layout_wrapper .link_auth{
+    font-size: 34px;
+    font-weight: 600;
+    text-decoration: none;
+    word-wrap: break-word;
+    color: #33adff;
+}
+
