@@ -1,13 +1,12 @@
 .layout_wrapper {
     display: flex;
     justify-content: space-around;
-    height: 8vw;
+    height: 150px;
     align-items: center;
-    gap: 65px;
     position: fixed;
     top: 0;
-    left: 0; /* Указывает, чтобы элемент находился слева */
-    right: 0; /* Указывает, чтобы элемент занимал всю ширину */
+    left: 0;
+    right: 0;
     background-color: white;
     z-index: 1000;
 
@@ -17,7 +16,7 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    gap: 60px
+    gap: 90px
 
 }
 .layout_wrapper .link{
