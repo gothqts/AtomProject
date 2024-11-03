@@ -29,6 +29,9 @@
 .btn{
     padding-bottom: 66px;
 }
+.link{
+    text-decoration: none;
+}
 
 .section_about_event{
     margin: 0 40px;
@@ -50,6 +53,7 @@
     font-size: 48px;
     font-weight: 500;
 }
+
 
 
 

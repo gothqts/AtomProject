@@ -2,6 +2,8 @@ import styles from "./home.module.css";
 import HomeSection from "../../shared/LastEvents";
 import Arrow from "../../assets/images/arrow_down.svg?react"
 import BlueBtn from "../../shared/buttons/BlueBtn";
+import {urls} from "../../navigate/app.urls.ts";
+import {Link} from "react-router-dom";
 
 
 const Home = () => {
@@ -32,7 +34,10 @@ const Home = () => {
                 </div>
 
                 <div className={styles.btn}>
-                    <BlueBtn btn_placeholder={"Зарегестрироваться"}/>
+                    <Link className={styles.link} to={urls.register}>
+                        <BlueBtn btn_placeholder={"Зарегестрироваться"}/>
+                    </Link>
+
                 </div>
 
             </div>
