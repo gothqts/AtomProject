@@ -23,14 +23,6 @@
     background-repeat: no-repeat;
     background-position: right bottom;
 }
-
-.circle {
-    position: absolute;
-    left:5px;
-    bottom: -760px;
-    z-index: 0;
-}
-
 img{
     height: 100%;
     z-index: 1;

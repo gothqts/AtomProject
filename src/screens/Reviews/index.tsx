@@ -1,9 +1,7 @@
-import Layout from "../../shared/Layout";
-
-const Reviews= () => {
+const Reviews = () => {
     return (
         <div>
-            <Layout/>
+
         </div>
     );
 };

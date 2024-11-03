@@ -1,32 +1,38 @@
-.layout_wrapper {
+.container {
+    height: 100vh;
+    width: 100%;
+}
+
+.navbar {
     display: flex;
     justify-content: space-around;
-    height: 150px;
     align-items: center;
     position: fixed;
+    height: 120px;
     top: 0;
     left: 0;
     right: 0;
     background-color: white;
-    z-index: 1000;
-
+    z-index: 3;
 }
 
-.layout_wrapper .link_list{
+.link_list {
     display: flex;
     align-items: center;
     justify-content: space-around;
     gap: 90px
 
 }
-.layout_wrapper .link{
+
+.link {
     font-size: 34px;
-    font-weight: 600 ;
+    font-weight: 600;
     word-wrap: break-word;
     text-decoration: none;
     color: inherit;
 }
-.layout_wrapper .link_auth{
+
+.link_auth {
     font-size: 34px;
     font-weight: 600;
     text-decoration: none;
@@ -34,3 +40,6 @@
     color: #33adff;
 }
 
+.page_content {
+
+}

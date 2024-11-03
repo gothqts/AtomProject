@@ -1,8 +1,5 @@
 import styles from "./LastEvents.module.css";
-import Circle from "../../assets/images/circle_vector.svg?react";
-import Square from "../../assets/images/square.svg?react"
-
-const LastEvents = ({events}) => {
+const Index = ({events}) => {
     return (
         <>
             {events.map(event => (
@@ -37,4 +34,4 @@ const LastEvents = ({events}) => {
     );
 };
 
-export default LastEvents;
+export default Index;

@@ -1,15 +1,13 @@
 import {urls} from './app.urls.ts';
 import {lazy} from "react";
 import {IRoute} from "./navigation.types.ts";
-import PrivateRoute from "./PrivateRoutes.tsx";
 
-const Register = lazy(() => import('../screens/Register/index.tsx'));
-const Login = lazy(()=> import('../screens/Login/index.tsx'));
-const About = lazy(() => import('../screens/About/index.tsx'));
-const Reviews = lazy(() => import('../screens/Reviews/index.tsx'));
-const Home = lazy(() => import('../screens/Home/index.tsx'));
-const Events = lazy(() => import('../screens/Events/index.tsx'));
-
+const Register = lazy(() => import('../screens/Register'));
+const Login = lazy(() => import('../screens/Login'));
+const About = lazy(() => import('../screens/About'));
+const Reviews = lazy(() => import('../screens/Reviews'));
+const Home = lazy(() => import('../screens/Home'));
+const Events = lazy(() => import('../screens/Events'));
 
 const appRoutes: IRoute[] = [
     {
@@ -22,7 +20,8 @@ const appRoutes: IRoute[] = [
     },
     {
         path: urls.home,
-        element: <Home/>
+        element: <Home/>,
+
     },
     {
         path: urls.about,

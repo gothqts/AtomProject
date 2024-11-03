@@ -1,0 +1,15 @@
+.btn {
+    width: 664px;
+    background-color: #33ADFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 42px;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    color: #FFFFFF;
+    border: none;
+    padding: 21px 93px;
+    cursor: pointer;
+    box-sizing: border-box;
+}

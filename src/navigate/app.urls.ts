@@ -4,5 +4,5 @@ export const urls = {
     about: '/about',
     reviews: '/reviews',
     login: '/login',
-    register: '/register'
+    register: '/BlueBtn'
 }

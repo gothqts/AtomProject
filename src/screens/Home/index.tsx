@@ -1,8 +1,7 @@
-import Layout from "../../shared/Layout/index.tsx";
 import styles from "./home.module.css";
-import RegisterBtn from "../../shared/buttons/register";
 import HomeSection from "../../shared/LastEvents";
 import Arrow from "../../assets/images/arrow_down.svg?react"
+import BlueBtn from "../../shared/buttons/BlueBtn";
 
 
 const Home = () => {
@@ -27,15 +26,13 @@ const Home = () => {
     ]
     return (
         <div className={styles.home_container}>
-            <Layout/>
             <div className={styles.main_wrapper}>
-
                 <div className={styles.title}>
                     Интересные<br/>мероприятия<br/>для вас
                 </div>
 
                 <div className={styles.btn}>
-                    <RegisterBtn/>
+                    <BlueBtn btn_placeholder={"Зарегестрироваться"}/>
                 </div>
 
             </div>
