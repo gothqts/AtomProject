@@ -1,5 +1,5 @@
 .register_form{
-    margin-top: 18vh;
+    margin-top: 11vh;
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -31,4 +31,8 @@
     border: 3px solid #ff7b00;
     padding: 25px;
     background: rgba(51, 173, 255, 0.09);
+}
+
+.form_input:focus{
+    outline: none;
 }
