@@ -68,12 +68,12 @@ public class BookingDbContext : DbContext
             new DynamicFieldType
             {
                 Id = Guid.NewGuid(),
-                Title = "Строка"
+                Title = "string"
             },
             new DynamicFieldType
             {
                 Id = Guid.NewGuid(),
-                Title = "Число"
+                Title = "number"
             }
         );
     }
