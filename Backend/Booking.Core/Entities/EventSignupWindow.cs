@@ -20,4 +20,6 @@ public class EventSignupWindow : IHasId
     public required TimeOnly Time { get; set; }
     
     public required int MaxVisitors { get; set; }
+    
+    public required int TicketsLeft { get; set; }
 }

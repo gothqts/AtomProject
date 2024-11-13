@@ -24,6 +24,7 @@ public static class ApplicationStartup
         services.TryAddScoped<BaseService<UserRole>>();
         services.TryAddScoped<UserInfoService>();
         
+        services.TryAddScoped<EventSignupService>();
         return services;
     }
 }

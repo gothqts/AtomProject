@@ -25,7 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\Events\" />
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
