@@ -14,5 +14,5 @@ public class UserInfoResponse
     
     public required string AvatarImage { get; set; }
     
-    public required BasicEventInfo[] CreatedEvents { get; set; }
+    public required BasicEventInfoResponse[] CreatedEvents { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Booking.Application.Services;
+using Booking.Application.Utility;
 using Booking.Core.DataQuery;
 using Booking.Core.Entities;
 using Microsoft.AspNetCore.Authentication;
@@ -106,7 +107,7 @@ public class UserInfoController : Controller
     /// Получить краткую информацию о пользователе по его id
     /// </summary>
     [HttpGet("{userId:guid}/brief")]
-    [ProducesResponseType(typeof(BriefUserInfo), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BriefUserInfoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetBriefUserInfo([FromRoute] Guid userId)
     {
@@ -116,7 +117,7 @@ public class UserInfoController : Controller
             return NoUserFound();
         }
         
-        var res = new BriefUserInfo()
+        var res = new BriefUserInfoResponse()
         {
             Id = user.Id,
             Fio = user.Fio,
@@ -139,6 +140,7 @@ public class UserInfoController : Controller
         user.UserStatus = dto.Status;
         user.Description = dto.Description;
         user.Fio = dto.Fio;
+        user.City = dto.City;
         await _userService.SaveAsync(user);
 
         return Ok(new BaseStatusResponse
@@ -205,6 +207,82 @@ public class UserInfoController : Controller
         });
     }
 
+    [HttpPut("password")]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordRequest dto)
+    {
+        var info = await TryGetSelfUserAsync();
+        if (!info.Succes || info.User == null)
+        {
+            return FailedRequest(info.ErrorMsg);
+        }
+        var user = info.User;
+        if (!PasswordHelper.VerifyPassword(user.PasswordHash, dto.CurrentPassword))
+        {
+            return FailedRequest("Current password is incorrect.");
+        }
+
+        user.PasswordHash = PasswordHelper.HashPassword(dto.NewPassword);
+        await _userService.SaveAsync(user);
+
+        return Ok(new BaseStatusResponse
+        {
+            Status = "Success",
+            Message = "User's password successfully updated.",
+            Completed = true
+        });
+    }
+    
+    [HttpPut("phone")]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateUserPhone([FromBody] UpdatePhoneRequest dto)
+    {
+        var info = await TryGetSelfUserAsync();
+        if (!info.Succes || info.User == null)
+        {
+            return FailedRequest(info.ErrorMsg);
+        }
+        var user = info.User;
+        
+        user.Phone = dto.Phone;
+        await _userService.SaveAsync(user);
+
+        return Ok(new BaseStatusResponse
+        {
+            Status = "Success",
+            Message = "User's phone successfully updated.",
+            Completed = true
+        });
+    }
+    
+    [HttpPut("email")]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateUserEmail([FromBody] UpdateEmailRequest dto)
+    {
+        var info = await TryGetSelfUserAsync();
+        if (!info.Succes || info.User == null)
+        {
+            return FailedRequest(info.ErrorMsg);
+        }
+        var user = info.User;
+        
+        // TODO: Подтверждение почты...
+        // На почту отправляется ссылка с встроенным guid, которая подтверждает смену почты, а до этого создаётся заявка смены почты и висит pending
+        
+        user.Email = dto.Email;
+        await _userService.SaveAsync(user);
+
+        return Ok(new BaseStatusResponse
+        {
+            Status = "Success",
+            Message = "User's email successfully updated.",
+            Completed = true
+        });
+    }
+    
     private BadRequestObjectResult NoUserFound()
     {
         return BadRequest(new BaseStatusResponse
