@@ -34,7 +34,14 @@ public class EventSignupService
         {
             Expression = w => w.Id == eventWindowId
         }))[0];
-        
+        var userEvent = (await _eventService.GetAsync(new DataQueryParams<UserEvent>
+        {
+            Expression = e => e.Id == window.EventId
+        }))[0];
+        if (!userEvent.IsSignupOpened)
+        {
+            return (false, null, "Sign up for this event is closed.");
+        }
         if (window.TicketsLeft <= 0)
         {
             return (false, null, "No places for that time have left.");
@@ -49,18 +56,34 @@ public class EventSignupService
             Fio = fio,
             Email = email
         };
-        await _entryService.SaveAsync(entry);
-        foreach (var kvPair in dynamicFieldValues)
+        var values = dynamicFieldValues.Select(kvPair => new EntryFieldValue
         {
-            var entryFieldValue = new EntryFieldValue
+            Id = Guid.NewGuid(),
+            EventSignupEntryId = entry.Id,
+            DynamicFieldId = kvPair.Key,
+            Value = kvPair.Value
+        }).ToArray();
+        try
+        {
+            await _entryService.SaveAsync(entry);
+            foreach (var entryFieldValue in values)
             {
-                Id = Guid.NewGuid(),
-                EventSignupEntryId = entry.Id,
-                DynamicFieldId = kvPair.Key,
-                Value = kvPair.Value
-            };
-            await _fieldValueService.SaveAsync(entryFieldValue);
+                await _fieldValueService.SaveAsync(entryFieldValue);
+            }
+            window.TicketsLeft -= 1;
+            await _eventSignupWindowService.SaveAsync(window);
         }
+        catch (Exception e)
+        {
+            foreach (var entryFieldValue in values)
+            {
+                await _fieldValueService.TryRemoveAsync(entryFieldValue.Id);
+            }
+            await _entryService.TryRemoveAsync(entry.Id);
+            
+            return (false, null, $"On entry save exception occured: {e.Message}");
+        }
+        
 
         return (true, entry, "User successfully signed up on event.");
     }

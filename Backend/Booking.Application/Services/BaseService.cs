@@ -130,6 +130,31 @@ public class BaseService<TEntity> where TEntity : class, IHasId
     }
 
     /// <summary>
+    /// Удаляет сущности с указанными id из базы данных, если они существует.
+    /// </summary>
+    /// <param name="ids">Идентификаторы объектов в базе данных.</param>
+    public virtual async Task RemoveRangeAsync(params Guid[] ids)
+    {
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var set = dbContext.Set<TEntity>();
+        var items = set.Where(item => ids.Contains(item.Id)).ToArray();
+        set.RemoveRange(items);
+        await dbContext.SaveChangesAsync();
+    }
+    
+    /// <summary>
+    /// Удаляет сущности из базы данных.
+    /// </summary>
+    /// <param name="entities">Объекты в базе данных.</param>
+    public virtual async Task RemoveRangeAsync(params TEntity[] entities)
+    {
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var set = dbContext.Set<TEntity>();
+        set.RemoveRange(entities);
+        await dbContext.SaveChangesAsync();
+    }
+    
+    /// <summary>
     /// Сохраняет сущность в соответствующую таблицу. Обновляет её поля, если она уже существует.
     /// </summary>
     public virtual async Task<Guid> SaveAsync(TEntity entity)
