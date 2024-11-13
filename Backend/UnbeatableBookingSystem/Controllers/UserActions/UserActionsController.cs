@@ -22,19 +22,17 @@ public class UserActionsController : Controller
     private readonly BaseService<OrganizerContacts> _contactsService;
     private readonly BaseService<EventSignupForm> _eventFormService;
     private readonly BaseService<FormDynamicField> _formDynamicFieldsService;
-    private readonly BaseService<User> _userService;
     private readonly EventSignupService _eventSignupService;
 
     public UserActionsController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
         BaseService<OrganizerContacts> contactsService, BaseService<EventSignupForm> eventFormService,
-        BaseService<FormDynamicField> formDynamicFieldsService, BaseService<User> userService, EventSignupService eventSignupService)
+        BaseService<FormDynamicField> formDynamicFieldsService, EventSignupService eventSignupService)
     {
         _eventService = eventService;
         _eventSignupWindowService = eventSignupWindowService;
         _contactsService = contactsService;
         _eventFormService = eventFormService;
         _formDynamicFieldsService = formDynamicFieldsService;
-        _userService = userService;
         _eventSignupService = eventSignupService;
     }
     
@@ -56,7 +54,8 @@ public class UserActionsController : Controller
             {
                 OrderBy = e => e.DateStart,
                 Ascending = true
-            }
+            },
+            Filters = [e => e.IsPublic]
         });
         var res = new UpcomingEventsResponse
         {
@@ -109,7 +108,7 @@ public class UserActionsController : Controller
         
         var signupWindows = await _eventSignupWindowService.GetAsync(new DataQueryParams<EventSignupWindow>
         {
-            Expression = e => e.Event.IsSignupOpened,
+            Expression = w => w.Event.IsPublic,
             Sorting = new SortingParams<EventSignupWindow>
             {
                 OrderBy = e => e.Date,

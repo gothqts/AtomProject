@@ -42,12 +42,12 @@ namespace Booking.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6f9724b4-6169-4531-99e0-f734f4cdbc65"),
+                            Id = new Guid("ab690aad-5593-48e3-b44e-052cb3d06781"),
                             Title = "Строка"
                         },
                         new
                         {
-                            Id = new Guid("476c7646-b114-40a5-acd5-f942594a971f"),
+                            Id = new Guid("5132aff9-3662-42e0-875a-fe4e83ad0948"),
                             Title = "Число"
                         });
                 });
@@ -176,6 +176,10 @@ namespace Booking.Infrastructure.Migrations
                     b.Property<int>("MaxVisitors")
                         .HasColumnType("integer")
                         .HasColumnName("max_visitors");
+
+                    b.Property<int>("TicketsLeft")
+                        .HasColumnType("integer")
+                        .HasColumnName("tickets_left");
 
                     b.Property<TimeOnly>("Time")
                         .HasColumnType("time without time zone")
@@ -438,21 +442,21 @@ namespace Booking.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("21ef69c6-03ce-462c-a444-6f3524141bca"),
+                            Id = new Guid("2748ce68-6605-4c53-9ee7-9fbb317b2783"),
                             CanEditOthersEvents = false,
                             IsAdmin = false,
                             Title = "User"
                         },
                         new
                         {
-                            Id = new Guid("9b1a9c32-a303-49c3-b786-f3b722f9026d"),
+                            Id = new Guid("2771367f-d4d8-4cac-a6a6-a107d59a4189"),
                             CanEditOthersEvents = true,
                             IsAdmin = true,
                             Title = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("fb410de0-5ccf-4960-8bae-f8aadab8ce04"),
+                            Id = new Guid("e88670ad-14a9-4e74-aa5d-9dcc9dab3cf8"),
                             CanEditOthersEvents = true,
                             IsAdmin = false,
                             Title = "Moderator"
