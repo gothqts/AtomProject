@@ -42,12 +42,12 @@ namespace Booking.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e4d610fd-a4b4-4fe7-8544-e01b7a5e45ec"),
+                            Id = new Guid("6f9724b4-6169-4531-99e0-f734f4cdbc65"),
                             Title = "Строка"
                         },
                         new
                         {
-                            Id = new Guid("9c1109fd-6e15-4177-8d61-230409444606"),
+                            Id = new Guid("476c7646-b114-40a5-acd5-f942594a971f"),
                             Title = "Число"
                         });
                 });
@@ -292,6 +292,16 @@ namespace Booking.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("AvatarImageFilepath")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("avatar_image_filepath");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("city");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text")
@@ -311,11 +321,6 @@ namespace Booking.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
-
-                    b.Property<string>("PathToAvatarImage")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("path_to_avatar_image");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -352,6 +357,11 @@ namespace Booking.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("address");
 
+                    b.Property<string>("BannerImageFilepath")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("banner_image_filepath");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text")
@@ -385,11 +395,6 @@ namespace Booking.Infrastructure.Migrations
                     b.Property<bool>("IsSignupOpened")
                         .HasColumnType("boolean")
                         .HasColumnName("is_signup_opened");
-
-                    b.Property<string>("PathToBannerImage")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("path_to_banner_image");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -433,21 +438,21 @@ namespace Booking.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0244a017-ddef-409d-9882-07944e295850"),
+                            Id = new Guid("21ef69c6-03ce-462c-a444-6f3524141bca"),
                             CanEditOthersEvents = false,
                             IsAdmin = false,
                             Title = "User"
                         },
                         new
                         {
-                            Id = new Guid("9817d280-de5c-4995-85bd-0d5a57d64a1b"),
+                            Id = new Guid("9b1a9c32-a303-49c3-b786-f3b722f9026d"),
                             CanEditOthersEvents = true,
                             IsAdmin = true,
                             Title = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("229a04f8-30cf-4783-ad51-51ed94c13c1d"),
+                            Id = new Guid("fb410de0-5ccf-4960-8bae-f8aadab8ce04"),
                             CanEditOthersEvents = true,
                             IsAdmin = false,
                             Title = "Moderator"

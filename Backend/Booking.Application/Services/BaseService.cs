@@ -2,6 +2,7 @@
 using Booking.Core.Interfaces;
 using Booking.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace Booking.Application.Services;
 
@@ -39,12 +40,53 @@ public class BaseService<TEntity> where TEntity : class, IHasId
         
         if (queryParams.Sorting != null)
         {
-            set = queryParams.Sorting.Ascending ? set.OrderBy(queryParams.Sorting.OrderBy) : set.OrderByDescending(queryParams.Sorting.OrderBy);
+            if (queryParams.Sorting.OrderBy == null)
+            {
+                if (queryParams.Sorting.PropertyName != null)
+                {
+                    set = queryParams.Sorting.Ascending ? set.OrderBy(queryParams.Sorting.PropertyName) : 
+                        set.OrderBy(queryParams.Sorting.PropertyName + " descending");
+                }
+            }
+            else
+            {
+                if (queryParams.Sorting.ThenBy != null)
+                {
+                    set = queryParams.Sorting.Ascending ? 
+                        set.OrderBy(queryParams.Sorting.OrderBy).ThenBy(queryParams.Sorting.ThenBy) : 
+                        set.OrderByDescending(queryParams.Sorting.OrderBy).ThenByDescending(queryParams.Sorting.ThenBy);
+                }
+                else
+                {
+                    set = queryParams.Sorting.Ascending ? 
+                        set.OrderBy(queryParams.Sorting.OrderBy) : 
+                        set.OrderByDescending(queryParams.Sorting.OrderBy);
+                }
+            }
         }
         
         if (queryParams.Paging != null)
         {
             set = set.Skip(queryParams.Paging.Skip).Take(queryParams.Paging.Take);
+        }
+        
+        if (queryParams.IncludeParams != null)
+        {
+            if (queryParams.IncludeParams.IncludeProperties != null)
+            {
+                foreach (var propertyPath in queryParams.IncludeParams.IncludeProperties)
+                {
+                    set = set.Include(propertyPath);
+                }
+            }
+
+            if (queryParams.IncludeParams.IncludePropertiesPaths != null)
+            {
+                foreach (var propertyPath in queryParams.IncludeParams.IncludePropertiesPaths)
+                {
+                    set = set.Include(propertyPath);
+                }
+            }
         }
         
         return set.ToArray();

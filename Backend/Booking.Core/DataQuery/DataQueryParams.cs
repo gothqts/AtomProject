@@ -12,4 +12,6 @@ public class DataQueryParams<TEntity> where TEntity : class, IHasId
     public SortingParams<TEntity>? Sorting { get; set; }
     
     public List<Expression<Func<TEntity, bool>>>? Filters { get; set; }
+    
+    public IncludeParams<TEntity>? IncludeParams { get; set; }
 }

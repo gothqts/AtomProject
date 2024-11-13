@@ -1,6 +1,6 @@
 ﻿namespace UnbeatableBookingSystem.Controllers.Base.Responses;
 
-public class BasicEventInfo
+public class BasicEventInfoResponse
 {
     public required Guid Id { get; set; }
     

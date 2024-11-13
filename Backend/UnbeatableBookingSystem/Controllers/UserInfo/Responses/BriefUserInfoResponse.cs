@@ -1,6 +1,6 @@
 ﻿namespace UnbeatableBookingSystem.Controllers.UserInfo.Responses;
 
-public class BriefUserInfo
+public class BriefUserInfoResponse
 {
     public required Guid Id { get; set; }
     
