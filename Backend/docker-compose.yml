@@ -1,0 +1,41 @@
+﻿services:
+
+  webApi:
+    image: unbeatablebookingsystem
+    build:
+      context: .
+      dockerfile: UnbeatableBookingSystem/aspnetcore.dockerfile
+    ports:
+      - "8080:80"
+      - "8081:443"
+    environment:
+      - ASPNETCORE_URLS=http://+:80;https://+:443
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__PostgresDb=Server=booking-postgres;Database=bookingSystem;User Id=postgres;Password=postgres;
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=aspnetapp
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    depends_on:
+        - "booking-postgres"
+    networks:
+      - aspnetcoreapp-network
+    volumes:
+      - ./UnbeatableBookingSystem/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
+      
+  booking-postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bookingSystem
+    networks:
+      - aspnetcoreapp-network
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+networks:
+  aspnetcoreapp-network:
+    driver: bridge
+
+volumes:
+  dbdata:

@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
-using Booking.Application.Utility;
+﻿using Booking.Application.Utility;
 using Booking.Core.DataQuery;
 using Booking.Core.Entities;
-using Microsoft.AspNetCore.Http;
 
 namespace Booking.Application.Services.AuthService;
 
