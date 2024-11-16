@@ -2,11 +2,11 @@
 
 public class AddSignupWindowRequest
 {
-    public string Title { get; set; }
+    public required string Title { get; set; }
     
-    public string Date { get; set; }
+    public required string Date { get; set; }
     
-    public string Time { get; set; }
+    public required string Time { get; set; }
     
     public int MaxVisitors { get; set; }
     

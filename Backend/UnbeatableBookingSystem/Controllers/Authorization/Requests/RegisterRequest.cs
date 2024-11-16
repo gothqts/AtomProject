@@ -10,7 +10,7 @@ public class RegisterRequest
     [DataType(DataType.Password)]
     public required string Password { get; set; }
     
-    public required string FIO { get; set; }
+    public required string Fio { get; set; }
     
     public string? City { get; set; }
     

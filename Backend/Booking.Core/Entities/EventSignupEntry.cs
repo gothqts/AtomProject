@@ -17,9 +17,9 @@ public class EventSignupEntry : IHasId
     [ForeignKey("UserId")]
     public User User { get; set; } = null!;
     
-    public string Phone { get; set; } = null!;
+    public string? Phone { get; set; } = null!;
     
-    public string Fio { get; set; } = null!;
+    public string? Fio { get; set; } = null!;
     
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; } = null!;
 }

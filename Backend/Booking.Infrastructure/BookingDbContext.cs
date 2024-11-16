@@ -18,6 +18,8 @@ public class BookingDbContext : DbContext
     public DbSet<User> Users { get; init; }
     public DbSet<UserEvent> UsersEvents { get; init; }
     public DbSet<UserRole> UsersRoles { get; init; }
+    public DbSet<RefreshToken> RefreshTokens { get; init; }
+    public DbSet<RevokedAccessToken> RevokedAccessTokens { get; init; }
     
     public BookingDbContext(IConfiguration configuration)
     {
@@ -37,8 +39,6 @@ public class BookingDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
         // Добавление начальных данных
         modelBuilder.Entity<UserRole>().HasData(
             new UserRole

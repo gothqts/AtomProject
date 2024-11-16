@@ -1,9 +1,8 @@
-﻿using System.Security.Claims;
-using Booking.Application.Services;
+﻿using Booking.Application.Services;
+using Booking.Application.Services.AuthService;
+using Booking.Core;
 using Booking.Core.DataQuery;
 using Booking.Core.Entities;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
@@ -27,12 +26,13 @@ public class EventCreationController : Controller
     private readonly BaseService<UserRole> _roleService;
     private readonly BaseService<EntryFieldValue> _entryFieldValueService;
     private readonly BaseService<EventSignupEntry> _entryService;
+    private readonly IAuthService _authService;
 
     public EventCreationController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
         BaseService<OrganizerContacts> contactsService, BaseService<EventSignupForm> eventFormService,
         BaseService<FormDynamicField> formDynamicFieldsService, EventSignupService eventSignupService,
         BaseService<User> userService, BaseService<UserRole> roleService, BaseService<EntryFieldValue> entryFieldValueService,
-        BaseService<EventSignupEntry> entryService)
+        BaseService<EventSignupEntry> entryService, IAuthService authService)
     {
         _eventService = eventService;
         _eventSignupWindowService = eventSignupWindowService;
@@ -44,6 +44,7 @@ public class EventCreationController : Controller
         _roleService = roleService;
         _entryFieldValueService = entryFieldValueService;
         _entryService = entryService;
+        _authService = authService;
     }
     
     [HttpGet]
@@ -51,7 +52,7 @@ public class EventCreationController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetUserEvents([FromQuery] int? skip, [FromQuery] int? take)
     {
-        var info = await TryGetUserIdAsync();
+        var info = TryGetUserId();
         if (!info.Succes)
         {
             return FailedRequest(info.ErrorMsg);
@@ -84,7 +85,7 @@ public class EventCreationController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUserEvent()
     {
-        var info = await TryGetUserIdAsync();
+        var info = TryGetUserId();
         if (!info.Succes)
         {
             return FailedRequest(info.ErrorMsg);
@@ -97,12 +98,12 @@ public class EventCreationController : Controller
             CreatorUserId = userId,
             IsPublic = false,
             Title = "Новое мероприятие",
-            BannerImageFilepath = null,
+            BannerImageFilepath = null, // TODO: default image
             IsOnline = true,
             IsSignupOpened = false,
             DateStart = DateTime.Now.ToUniversalTime(),
             DateEnd = DateTime.Now.ToUniversalTime(),
-            Description = "Заполните описание нового события"
+            Description = "Заполните описание нового мероприятия"
         };
         await _eventService.SaveAsync(userEvent);
         var res = DtoConverter.ConvertEventToBasicInfo(userEvent);
@@ -247,35 +248,33 @@ public class EventCreationController : Controller
     
     private async Task<(bool Succes, User? User, string ErrorMsg)> TryGetSelfUserAsync(bool includeRole = false)
     {
-        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeUserId);
         if (idClaim == null)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return (false, null, "User doesn't have proper claims, unauthorized.");
+            return (false, null, "User doesn't have proper claims.");
         }
         var user = await _userService.GetByIdOrDefaultAsync(new Guid(idClaim.Value));
         if (user == null)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _authService.RemoveRefreshTokenAsync(new Guid(idClaim.Value));
             return (false, null, "Operation failed. No user with that id was found. Unauthorized.");
         }
 
         if (includeRole)
         {
             var role = await _roleService.GetByIdOrDefaultAsync(user.RoleId);
-            user.Role = role;
+            user.Role = role!;
         }
         
         return (true, user, "");
     }
     
-    private async Task<(bool Succes, Guid? UserId, string ErrorMsg)> TryGetUserIdAsync()
+    private (bool Succes, Guid? UserId, string ErrorMsg) TryGetUserId()
     {
-        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        var idClaim = User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeUserId);
         if (idClaim == null)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return (false, null, "User doesn't have proper claims, unauthorized.");
+            return (false, null, "User doesn't have proper claims.");
         }
         
         return (true, new Guid(idClaim.Value), "");

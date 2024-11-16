@@ -7,22 +7,14 @@ public class EventSignupService
 {
     private readonly BaseService<UserEvent> _eventService;
     private readonly BaseService<EventSignupWindow> _eventSignupWindowService;
-    private readonly BaseService<EventSignupForm> _eventFormService;
-    private readonly BaseService<FormDynamicField> _formDynamicFieldsService;
-    private readonly BaseService<User> _userService;
     private readonly BaseService<EventSignupEntry> _entryService;
     private readonly BaseService<EntryFieldValue> _fieldValueService;
 
-    public EventSignupService(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
-        BaseService<EventSignupForm> eventFormService, BaseService<FormDynamicField> formDynamicFieldsService, 
-        BaseService<User> userService, BaseService<EventSignupEntry> entryService,
-        BaseService<EntryFieldValue> fieldValueService)
+    public EventSignupService(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService, 
+        BaseService<EventSignupEntry> entryService, BaseService<EntryFieldValue> fieldValueService)
     {
         _eventService = eventService;
         _eventSignupWindowService = eventSignupWindowService;
-        _eventFormService = eventFormService;
-        _formDynamicFieldsService = formDynamicFieldsService;
-        _userService = userService;
         _entryService = entryService;
         _fieldValueService = fieldValueService;
     }
@@ -101,7 +93,7 @@ public class EventSignupService
         });
 
         var res = values.ToDictionary(v => v.DynamicField.Title, v => v.Value);
-        return (entry.Phone, entry.Fio, entry.Email, res);
+        return (entry?.Phone, entry?.Fio, entry?.Email, res);
     }
     
 }

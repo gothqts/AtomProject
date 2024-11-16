@@ -1,16 +1,14 @@
-﻿using UnbeatableBookingSystem.Controllers.Base.Responses;
-
-namespace UnbeatableBookingSystem.Controllers.UserActions.Responses;
+﻿namespace UnbeatableBookingSystem.Controllers.UserActions.Responses;
 
 public class SignupResponse
 {
     public Guid EntryId { get; set; }
     
-    public string? Phone { get; set; } = null!;
+    public string? Phone { get; set; }
     
-    public string? Fio { get; set; } = null!;
+    public string? Fio { get; set; }
     
-    public string? Email { get; set; } = null!;
+    public string? Email { get; set; }
     
     public required DateTime DateTime { get; set; }
     

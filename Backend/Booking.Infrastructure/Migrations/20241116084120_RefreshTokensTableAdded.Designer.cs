@@ -3,6 +3,7 @@ using System;
 using Booking.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Booking.Infrastructure.Migrations
 {
     [DbContext(typeof(BookingDbContext))]
-    partial class BookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241116084120_RefreshTokensTableAdded")]
+    partial class RefreshTokensTableAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,12 +45,12 @@ namespace Booking.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b9155151-2245-458c-a86b-4aca9a085fb5"),
+                            Id = new Guid("6df25cbc-83c9-4051-b626-0bc570902a1f"),
                             Title = "string"
                         },
                         new
                         {
-                            Id = new Guid("006e9c43-991a-49cf-9edb-a70e98bbea9a"),
+                            Id = new Guid("81771ba7-081d-47f4-a7a7-9a413dec2f66"),
                             Title = "number"
                         });
                 });
@@ -92,14 +95,17 @@ namespace Booking.Infrastructure.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("email");
 
                     b.Property<string>("Fio")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("fio");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("phone");
 
@@ -308,23 +314,6 @@ namespace Booking.Infrastructure.Migrations
                     b.ToTable("refresh_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("Booking.Core.Entities.RevokedAccessToken", b =>
-                {
-                    b.Property<Guid>("Jti")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("jti");
-
-                    b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("expiration_time");
-
-                    b.HasKey("Jti")
-                        .HasName("pk_revoked_access_tokens");
-
-                    b.ToTable("revoked_access_tokens", (string)null);
-                });
-
             modelBuilder.Entity("Booking.Core.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -397,7 +386,6 @@ namespace Booking.Infrastructure.Migrations
                         .HasColumnName("address");
 
                     b.Property<string>("BannerImageFilepath")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("banner_image_filepath");
 
@@ -480,21 +468,21 @@ namespace Booking.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b21a4227-ce10-4e66-a34d-0b1158dee441"),
+                            Id = new Guid("5ec4c9b6-caca-49bf-ad38-84a6de8fb3f0"),
                             CanEditOthersEvents = false,
                             IsAdmin = false,
                             Title = "User"
                         },
                         new
                         {
-                            Id = new Guid("82d06a87-b83d-4c91-bef2-64db4b7e77e8"),
+                            Id = new Guid("072b55e0-9c08-4e8c-9479-ab7b57106d63"),
                             CanEditOthersEvents = true,
                             IsAdmin = true,
                             Title = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("016f026f-0eb2-4d6e-8bee-0e279e5fc246"),
+                            Id = new Guid("ecc36465-ef74-4f69-8905-0d8d43637468"),
                             CanEditOthersEvents = true,
                             IsAdmin = false,
                             Title = "Moderator"

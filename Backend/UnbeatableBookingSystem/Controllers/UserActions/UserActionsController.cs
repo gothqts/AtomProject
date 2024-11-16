@@ -1,10 +1,8 @@
 ﻿using System.Linq.Expressions;
-using System.Security.Claims;
 using Booking.Application.Services;
+using Booking.Core;
 using Booking.Core.DataQuery;
 using Booking.Core.Entities;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
@@ -78,7 +76,7 @@ public class UserActionsController : Controller
         };
         if (!string.IsNullOrWhiteSpace(city))
         {
-            filters.Add(e => e.Event.City.ToLower() == city.ToLower());
+            filters.Add(e => e.Event.City == city);
         }
         if (!string.IsNullOrWhiteSpace(date))
         {
@@ -216,21 +214,30 @@ public class UserActionsController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SignupForEvent([FromRoute] Guid id, [FromBody] SignupRequest request)
     {
-        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeUserId);
         if (idClaim == null)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return BadRequest(new BaseStatusResponse
             {
                 Completed = false,
                 Status = "Failed",
-                Message = "User doesn't have proper claims, unauthorized."
+                Message = "User doesn't have proper claims."
             });
         }
-
+        var window = await _eventSignupWindowService.GetByIdOrDefaultAsync(request.SignupWindowId);
+        if (window == null)
+        {
+            return BadRequest(new BaseStatusResponse
+            {
+                Completed = false,
+                Status = "Failed",
+                Message = "Window with provided signupWindowId not found."
+            });
+        }
+        
         var signupInfo = await _eventSignupService.SignupUserToEventAsync(new Guid(idClaim.Value), request.SignupWindowId,
             request.Phone, request.Email, request.Fio, request.DynamicFieldsValues);
-        if (!signupInfo.Completed)
+        if (!signupInfo.Completed || signupInfo.Entry == null)
         {
             return BadRequest(new BaseStatusResponse
             {
@@ -241,7 +248,7 @@ public class UserActionsController : Controller
         }
 
         var entryInfo = await _eventSignupService.GetEntryFormValues(signupInfo.Entry.Id);
-        var window = await _eventSignupWindowService.GetByIdOrDefaultAsync(signupInfo.Entry.SignupWindowId);
+        
         var res = new SignupResponse
         {
             DynamicFieldsData = entryInfo.DynamicValues,

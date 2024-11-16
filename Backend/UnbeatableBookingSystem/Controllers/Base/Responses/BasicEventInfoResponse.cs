@@ -14,9 +14,9 @@ public class BasicEventInfoResponse
     
     public required bool IsOnline { get; set; }
     
-    public required string City { get; set; }
+    public string? City { get; set; }
     
-    public required string Address { get; set; }
+    public string? Address { get; set; }
     
     public required bool IsSignupOpen { get; set; }
 }

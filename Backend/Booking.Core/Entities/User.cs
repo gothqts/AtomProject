@@ -18,8 +18,8 @@ public class User : IHasId
     public required string PasswordHash { get; set; }
     
     public Guid RoleId { get; set; }
-    [ForeignKey("RoleId")]
-    public UserRole Role { get; set; }
+    [ForeignKey("RoleId")] 
+    public UserRole Role { get; set; } = null!;
     
     public required string UserStatus { get; set; }
 

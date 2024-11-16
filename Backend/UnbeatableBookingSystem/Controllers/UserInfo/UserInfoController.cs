@@ -1,13 +1,10 @@
-﻿using System.Security.Claims;
-using Booking.Application.Services;
+﻿using Booking.Application.Services;
+using Booking.Application.Services.AuthService;
 using Booking.Application.Utility;
-using Booking.Core.DataQuery;
+using Booking.Core;
 using Booking.Core.Entities;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.UserInfo.Requests;
 using UnbeatableBookingSystem.Controllers.UserInfo.Responses;
@@ -24,24 +21,26 @@ public class UserInfoController : Controller
     private readonly BaseService<UserRole> _roleService;
     private readonly IWebHostEnvironment _env;
     private readonly UserInfoService _userInfoService;
+    private readonly IAuthService _authService;
 
-    private readonly string _avatarImagesFullPath;
     private readonly string _avatarImagesRelativePath = Path.Combine("images", "user-avatars");
     
     private readonly string _defaultAvatarFilename = "default-avatar.jpg";
     
     public UserInfoController(BaseService<User> userService, BaseService<UserEvent> eventsService,
-        BaseService<UserRole> roleService, IWebHostEnvironment env, UserInfoService userInfoService)
+        BaseService<UserRole> roleService, IWebHostEnvironment env, UserInfoService userInfoService,
+        IAuthService authService)
     {
         _userService = userService;
         _eventsService = eventsService;
         _roleService = roleService;
         _env = env;
         _userInfoService = userInfoService;
-        _avatarImagesFullPath = Path.Combine(_env.WebRootPath, _avatarImagesRelativePath);
-        if (!Directory.Exists(_avatarImagesFullPath))
+        _authService = authService;
+        var avatarImagesFullPath = Path.Combine(_env.WebRootPath, _avatarImagesRelativePath);
+        if (!Directory.Exists(avatarImagesFullPath))
         {
-            Directory.CreateDirectory(_avatarImagesFullPath);
+            Directory.CreateDirectory(avatarImagesFullPath);
         }
     }
     
@@ -305,23 +304,22 @@ public class UserInfoController : Controller
     
     private async Task<(bool Succes, User? User, string ErrorMsg)> TryGetSelfUserAsync(bool includeRole = false)
     {
-        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeUserId);
         if (idClaim == null)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return (false, null, "User doesn't have proper claims, unauthorized.");
         }
         var user = await _userService.GetByIdOrDefaultAsync(new Guid(idClaim.Value));
         if (user == null)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _authService.RemoveRefreshTokenAsync(new Guid(idClaim.Value));
             return (false, null, "Operation failed. No user with that id was found. Unauthorized.");
         }
 
         if (includeRole)
         {
             var role = await _roleService.GetByIdOrDefaultAsync(user.RoleId);
-            user.Role = role;
+            user.Role = role!;
         }
         
         return (true, user, "");

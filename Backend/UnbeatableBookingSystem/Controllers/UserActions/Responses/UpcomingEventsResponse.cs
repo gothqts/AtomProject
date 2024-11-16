@@ -4,5 +4,5 @@ namespace UnbeatableBookingSystem.Controllers.UserActions.Responses;
 
 public class UpcomingEventsResponse
 {
-    public BasicEventInfoResponse[] Events { get; set; }
+    public required BasicEventInfoResponse[] Events { get; set; }
 }
