@@ -209,7 +209,6 @@ public class UserActionsController : Controller
     }
     
     [HttpPost("{id:guid}/sign-up")]
-    [Authorize]
     [ProducesResponseType(typeof(SignupResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SignupForEvent([FromRoute] Guid id, [FromBody] SignupRequest request)

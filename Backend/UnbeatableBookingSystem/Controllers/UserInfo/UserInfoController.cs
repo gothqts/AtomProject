@@ -13,7 +13,6 @@ using UnbeatableBookingSystem.Utility;
 namespace UnbeatableBookingSystem.Controllers.UserInfo;
 
 [Route("/api/user/")]
-[Authorize]
 public class UserInfoController : Controller
 {
     private readonly BaseService<User> _userService;
@@ -48,6 +47,7 @@ public class UserInfoController : Controller
     /// Получить собственный профиль пользователя
     /// </summary>
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(typeof(SelfUserInfoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetSelfUserProfile()
@@ -126,6 +126,7 @@ public class UserInfoController : Controller
     }
     
     [HttpPut]
+    [Authorize]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserInfoRequest dto)
@@ -154,6 +155,7 @@ public class UserInfoController : Controller
     /// Обновить аватар пользователя
     /// </summary>
     [HttpPost("avatar")]
+    [Authorize]
     [ProducesResponseType(typeof(UpdateAvatarResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserAvatar(IFormFile? file)
@@ -184,6 +186,7 @@ public class UserInfoController : Controller
     /// Удалить аватар пользователя
     /// </summary>
     [HttpDelete("avatar")]
+    [Authorize]
     [ProducesResponseType(typeof(UpdateAvatarResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RemoveUserAvatar()
@@ -207,6 +210,7 @@ public class UserInfoController : Controller
     }
 
     [HttpPut("password")]
+    [Authorize]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordRequest dto)
@@ -234,6 +238,7 @@ public class UserInfoController : Controller
     }
     
     [HttpPut("phone")]
+    [Authorize]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserPhone([FromBody] UpdatePhoneRequest dto)
@@ -257,6 +262,7 @@ public class UserInfoController : Controller
     }
     
     [HttpPut("email")]
+    [Authorize]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserEmail([FromBody] UpdateEmailRequest dto)
