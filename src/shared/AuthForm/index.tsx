@@ -23,7 +23,6 @@ const AuthForm = observer(({ isLogin }) => {
 
   const handleChange = (value: string, name: string) => {
     setValues((prev) => ({ ...prev, [name]: value }))
-    console.log({ ...values, [name]: value })
   }
 
   const handleNext = (e) => {
@@ -31,8 +30,17 @@ const AuthForm = observer(({ isLogin }) => {
     setShowSecondForm(true)
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (isLogin) {
+      login(values.email, values.password)
+    } else {
+      register(values.email, values.password, values.fio, values.city, values.status)
+    }
+  }
+
   return (
-    <form className={styles.register_form}>
+    <form className={styles.register_form} onSubmit={handleSubmit}>
       <div className={styles.form_title}>{isLogin ? 'Вход' : 'Регистрация'}</div>
 
       {!showSecondForm ? (
@@ -59,7 +67,7 @@ const AuthForm = observer(({ isLogin }) => {
             className={styles.form_input}
             placeholder='Пароль'
             type='password'
-            name='password' // Добавлен атрибут name
+            name='password'
             onChange={(e) => handleChange(e.target.value, 'password')}
             value={values.password}
           />
@@ -68,8 +76,8 @@ const AuthForm = observer(({ isLogin }) => {
               className={styles.form_input}
               placeholder='Повторите пароль'
               type='password'
-              name='confirmPassword'
-              onChange={(e) => handleChange(e.target.value, 'confirmPassword')}
+              name='password'
+              onChange={(e) => handleChange(e.target.value, 'password')}
             />
           )}
           {!isLogin && (
@@ -77,7 +85,7 @@ const AuthForm = observer(({ isLogin }) => {
               Уже есть аккаунт?
             </Link>
           )}
-          <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Далее'} onClick={handleNext} />
+          <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Далее'} type={isLogin ? 'submit' : 'button'} onClick={handleNext} />
         </>
       ) : (
         <>
@@ -97,14 +105,7 @@ const AuthForm = observer(({ isLogin }) => {
             onChange={(e) => handleChange(e.target.value, 'status')}
             value={values.status}
           />
-          <BlueBtn
-            onClick={
-              isLogin
-                ? () => login(values.email, values.password)
-                : () => register(values.email, values.password, values.fio, values.city, values.status, values.confirmPassword)
-            }
-            btn_placeholder={isLogin ? 'Войти' : 'Зарегистрироваться'}
-          />
+          <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Зарегистрироваться'} type='submit' />
         </>
       )}
     </form>

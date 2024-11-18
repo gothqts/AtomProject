@@ -2,7 +2,6 @@ export interface RegisterRequest {
   fio: string
   email: string
   password: string
-  confirmPassword: string
   city: string
   status: string
 }
