@@ -1,7 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { IUser } from '../models/User/User.ts'
 import AuthService from '../services/Auth/AuthService.ts'
-import { RegisterRequest } from '../models/Auth/request/authRequest.ts'
 
 export default class Store {
   userID: string = ''
@@ -30,9 +28,9 @@ export default class Store {
       console.log(err)
     }
   }
-  async register(email: string, password: string, fio: string, status: string, city: string) {
+  async register(email: string, password: string, fio: string, status: string, city: string, confirmPassword: string) {
     try {
-      const response = await AuthService.register({ email, password, fio, status, city })
+      const response = await AuthService.register({ email, password, confirmPassword, fio, status, city })
       console.log(response)
       localStorage.setItem('token', response.data.accessToken)
       this.setAuth(true)

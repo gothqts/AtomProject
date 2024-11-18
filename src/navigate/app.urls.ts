@@ -1,8 +1,8 @@
 export const urls = {
-    home: '/home',
-    events: '/events',
-    about: '/about',
-    reviews: '/reviews',
-    login: '/login',
-    register: '/BlueBtn'
+  home: '/home',
+  events: '/events',
+  about: '/about',
+  reviews: '/reviews',
+  login: '/login',
+  register: '/registration',
 }

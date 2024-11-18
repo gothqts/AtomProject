@@ -1,10 +1,17 @@
 import s from './BlueBtn.module.css'
-const BlueBtn = ({btn_placeholder, onClick}) => {
-    return (
-        <div>
-          <button className={s.btn} onClick={onClick}>{btn_placeholder}</button>
-        </div>
-    );
-};
+import React from 'react'
+interface IProps {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void
+  btn_placeholder: string
+}
+const BlueBtn = (props: IProps) => {
+  return (
+    <div>
+      <button className={s.btn} onClick={props.onClick}>
+        {props.btn_placeholder}
+      </button>
+    </div>
+  )
+}
 
-export default BlueBtn;
+export default BlueBtn

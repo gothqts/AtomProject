@@ -16,23 +16,15 @@ http.interceptors.response.use(
     return config
   },
   async (error) => {
-    const originalRequest = { ...error.config }
-    originalRequest._isRetry = true
-    if (
-      error.response.status === 401 &&
-      // проверим, что запрос не повторный
-      error.config &&
-      !error.config._isRetry
-    ) {
+    const originalRequest = error.config
+    if (error.response.status == 401 && error.config && !error.config._isRetry) {
+      originalRequest._isRetry = true
       try {
-        // запрос на обновление токенов
-        const resp = await http.get('/api/auth/refresh')
-        // сохраняем новый accessToken в localStorage
-        localStorage.setItem('token', resp.data.accessToken)
-        // переотправляем запрос с обновленным accessToken
+        const response = await http.post(`/api/auth/refresh`, { withCredentials: true })
+        localStorage.setItem('token', response.data.accessToken)
         return http.request(originalRequest)
-      } catch (error) {
-        console.log('AUTH ERROR')
+      } catch (e) {
+        console.log('НЕ АВТОРИЗОВАН')
       }
     }
     throw error

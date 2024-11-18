@@ -21,10 +21,9 @@ const AuthForm = observer(({ isLogin }) => {
 
   const [values, setValues] = useState(generateInputValues())
 
-  // Изменение обработчика для обновления значений по имени
   const handleChange = (value: string, name: string) => {
     setValues((prev) => ({ ...prev, [name]: value }))
-    console.log({ ...values, [name]: value }) // Логируем обновленные значения
+    console.log({ ...values, [name]: value })
   }
 
   const handleNext = (e) => {
@@ -43,9 +42,9 @@ const AuthForm = observer(({ isLogin }) => {
               className={styles.form_input}
               placeholder='ФИО'
               type='text'
-              name='fio' // Добавлен атрибут name
-              onChange={(e) => handleChange(e.target.value, 'fio')} // Передаем имя поля
-              value={values.fio} // Привязка значения из состояния
+              name='fio'
+              onChange={(e) => handleChange(e.target.value, 'fio')}
+              value={values.fio}
             />
           )}
           <input
@@ -53,25 +52,24 @@ const AuthForm = observer(({ isLogin }) => {
             placeholder='E-mail'
             type='email'
             name='email' // Добавлен атрибут name
-            onChange={(e) => handleChange(e.target.value, 'email')} // Передаем имя поля
-            value={values.email} // Привязка значения из состояния
+            onChange={(e) => handleChange(e.target.value, 'email')}
+            value={values.email}
           />
           <input
             className={styles.form_input}
             placeholder='Пароль'
             type='password'
             name='password' // Добавлен атрибут name
-            onChange={(e) => handleChange(e.target.value, 'password')} // Передаем имя поля
-            value={values.password} // Привязка значения из состояния
+            onChange={(e) => handleChange(e.target.value, 'password')}
+            value={values.password}
           />
           {!isLogin && (
             <input
               className={styles.form_input}
               placeholder='Повторите пароль'
               type='password'
-              name='confirmPassword' // Добавлен атрибут name
-              onChange={(e) => handleChange(e.target.value, 'confirmPassword')} // Передаем имя поля
-              // Здесь можно добавить проверку на совпадение паролей, если необходимо
+              name='confirmPassword'
+              onChange={(e) => handleChange(e.target.value, 'confirmPassword')}
             />
           )}
           {!isLogin && (
@@ -87,21 +85,23 @@ const AuthForm = observer(({ isLogin }) => {
             className={styles.form_input}
             placeholder='Город'
             type='text'
-            name='city' // Добавлен атрибут name
-            onChange={(e) => handleChange(e.target.value, 'city')} // Передаем имя поля
-            value={values.city} // Привязка значения из состояния
+            name='city'
+            onChange={(e) => handleChange(e.target.value, 'city')}
+            value={values.city}
           />
           <input
             className={styles.form_input}
             placeholder='Статус'
             type='text'
-            name='status' // Добавлен атрибут name
-            onChange={(e) => handleChange(e.target.value, 'status')} // Передаем имя поля
-            value={values.status} // Привязка значения из состояния
+            name='status'
+            onChange={(e) => handleChange(e.target.value, 'status')}
+            value={values.status}
           />
           <BlueBtn
             onClick={
-              isLogin ? () => login(values.email, values.password) : () => register(values.email, values.password, values.fio, values.city, values.status)
+              isLogin
+                ? () => login(values.email, values.password)
+                : () => register(values.email, values.password, values.fio, values.city, values.status, values.confirmPassword)
             }
             btn_placeholder={isLogin ? 'Войти' : 'Зарегистрироваться'}
           />
