@@ -7,18 +7,21 @@
       dockerfile: UnbeatableBookingSystem/aspnetcore.dockerfile
     ports:
       - "8080:80"
+      - "8081:443"
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__PostgresDb=Server=booking-postgres;Database=bookingSystem;User Id=postgres;Password=postgres;
     depends_on:
-        - "booking-postgres"
+      - "booking-postgres"
     networks:
       - aspnetcoreapp-network
-      
+
   booking-postgres:
     image: postgres:16
     restart: always
+    ports:
+      - "5434:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
