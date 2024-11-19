@@ -20,6 +20,15 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(AuthorizationConfiguration.ConfigureJwtBearerAuthorization);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactHttpOrigin",
+        policy => policy.WithOrigins("http://localhost:5175")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -30,6 +39,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<RevokedAccessTokenMiddleware>();
 
+app.UseCors("AllowReactHttpOrigin");
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseStaticFiles();
