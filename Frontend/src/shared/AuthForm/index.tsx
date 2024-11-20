@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import styles from './AuthForm.module.css'
 import BlueBtn from '../../shared/buttons/BlueBtn'
 import { Link } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
 import Store from '../../store/store.ts'
 import { observer } from 'mobx-react-lite'
+import { Context } from '../../index.tsx'
 
 const AuthForm = observer(({ isLogin }) => {
   const [showSecondForm, setShowSecondForm] = useState<boolean>(false)
-  const { register, login } = Store
+  const { store } = useContext(Context)
 
   const generateInputValues = () => ({
     email: '',
@@ -33,10 +34,15 @@ const AuthForm = observer(({ isLogin }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (isLogin) {
-      login(values.email, values.password)
+      store.login(values.email, values.password)
     } else {
-      register(values.email, values.password, values.fio, values.city, values.status)
+      store.register(values.email, values.password, values.fio, values.city, values.status)
     }
+  }
+
+  const handleLogout = (e) => {
+    e.preventDefault()
+    store.logout()
   }
 
   return (
@@ -59,7 +65,7 @@ const AuthForm = observer(({ isLogin }) => {
             className={styles.form_input}
             placeholder='E-mail'
             type='email'
-            name='email' // Добавлен атрибут name
+            name='email'
             onChange={(e) => handleChange(e.target.value, 'email')}
             value={values.email}
           />
@@ -76,8 +82,9 @@ const AuthForm = observer(({ isLogin }) => {
               className={styles.form_input}
               placeholder='Повторите пароль'
               type='password'
-              name='password'
-              onChange={(e) => handleChange(e.target.value, 'password')}
+              name='confirmPassword'
+              onChange={(e) => handleChange(e.target.value, 'confirmPassword')}
+              value={values.confirmPassword} // необходимо для контроля значения
             />
           )}
           {!isLogin && (
@@ -85,7 +92,12 @@ const AuthForm = observer(({ isLogin }) => {
               Уже есть аккаунт?
             </Link>
           )}
-          <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Далее'} type={isLogin ? 'submit' : 'button'} onClick={handleNext} />
+          {/* Кнопка "Далее" должна вызывать handleNext только для регистрации */}
+          <BlueBtn
+            btn_placeholder={isLogin ? 'Войти' : 'Далее'}
+            type={isLogin ? 'submit' : 'button'}
+            onClick={isLogin ? handleSubmit : handleNext} // изменено на правильную обработку
+          />
         </>
       ) : (
         <>

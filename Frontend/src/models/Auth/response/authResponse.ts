@@ -3,7 +3,7 @@ export interface AuthResponse {
   status: string
   message: string
   userId: string
-  accessToken: string
+  accessToken: any
 }
 
 export interface BaseStatusResponse {
