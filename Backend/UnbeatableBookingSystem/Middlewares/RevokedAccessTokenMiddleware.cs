@@ -18,7 +18,8 @@ public class RevokedAccessTokenMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        // TODO Временно отключено
+        /*var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var token = context.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
         if (!string.IsNullOrEmpty(token))
         {
@@ -35,7 +36,7 @@ public class RevokedAccessTokenMiddleware
                 await context.Response.WriteAsync("Access token has been revoked.");
                 return;
             }
-        }
+        }*/
 
         await _next(context);
     }
