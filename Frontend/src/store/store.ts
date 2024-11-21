@@ -13,8 +13,7 @@ interface IAuthState {
 
 export default class Store {
   AuthState: IAuthState = {
-    accessToken:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjcyZTFmYTM0LTg5ZDQtNGNhZi05ODBiLTcwMTMxNDc0YWY0YyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJqdGkiOiI3ZmJjMWU0OC0wYWI4LTRlNTctOTYzOS1lODZkYWZhM2M5Y2MiLCJleHAiOjE3MzIxMjM3MDksImlzcyI6IlVuYmVhdGFibGVCb29raW5nU2VydmVyIiwiYXVkIjoiVW5iZWF0YWJsZUJvb2tpbmdDbGllbnQifQ.K_x18UeFj85uh1slg6ngWedhVXrKbjI07rnNMvjfcdM',
+    accessToken: '',
     user: null,
     isAuth: false,
   }
@@ -53,6 +52,11 @@ export default class Store {
   }
 
   async login(email: string, password: string) {
+    if (this.AuthState.isAuth) {
+      console.log('Пользователь уже авторизован')
+      return
+    }
+
     try {
       const response = await AuthService.login({ email, password })
       runInAction(() => {
