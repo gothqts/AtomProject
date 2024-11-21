@@ -29,17 +29,19 @@ export default class Store {
     }
   }
 
+  updateAuthState(accessToken: string, userId: string) {
+    runInAction(() => {
+      this.AuthState.accessToken = accessToken
+      this.AuthState.user = { id: userId }
+      this.AuthState.isAuth = true
+    })
+  }
+
   async register(email, password, fio, city, status) {
     try {
       const response = await AuthService.register({ email, password, fio, status, city })
       console.log('Response data:', response.data)
-      runInAction(() => {
-        this.AuthState.accessToken = response.data.accessToken
-        this.AuthState.user = {
-          id: response.data.userId,
-        }
-        this.AuthState.isAuth = true
-      })
+      this.updateAuthState(response.data.accessToken, response.data.userId)
       console.log(response.data.message)
       console.log(this.AuthState)
     } catch (error) {
@@ -55,13 +57,7 @@ export default class Store {
     }
     try {
       const response = await AuthService.login({ email, password })
-      runInAction(() => {
-        this.AuthState.accessToken = response.data.accessToken
-        this.AuthState.user = {
-          id: response.data.userId,
-        }
-        this.AuthState.isAuth = true
-      })
+      this.updateAuthState(response.data.accessToken, response.data.userId)
       console.log(response.data.message)
       console.log(this.AuthState)
     } catch (err) {
