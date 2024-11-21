@@ -208,6 +208,21 @@ public class UserAuthController : Controller
             City = dto.City ?? "",
             AvatarImageFilepath = ""
         };
+        var foundUsers = await _userService.GetAsync(new DataQueryParams<User>
+        {
+            Expression = u => u.Email == user.Email
+        });
+        if (foundUsers.Length > 0)
+        {
+            return BadRequest(new RegisterResponse
+            {
+                Status = "Failed",
+                Message = "User with that email is already registered.",
+                UserId = null,
+                Completed = false,
+                AccessToken = string.Empty
+            });
+        }
         try
         {
             var registerInfo = await _authService.RegisterUserOrThrowAsync(user);
@@ -225,7 +240,7 @@ public class UserAuthController : Controller
         }
         catch (Exception e)
         {
-            return BadRequest(new RegisterResponse
+            return StatusCode(500, new RegisterResponse
             {
                 Status = "Failed",
                 Message = $"Registration failed. Info: {e.Message}",

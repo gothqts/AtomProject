@@ -56,15 +56,6 @@ public class AuthService : IAuthService
 
     public async Task<(User User, string RefreshToken, string AccessToken)> RegisterUserOrThrowAsync(User user)
     {
-        var foundUsers = await _userService.GetAsync(new DataQueryParams<User>
-        {
-            Expression = u => u.Email == user.Email || u.Phone == user.Phone
-        });
-        if (foundUsers.Length > 0)
-        {
-            throw new Exception("User with that email or phone is already registered.");
-        }
-
         var userRole = (await _roleService.GetAsync(new DataQueryParams<UserRole>
         {
             Expression = r => r.Id == user.RoleId
