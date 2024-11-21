@@ -3,7 +3,6 @@ import styles from './AuthForm.module.css'
 import BlueBtn from '../../shared/buttons/BlueBtn'
 import { Link } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
-import Store from '../../store/store.ts'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../../index.tsx'
 
@@ -38,11 +37,6 @@ const AuthForm = observer(({ isLogin }) => {
     } else {
       store.register(values.email, values.password, values.fio, values.city, values.status)
     }
-  }
-
-  const handleLogout = (e) => {
-    e.preventDefault()
-    store.logout()
   }
 
   return (
@@ -93,11 +87,7 @@ const AuthForm = observer(({ isLogin }) => {
             </Link>
           )}
           {/* Кнопка "Далее" должна вызывать handleNext только для регистрации */}
-          <BlueBtn
-            btn_placeholder={isLogin ? 'Войти' : 'Далее'}
-            type={isLogin ? 'submit' : 'button'}
-            onClick={isLogin ? handleSubmit : handleNext} // изменено на правильную обработку
-          />
+          <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Далее'} type={isLogin ? 'submit' : 'button'} onClick={isLogin ? handleSubmit : handleNext} />
         </>
       ) : (
         <>

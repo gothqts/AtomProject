@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx'
 import AuthService from '../services/Auth/AuthService.ts'
-import UserInfoService from '../services/UserInfo/UserInfoService.ts'
 import { IUser } from '../models/User/User.ts'
 import { runInAction } from 'mobx'
 import { http } from '../services/http'
@@ -22,7 +21,7 @@ export default class Store {
     makeAutoObservable(this)
   }
 
-  resetAuthState() {
+  resetAuthState = () => {
     this.AuthState = {
       accessToken: '',
       user: null,
@@ -33,7 +32,7 @@ export default class Store {
   async register(email, password, fio, city, status) {
     try {
       const response = await AuthService.register({ email, password, fio, status, city })
-      console.log(response)
+      console.log('Response data:', response.data)
       runInAction(() => {
         this.AuthState.accessToken = response.data.accessToken
         this.AuthState.user = {
@@ -41,13 +40,11 @@ export default class Store {
         }
         this.AuthState.isAuth = true
       })
+      console.log(response.data.message)
       console.log(this.AuthState)
     } catch (error) {
-      if (!error.response) {
-        console.error('Network error:', error)
-      } else {
-        console.error('Error response:', error.response)
-      }
+      console.log(error)
+      console.log(this.AuthState)
     }
   }
 
@@ -56,7 +53,6 @@ export default class Store {
       console.log('Пользователь уже авторизован')
       return
     }
-
     try {
       const response = await AuthService.login({ email, password })
       runInAction(() => {
@@ -75,7 +71,7 @@ export default class Store {
 
   async logout() {
     try {
-      const response = await AuthService.logout(this.AuthState.accessToken) // Используем токен из AuthState
+      const response = await AuthService.logout(this.AuthState.accessToken)
       this.resetAuthState()
       console.log(response.data.message)
       console.log(this.AuthState)

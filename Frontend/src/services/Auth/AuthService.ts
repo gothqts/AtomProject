@@ -2,11 +2,10 @@ import { AxiosResponse } from 'axios'
 import { http } from '../http'
 import { LoginRequest, RegisterRequestParams } from '../../models/Auth/request/authRequest.ts'
 import { AuthResponse, BaseStatusResponse } from '../../models/Auth/response/authResponse.ts'
-import Store from '../../store/store.ts'
 
 export default class AuthService {
   static async register(regParams: RegisterRequestParams): Promise<AxiosResponse<AuthResponse>> {
-    return http.post('/api/auth/register', regParams).then((response) => response.data.message)
+    return http.post('/api/auth/register', regParams)
   }
 
   static async login(loginParams: LoginRequest): Promise<AxiosResponse<AuthResponse>> {
