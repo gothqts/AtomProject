@@ -210,14 +210,14 @@ public class UserAuthController : Controller
         };
         var foundUsers = await _userService.GetAsync(new DataQueryParams<User>
         {
-            Expression = u => u.Email == user.Email || u.Phone == user.Phone
+            Expression = u => u.Email == user.Email
         });
         if (foundUsers.Length > 0)
         {
             return BadRequest(new RegisterResponse
             {
                 Status = "Failed",
-                Message = "User with that email or phone is already registered.",
+                Message = "User with that email is already registered.",
                 UserId = null,
                 Completed = false,
                 AccessToken = string.Empty
