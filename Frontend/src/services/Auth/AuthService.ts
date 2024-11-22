@@ -12,26 +12,11 @@ export default class AuthService {
     return http.post<AuthResponse>('/api/auth/login', loginParams)
   }
 
-  static async logout(token: string): Promise<AxiosResponse<BaseStatusResponse>> {
-    return http.post<BaseStatusResponse>(
-      '/api/auth/logout',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+  static async logout(): Promise<AxiosResponse<BaseStatusResponse>> {
+    return http.post<BaseStatusResponse>('/api/auth/logout')
   }
+
   static async refreshTokens(token: string): Promise<AxiosResponse<RefreshResponse>> {
-    return http.post<RefreshResponse>(
-      `/api/auth/refresh`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    return http.post<RefreshResponse>(`/api/auth/refresh`)
   }
 }

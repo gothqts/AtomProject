@@ -3,10 +3,8 @@ import AuthService from '../services/Auth/AuthService.ts'
 import { IUser } from '../models/User/User.ts'
 import { runInAction } from 'mobx'
 import RootStore from './rootStore.ts'
-import { Root } from 'react-dom/client'
 
 interface IAuthState {
-  accessToken: string
   user: IUser | null
   isAuth: boolean
 }
@@ -14,7 +12,6 @@ interface IAuthState {
 export default class AuthStore {
   rootStore: RootStore
   AuthState: IAuthState = {
-    accessToken: '',
     user: null,
     isAuth: false,
   }
@@ -26,17 +23,16 @@ export default class AuthStore {
 
   resetAuthState = () => {
     this.AuthState = {
-      accessToken: '',
       user: null,
       isAuth: false,
     }
   }
 
-  updateAuthState(accessToken: string, userId: string) {
+  updateAuthState(userId: string, accessToken: string) {
     runInAction(() => {
-      this.AuthState.accessToken = accessToken
       this.AuthState.user = { id: userId }
       this.AuthState.isAuth = true
+      localStorage.setItem('token', accessToken)
     })
   }
 
@@ -44,7 +40,7 @@ export default class AuthStore {
     try {
       const response = await AuthService.register({ email, password, fio, status, city })
       console.log('Response data:', response.data)
-      this.updateAuthState(response.data.accessToken, response.data.userId)
+      this.updateAuthState(response.data.userId, response.data.accessToken)
       console.log(response.data.message)
       console.log(this.AuthState)
     } catch (error) {
@@ -54,15 +50,16 @@ export default class AuthStore {
   }
 
   async login(email: string, password: string) {
-    if (this.AuthState.isAuth) {
+    if (localStorage.getItem('token')) {
       console.log('Пользователь уже авторизован')
       return
     }
     try {
       const response = await AuthService.login({ email, password })
-      this.updateAuthState(response.data.accessToken, response.data.userId)
+      localStorage.setItem('token', response.data.accessToken)
+      this.updateAuthState(response.data.userId, response.data.accessToken)
       console.log(response.data.message)
-      console.log(this.AuthState)
+      console.log(this.AuthState, localStorage.getItem('token'))
     } catch (err) {
       console.log(err)
     }
@@ -71,7 +68,8 @@ export default class AuthStore {
   async logout() {
     try {
       await this.RefreshTokens()
-      const response = await AuthService.logout(this.AuthState.accessToken)
+      const response = await AuthService.logout()
+      localStorage.removeItem('token')
       this.resetAuthState()
       console.log(response.data.message)
       console.log(this.AuthState)
@@ -82,8 +80,7 @@ export default class AuthStore {
 
   async RefreshTokens() {
     try {
-      const response = await AuthService.refreshTokens(this.AuthState.accessToken)
-      this.AuthState.accessToken = response.data.accessToken
+      const response = await AuthService.refreshTokens(localStorage.getItem('token'))
       console.log(response.data.accessToken)
       console.log(this.AuthState)
     } catch (err) {
