@@ -1,24 +1,14 @@
-import { createContext, StrictMode } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import Store from '../src/store/store.ts'
+import { RootStoreContext } from './stores/rootStoreContext.ts'
+import RootStore from './stores/rootStore.ts'
 
-interface State {
-  store: Store
-}
-const store = new Store()
-export const Context = createContext<State>({
-  store,
-})
 createRoot(document.getElementById('root')!).render(
-  <Context.Provider
-    value={{
-      store,
-    }}
-  >
+  <RootStoreContext.Provider value={new RootStore()}>
     <StrictMode>
       <App />
     </StrictMode>
-  </Context.Provider>
+  </RootStoreContext.Provider>
 )

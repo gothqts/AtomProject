@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { http } from '../http'
 import { LoginRequest, RegisterRequestParams } from '../../models/Auth/request/authRequest.ts'
-import { AuthResponse, BaseStatusResponse } from '../../models/Auth/response/authResponse.ts'
+import { AuthResponse, BaseStatusResponse, RefreshResponse } from '../../models/Auth/response/authResponse.ts'
 
 export default class AuthService {
   static async register(regParams: RegisterRequestParams): Promise<AxiosResponse<AuthResponse>> {
@@ -18,7 +18,18 @@ export default class AuthService {
       {},
       {
         headers: {
-          Authorization: `Bearer ${token}`, // Добавляем токен в заголовок
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+  }
+  static async refreshTokens(token: string): Promise<AxiosResponse<RefreshResponse>> {
+    return http.post<RefreshResponse>(
+      `/api/auth/refresh`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
       }
     )

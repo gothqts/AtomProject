@@ -2,7 +2,8 @@ import { makeAutoObservable } from 'mobx'
 import AuthService from '../services/Auth/AuthService.ts'
 import { IUser } from '../models/User/User.ts'
 import { runInAction } from 'mobx'
-import { http } from '../services/http'
+import RootStore from './rootStore.ts'
+import { Root } from 'react-dom/client'
 
 interface IAuthState {
   accessToken: string
@@ -10,15 +11,17 @@ interface IAuthState {
   isAuth: boolean
 }
 
-export default class Store {
+export default class AuthStore {
+  rootStore: RootStore
   AuthState: IAuthState = {
     accessToken: '',
     user: null,
     isAuth: false,
   }
 
-  constructor() {
-    makeAutoObservable(this)
+  constructor(rootStore: RootStore) {
+    makeAutoObservable(this, { rootStore: false })
+    this.rootStore = rootStore
   }
 
   resetAuthState = () => {
@@ -67,6 +70,7 @@ export default class Store {
 
   async logout() {
     try {
+      await this.RefreshTokens()
       const response = await AuthService.logout(this.AuthState.accessToken)
       this.resetAuthState()
       console.log(response.data.message)
@@ -78,8 +82,10 @@ export default class Store {
 
   async RefreshTokens() {
     try {
-      const response = await http.post(`/api/auth/refresh`)
+      const response = await AuthService.refreshTokens(this.AuthState.accessToken)
       this.AuthState.accessToken = response.data.accessToken
+      console.log(response.data.accessToken)
+      console.log(this.AuthState)
     } catch (err) {
       console.log(err)
     }

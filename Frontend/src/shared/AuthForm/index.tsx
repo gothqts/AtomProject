@@ -1,15 +1,14 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import styles from './AuthForm.module.css'
 import BlueBtn from '../../shared/buttons/BlueBtn'
 import { Link } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
 import { observer } from 'mobx-react-lite'
-import { Context } from '../../index.tsx'
+import { useStores } from '../../stores/rootStoreContext.ts'
 
 const AuthForm = observer(({ isLogin }) => {
   const [showSecondForm, setShowSecondForm] = useState<boolean>(false)
-  const { store } = useContext(Context)
-
+  const { authStore } = useStores()
   const generateInputValues = () => ({
     email: '',
     password: '',
@@ -33,9 +32,9 @@ const AuthForm = observer(({ isLogin }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (isLogin) {
-      store.login(values.email, values.password)
+      authStore.login(values.email, values.password)
     } else {
-      store.register(values.email, values.password, values.fio, values.city, values.status)
+      authStore.register(values.email, values.password, values.fio, values.city, values.status)
     }
   }
 
@@ -78,7 +77,7 @@ const AuthForm = observer(({ isLogin }) => {
               type='password'
               name='confirmPassword'
               onChange={(e) => handleChange(e.target.value, 'confirmPassword')}
-              value={values.confirmPassword} // необходимо для контроля значения
+              value={values.confirmPassword}
             />
           )}
           {!isLogin && (

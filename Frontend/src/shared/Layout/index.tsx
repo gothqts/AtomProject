@@ -2,12 +2,13 @@ import LogoIcon from '../../assets/images/Logo.svg?react'
 import { Link, Outlet } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
 import styles from './Layout.module.css'
-import { Suspense, useContext, useEffect } from 'react'
+import { Suspense } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Context } from '../../index.tsx'
+import { useStores } from '../../stores/rootStoreContext.ts'
 
 const Layout = observer(() => {
-  const { store } = useContext(Context)
+  const { authStore, userStore } = useStores()
+
   return (
     <div className={styles.container}>
       <div className={styles.navbar}>
@@ -30,12 +31,13 @@ const Layout = observer(() => {
         <Link className={styles.link_auth} to={urls.register}>
           Вход / Регистрация
         </Link>
-        <button type='submit' onClick={() => store.logout()}>
+        <button type='submit' onClick={() => authStore.logout()}>
           Выйти из аккаунта
         </button>
-        <button type='submit' onClick={() => store.RefreshTokens()}>
+        <button type='submit' onClick={() => authStore.RefreshTokens()}>
           Обновить токен
         </button>
+        <div>{userStore.user?.id}</div>
       </div>
       <div className={styles.page_content}>
         <Suspense fallback={<p>Loading...</p>}>
