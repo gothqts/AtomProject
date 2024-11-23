@@ -1,0 +1,33 @@
+.container {
+  height: 136px;
+  width: 253px;
+  box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.21);
+  background: #fff;
+  color: black;
+  position: absolute;
+  top: calc(100%);
+  right: 190px;
+  padding-top: 23px;
+  padding-bottom: 23px;
+  padding-left: 21px;
+  align-items: center;
+}
+.container button {
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 32px;
+}
+span {
+  margin-left: 18px;
+}
+
+button:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.profile_btn {
+}
+.logout_btn {
+  margin-top: 15px;
+}

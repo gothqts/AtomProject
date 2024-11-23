@@ -30,6 +30,19 @@ export default class AuthStore {
       isAuth: false,
     }
   }
+  refreshTokenInterval = null // Для хранения идентификатора интервала
+  startTokenRefreshInterval() {
+    this.refreshTokenInterval = setInterval(async () => {
+      await this.RefreshTokens()
+    }, 80000) // Обновление токена каждые 10 минут
+  }
+
+  stopTokenRefreshInterval() {
+    if (this.refreshTokenInterval) {
+      clearInterval(this.refreshTokenInterval)
+      this.refreshTokenInterval = null
+    }
+  }
   refactorFio(fio) {
     if (fio && fio.length > 0) {
       const refactoredFio = fio.split(' ')
@@ -51,6 +64,8 @@ export default class AuthStore {
       const response = await AuthService.register({ email, password, fio, status, city })
       console.log('Response data:', response.data)
       await this.updateAuthState(response.data.userId, response.data.accessToken)
+      await this.fetchUser()
+      this.startTokenRefreshInterval()
       console.log(response.data.message)
       console.log(this.AuthState)
     } catch (error) {
@@ -68,6 +83,7 @@ export default class AuthStore {
       const response = await AuthService.login({ email, password })
       await this.updateAuthState(response.data.userId, response.data.accessToken)
       await this.fetchUser()
+      this.startTokenRefreshInterval()
       console.log(response.data.message)
       console.log(this.AuthState, localStorage.getItem('token'))
     } catch (err) {
@@ -81,6 +97,7 @@ export default class AuthStore {
       const response = await AuthService.logout()
       localStorage.removeItem('token')
       this.resetAuthState()
+      this.stopTokenRefreshInterval()
       console.log(response.data.message)
       console.log(this.AuthState)
     } catch (err) {

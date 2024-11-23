@@ -2,13 +2,19 @@ import LogoIcon from '../../assets/images/Logo.svg?react'
 import { Link, Outlet } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
 import styles from './Layout.module.css'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStores } from '../../stores/rootStoreContext.ts'
+import DroppedMenu from './DroppedMenu/index.tsx'
 
 const Layout = observer(() => {
   const { authStore } = useStores()
   const name: string | null | undefined = authStore.AuthState.user?.fio
+  const [expanded, setExpanded] = useState<boolean>(false) // Состояние для управления DropDown меню
+
+  const handleNameClick = () => {
+    setExpanded((prev) => !prev)
+  }
   return (
     <div className={styles.container}>
       <div className={styles.navbar}>
@@ -32,15 +38,13 @@ const Layout = observer(() => {
             Вход / Регистрация
           </Link>
         ) : (
-          <div className={styles.user_name}>{name}</div>
+          <div>
+            <div className={styles.user_name} onClick={handleNameClick}>
+              {name}
+            </div>
+            {expanded && <DroppedMenu setExpanded={setExpanded} />}
+          </div>
         )}
-
-        <button type='submit' onClick={() => authStore.logout()}>
-          Выйти из аккаунта
-        </button>
-        <button type='submit' onClick={() => authStore.RefreshTokens()}>
-          Обновить токен
-        </button>
       </div>
       <div className={styles.page_content}>
         <Suspense fallback={<p>Loading...</p>}>
