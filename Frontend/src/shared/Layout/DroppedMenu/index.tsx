@@ -1,11 +1,10 @@
 import styles from './droppedMenu.module.css'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { urls } from '../../../navigate/app.urls.ts'
 import { useStores } from '../../../stores/rootStoreContext.ts'
 import { PropsWithChildren, useEffect, useRef, useCallback } from 'react'
 import LogoutImg from '../../../assets/images/logout-icon.svg?react'
 import ProfileImg from '../../../assets/images/user-icon.svg?react'
-import Profile from '../../../screens/Profile'
 
 const DroppedMenu: React.FC<
   PropsWithChildren<{
