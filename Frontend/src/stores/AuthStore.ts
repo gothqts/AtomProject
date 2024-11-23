@@ -1,8 +1,8 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import AuthService from '../services/Auth/AuthService.ts'
 import { IUser } from '../models/User/User.ts'
-import { runInAction } from 'mobx'
 import RootStore from './rootStore.ts'
+import UserInfoService from '../services/UserInfo/UserInfoService.ts'
 
 interface IAuthState {
   user: IUser | null
@@ -21,11 +21,21 @@ export default class AuthStore {
     this.rootStore = rootStore
   }
 
+  setUser(user: IUser) {
+    this.AuthState.user = user
+  }
   resetAuthState = () => {
     this.AuthState = {
       user: null,
       isAuth: false,
     }
+  }
+  refactorFio(fio) {
+    if (fio && fio.length > 0) {
+      const refactoredFio = fio.split(' ')
+      return refactoredFio.length >= 2 ? refactoredFio.slice(0, 2).join(' ') : fio
+    }
+    return fio
   }
 
   updateAuthState(userId: string, accessToken: string) {
@@ -40,7 +50,7 @@ export default class AuthStore {
     try {
       const response = await AuthService.register({ email, password, fio, status, city })
       console.log('Response data:', response.data)
-      this.updateAuthState(response.data.userId, response.data.accessToken)
+      await this.updateAuthState(response.data.userId, response.data.accessToken)
       console.log(response.data.message)
       console.log(this.AuthState)
     } catch (error) {
@@ -56,8 +66,8 @@ export default class AuthStore {
     }
     try {
       const response = await AuthService.login({ email, password })
-      localStorage.setItem('token', response.data.accessToken)
-      this.updateAuthState(response.data.userId, response.data.accessToken)
+      await this.updateAuthState(response.data.userId, response.data.accessToken)
+      await this.fetchUser()
       console.log(response.data.message)
       console.log(this.AuthState, localStorage.getItem('token'))
     } catch (err) {
@@ -83,6 +93,22 @@ export default class AuthStore {
       const response = await AuthService.refreshTokens(localStorage.getItem('token'))
       console.log(response.data.accessToken)
       console.log(this.AuthState)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async fetchUser() {
+    try {
+      const response = await UserInfoService.getUser()
+      console.log('User data:', response.data)
+      runInAction(() => {
+        this.AuthState.user = {
+          ...response.data,
+          fio: this.refactorFio(response.data.fio),
+        }
+      })
+      console.log(this.AuthState.user)
     } catch (err) {
       console.log(err)
     }

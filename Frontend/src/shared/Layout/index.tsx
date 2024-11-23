@@ -7,8 +7,8 @@ import { observer } from 'mobx-react-lite'
 import { useStores } from '../../stores/rootStoreContext.ts'
 
 const Layout = observer(() => {
-  const { authStore, userStore } = useStores()
-
+  const { authStore } = useStores()
+  const name: string | null | undefined = authStore.AuthState.user?.fio
   return (
     <div className={styles.container}>
       <div className={styles.navbar}>
@@ -27,17 +27,20 @@ const Layout = observer(() => {
             Отзывы
           </Link>
         </li>
+        {!localStorage.getItem('token') ? (
+          <Link className={styles.link_auth} to={urls.register}>
+            Вход / Регистрация
+          </Link>
+        ) : (
+          <div className={styles.user_name}>{name}</div>
+        )}
 
-        <Link className={styles.link_auth} to={urls.register}>
-          Вход / Регистрация
-        </Link>
         <button type='submit' onClick={() => authStore.logout()}>
           Выйти из аккаунта
         </button>
         <button type='submit' onClick={() => authStore.RefreshTokens()}>
           Обновить токен
         </button>
-        <div>{userStore.user?.id}</div>
       </div>
       <div className={styles.page_content}>
         <Suspense fallback={<p>Loading...</p>}>

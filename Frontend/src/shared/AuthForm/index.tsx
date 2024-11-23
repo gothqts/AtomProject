@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import styles from './AuthForm.module.css'
 import BlueBtn from '../../shared/buttons/BlueBtn'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
 import { observer } from 'mobx-react-lite'
 import { useStores } from '../../stores/rootStoreContext.ts'
+import { Form } from 'react-router-dom'
 
 const AuthForm = observer(({ isLogin }) => {
   const [showSecondForm, setShowSecondForm] = useState<boolean>(false)
-  const { authStore } = useStores()
+  const { authStore, userStore } = useStores()
+  const navigate = useNavigate()
   const generateInputValues = () => ({
     email: '',
     password: '',
@@ -31,15 +33,18 @@ const AuthForm = observer(({ isLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
     if (isLogin) {
       authStore.login(values.email, values.password)
+      navigate(urls.events)
     } else {
       authStore.register(values.email, values.password, values.fio, values.city, values.status)
+      navigate(urls.events)
     }
   }
 
   return (
-    <form className={styles.register_form} onSubmit={handleSubmit}>
+    <Form className={styles.register_form} onSubmit={handleSubmit} action={urls.events}>
       <div className={styles.form_title}>{isLogin ? 'Вход' : 'Регистрация'}</div>
 
       {!showSecondForm ? (
@@ -109,7 +114,7 @@ const AuthForm = observer(({ isLogin }) => {
           <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Зарегистрироваться'} type='submit' />
         </>
       )}
-    </form>
+    </Form>
   )
 })
 
