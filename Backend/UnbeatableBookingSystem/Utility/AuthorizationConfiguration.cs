@@ -19,7 +19,7 @@ public static class AuthorizationConfiguration
             ValidateLifetime = true,
             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.FromMinutes(1)
+            ClockSkew = TimeSpan.FromMinutes(5)
         };
         options.MapInboundClaims = false;
     }

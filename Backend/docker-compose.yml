@@ -19,6 +19,8 @@
   booking-postgres:
     image: postgres:16
     restart: always
+    ports:
+      - "5434:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
