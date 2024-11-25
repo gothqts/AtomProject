@@ -3,10 +3,14 @@ import AuthService from '../services/Auth/AuthService.ts'
 import { IUser } from '../models/User/User.ts'
 import RootStore from './rootStore.ts'
 import UserInfoService from '../services/UserInfo/UserInfoService.ts'
+import axios from 'axios'
+import { AuthResponse } from '../models/Auth/response/authResponse.ts'
+import config from '../config.ts'
 
 interface IAuthState {
   user: IUser | null
   isAuth: boolean
+  isLoading: boolean
 }
 
 export default class AuthStore {
@@ -14,6 +18,7 @@ export default class AuthStore {
   AuthState: IAuthState = {
     user: null,
     isAuth: false,
+    isLoading: false,
   }
 
   constructor(rootStore: RootStore) {
@@ -21,20 +26,22 @@ export default class AuthStore {
     this.rootStore = rootStore
   }
 
-  setUser(user: IUser) {
-    this.AuthState.user = user
+  setLoading(bool: boolean) {
+    this.AuthState.isLoading = bool
   }
+
   resetAuthState = () => {
     this.AuthState = {
       user: null,
       isAuth: false,
+      isLoading: false,
     }
   }
   refreshTokenInterval = null // Для хранения идентификатора интервала
   startTokenRefreshInterval() {
     this.refreshTokenInterval = setInterval(async () => {
       await this.RefreshTokens()
-    }, 80000) // Обновление токена каждые 10 минут
+    }, 10000) // Обновление токена каждые 8 минут
   }
 
   stopTokenRefreshInterval() {
@@ -43,6 +50,7 @@ export default class AuthStore {
       this.refreshTokenInterval = null
     }
   }
+
   refactorFio(fio) {
     if (fio && fio.length > 0) {
       const refactoredFio = fio.split(' ')
@@ -107,7 +115,7 @@ export default class AuthStore {
 
   async RefreshTokens() {
     try {
-      const response = await AuthService.refreshTokens(localStorage.getItem('token'))
+      const response = await AuthService.refreshTokens()
       console.log(response.data.accessToken)
       console.log(this.AuthState)
     } catch (err) {
@@ -128,6 +136,21 @@ export default class AuthStore {
       console.log(this.AuthState.user)
     } catch (err) {
       console.log(err)
+    }
+  }
+
+  async checkAuth() {
+    this.setLoading(true)
+    try {
+      const response = await AuthService.refreshTokens()
+      console.log(response)
+      localStorage.setItem('token', response.data.accessToken)
+      this.fetchUser()
+      this.AuthState.isAuth = true
+    } catch (e) {
+      console.log(e.response?.data?.message)
+    } finally {
+      this.setLoading(false)
     }
   }
 }
