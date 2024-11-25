@@ -5,5 +5,6 @@ export const urls = {
   reviews: '/reviews',
   login: '/login',
   register: '/registration',
-  profile: '/profile:id',
+  profile: '/profile/:id',
+  event: '/event/:id',
 }

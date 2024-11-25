@@ -6,7 +6,7 @@ const Profile = () => {
   const { user } = userStore
   return (
     <div>
-      <div>{user.fio}</div>
+      <div>OLOL</div>
     </div>
   )
 }

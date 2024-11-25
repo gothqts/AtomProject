@@ -1,5 +1,11 @@
+import SearchBar from '../../shared/searchBar'
+
 const Events = () => {
-  return <div></div>
+  return (
+    <div>
+      <SearchBar />
+    </div>
+  )
 }
 
 export default Events
