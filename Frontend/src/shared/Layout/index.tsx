@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
 import styles from './Layout.module.css'
@@ -9,7 +9,7 @@ import DroppedMenu from './DroppedMenu/index.tsx'
 
 const Layout = observer(() => {
   const { authStore } = useStores()
-  const avatar: string = authStore.AuthState.user?.avatarImage
+  const avatar = authStore.AuthState.user?.avatarImage
   const name = authStore.AuthState.user?.fio
   const [expanded, setExpanded] = useState<boolean>(false) // Состояние для управления DropDown меню
 
@@ -36,7 +36,7 @@ const Layout = observer(() => {
           </Link>
         </ul>
 
-        {!localStorage.getItem('token') ? (
+        {authStore.AuthState.isAuth === false ? (
           <Link className={styles.link_auth} to={urls.register}>
             Вход / Регистрация
           </Link>

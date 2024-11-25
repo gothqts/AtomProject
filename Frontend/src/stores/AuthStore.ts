@@ -147,6 +147,7 @@ export default class AuthStore {
       localStorage.setItem('token', response.data.accessToken)
       this.fetchUser()
       this.AuthState.isAuth = true
+      console.log(this.AuthState.isAuth)
     } catch (e) {
       console.log(e.response?.data?.message)
     } finally {
