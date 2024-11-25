@@ -73,7 +73,6 @@ public class UserAuthController : Controller
     /// Обновление access и refresh токенов пользователя
     /// </summary>
     [HttpPost("refresh")]
-    [Authorize]
     [ProducesResponseType(typeof(RefreshResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Refresh()
