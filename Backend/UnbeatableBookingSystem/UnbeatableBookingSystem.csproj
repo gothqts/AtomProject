@@ -27,14 +27,21 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\Events\Responses\" />
-      <Folder Include="wwwroot\" />
+      <Folder Include="Controllers\Common\Requests\" />
+      <Folder Include="Controllers\EventForm\Responses\" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="russian-cities.json" />
+      <AdditionalFiles Include="russian-cities.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
     </ItemGroup>
 
 </Project>

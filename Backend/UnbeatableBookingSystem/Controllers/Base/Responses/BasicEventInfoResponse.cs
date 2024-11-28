@@ -4,6 +4,8 @@ public class BasicEventInfoResponse
 {
     public required Guid Id { get; set; }
     
+    public required bool IsPublic { get; set; }
+    
     public required string Title { get; set; }
     
     public required string BannerImage { get; set; }
@@ -18,5 +20,5 @@ public class BasicEventInfoResponse
     
     public string? Address { get; set; }
     
-    public required bool IsSignupOpen { get; set; }
+    public required bool IsSignupOpened { get; set; }
 }
