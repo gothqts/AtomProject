@@ -1,4 +1,5 @@
-﻿using Booking.Application.Services;
+﻿using System.Linq.Expressions;
+using Booking.Application.Services;
 using Booking.Application.Services.AuthService;
 using Booking.Application.Utility;
 using Booking.Core;
@@ -188,10 +189,16 @@ public class UserAuthController : Controller
                 Message = "User is already authenticated."
             });
         }
-        
+
+        var users = await _userService.GetAsync(new DataQueryParams<User>());
+        Expression<Func<UserRole, bool>> roleExp = r => r.IsAdmin == false && r.CanEditOthersEvents == false;
+        if (users.Length == 0)
+        {
+            roleExp = r => r.IsAdmin == true;
+        }
         var role = await _roleService.GetAsync(new DataQueryParams<UserRole>
         {
-            Expression = r => r.Title == "User"
+            Expression = roleExp
         });
         
         var user = new User
