@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Booking.Core.Interfaces;
 
 namespace Booking.Core.Entities;
 

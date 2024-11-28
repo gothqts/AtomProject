@@ -1,24 +1,27 @@
 ﻿using Booking.Core.Entities;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
+using UnbeatableBookingSystem.Controllers.Events.Responses;
 using UnbeatableBookingSystem.Controllers.UserActions.Responses;
 
 namespace UnbeatableBookingSystem.Utility;
 
 public static class DtoConverter
 {
-    public static BasicEventInfoResponse ConvertEventToBasicInfo(UserEvent userEvent)
+    public static BasicEventInfoResponse ConvertEventToBasicInfo(UserEvent userEvent, string imagesRelativePath, 
+        string defaultImageFilename, HttpRequest request)
     {
         return new BasicEventInfoResponse
         {
             Id = userEvent.Id,
             Title = userEvent.Title,
-            BannerImage = userEvent.BannerImageFilepath,
+            BannerImage = GetEventImageUrl(userEvent, imagesRelativePath, defaultImageFilename, request),
             DateStart = userEvent.DateStart,
             DateEnd = userEvent.DateEnd,
             IsOnline = userEvent.IsOnline,
             City = userEvent.City,
             Address = userEvent.Address,
-            IsSignupOpen = userEvent.IsSignupOpened
+            IsSignupOpened = userEvent.IsSignupOpened,
+            IsPublic = userEvent.IsPublic
         };
     }
 
@@ -32,6 +35,17 @@ public static class DtoConverter
         return $"{request.Scheme}://{request.Host}/{relativeUrl}";
     }
 
+    public static string GetEventImageUrl(UserEvent userEvent, string imagesRelativePath, string defaultImageFilename, 
+        HttpRequest request)
+    {
+        var avatarPath = string.IsNullOrWhiteSpace(userEvent.BannerImageFilepath)
+            ? Path.Combine(imagesRelativePath, defaultImageFilename)
+            : userEvent.BannerImageFilepath;
+        var splitted = avatarPath.Split(Path.DirectorySeparatorChar);
+        var relativeUrl = string.Join('/', splitted);
+        return $"{request.Scheme}://{request.Host}/{relativeUrl}";
+    }
+    
     public static ContactsResponse OrganizerContactsToResponse(OrganizerContacts contacts)
     {
         return new ContactsResponse
@@ -39,7 +53,8 @@ public static class DtoConverter
             Email = contacts.Email,
             Fio = contacts.Fio,
             Phone = contacts.Phone,
-            Telegram = contacts.Telegram
+            Telegram = contacts.Telegram,
+            Id = contacts.Id
         };
     }
 
@@ -66,6 +81,36 @@ public static class DtoConverter
             MaxSymbols = field.MaxSymbols,
             MinValue = field.MinValue,
             MaxValue = field.MaxValue
+        };
+    }
+
+    public static EventResponse CreateEventResponse(UserEvent userEvent, EventSignupWindow[] windows,
+        EventSignupForm form, FormDynamicField[] fields, OrganizerContacts[] contacts, 
+        string imagesRelativePath, string defaultImageFilename, HttpRequest request)
+    {
+        return new EventResponse
+        {
+            Id = userEvent.Id,
+            CreationDate = userEvent.CreationDate,
+            IsPublic = userEvent.IsPublic,
+            Title = userEvent.Title,
+            BannerImage = GetEventImageUrl(userEvent, imagesRelativePath, defaultImageFilename, request),
+            IsOnline = userEvent.IsOnline,
+            IsSignupOpened = userEvent.IsSignupOpened,
+            City = userEvent.City,
+            Address = userEvent.Address,
+            DateStart = userEvent.DateStart,
+            DateEnd = userEvent.DateEnd,
+            Description = userEvent.Description,
+            SignupWindows = windows.Select(SignupWindowToResponse).ToArray(),
+            SignupForm = new EventFormResponse
+            {
+                IsFioRequired = form.IsFioRequired,
+                IsPhoneRequired = form.IsPhoneRequired,
+                IsEmailRequired = form.IsEmailRequired,
+                DynamicFields = fields.Select(DynamicFieldToResponse).ToArray()
+            },
+            Contacts = contacts.Select(OrganizerContactsToResponse).ToArray()
         };
     }
 }

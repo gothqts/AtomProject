@@ -3,7 +3,6 @@ using Booking.Application.Services;
 using Booking.Core;
 using Booking.Core.DataQuery;
 using Booking.Core.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.UserActions.Requests;
@@ -21,10 +20,12 @@ public class UserActionsController : Controller
     private readonly BaseService<EventSignupForm> _eventFormService;
     private readonly BaseService<FormDynamicField> _formDynamicFieldsService;
     private readonly EventSignupService _eventSignupService;
+    private readonly EventBannerImageService _eventImageService;
 
     public UserActionsController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
         BaseService<OrganizerContacts> contactsService, BaseService<EventSignupForm> eventFormService,
-        BaseService<FormDynamicField> formDynamicFieldsService, EventSignupService eventSignupService)
+        BaseService<FormDynamicField> formDynamicFieldsService, EventSignupService eventSignupService,
+        EventBannerImageService eventImageService)
     {
         _eventService = eventService;
         _eventSignupWindowService = eventSignupWindowService;
@@ -32,6 +33,7 @@ public class UserActionsController : Controller
         _eventFormService = eventFormService;
         _formDynamicFieldsService = formDynamicFieldsService;
         _eventSignupService = eventSignupService;
+        _eventImageService = eventImageService;
     }
     
     [HttpGet("upcoming/{count:int}")]
@@ -57,7 +59,9 @@ public class UserActionsController : Controller
         });
         var res = new UpcomingEventsResponse
         {
-            Events = events.Select(DtoConverter.ConvertEventToBasicInfo).ToArray()
+            Events = events.Select(e => DtoConverter.ConvertEventToBasicInfo(e, 
+                    _eventImageService.EventImagesRelativePath, _eventImageService.DefaultEventImageFilename, Request))
+                .ToArray()
         };
         return Ok(res);
     }
@@ -133,7 +137,9 @@ public class UserActionsController : Controller
         }
         var res = new UpcomingEventsResponse
         {
-            Events = events.Select(DtoConverter.ConvertEventToBasicInfo).ToArray()
+            Events = events.Select(e => DtoConverter.ConvertEventToBasicInfo(e, 
+                    _eventImageService.EventImagesRelativePath, _eventImageService.DefaultEventImageFilename, Request))
+                .ToArray()
         };
         return Ok(res);
     }

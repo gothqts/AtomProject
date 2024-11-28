@@ -1,5 +1,6 @@
 ﻿using Booking.Application.Services;
 using Booking.Application.Services.AuthService;
+using Booking.Application.Services.Cities;
 using Booking.Core.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -22,9 +23,12 @@ public static class ApplicationStartup
         services.TryAddScoped<BaseService<User>>();
         services.TryAddScoped<BaseService<UserEvent>>();
         services.TryAddScoped<BaseService<UserRole>>();
-        services.TryAddScoped<UserInfoService>();
         
+        services.TryAddScoped<UserInfoService>();
+        services.TryAddScoped<EventBannerImageService>();
         services.TryAddScoped<EventSignupService>();
+        
+        services.TryAddSingleton<ICitiesService, CitiesJsonService>();
         return services;
     }
 }

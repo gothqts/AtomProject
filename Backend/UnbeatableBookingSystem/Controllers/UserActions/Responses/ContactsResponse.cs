@@ -2,6 +2,8 @@
 
 public class ContactsResponse
 {
+    public required Guid Id { get; set; }
+    
     public required string Email { get; set; }
     
     public string Fio { get; set; } = null!;

@@ -10,9 +10,9 @@ public class FormFieldResponse
     
     public string? Type { get; set; }
     
-    public int MaxSymbols { get; set; } = -1;
+    public int? MaxSymbols { get; set; }
     
-    public string MinValue { get; set; } = null!;
+    public string? MinValue { get; set; }
     
-    public string MaxValue { get; set; } = null!;
+    public string? MaxValue { get; set; }
 }
