@@ -1,6 +1,6 @@
-﻿namespace UnbeatableBookingSystem.Controllers.Events.Requests;
+﻿namespace UnbeatableBookingSystem.Controllers.EventSignupWindows.Requests;
 
-public class AddSignupWindowRequest
+public class CreateSignupWindowRequest
 {
     public required string Title { get; set; }
     

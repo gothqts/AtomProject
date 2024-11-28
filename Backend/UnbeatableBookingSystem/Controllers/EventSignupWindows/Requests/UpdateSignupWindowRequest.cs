@@ -1,4 +1,4 @@
-﻿namespace UnbeatableBookingSystem.Controllers.Events.Requests;
+﻿namespace UnbeatableBookingSystem.Controllers.EventSignupWindows.Requests;
 
 public class UpdateSignupWindowRequest
 {
