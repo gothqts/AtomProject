@@ -1,45 +1,69 @@
 .container {
-    height: 100vh;
-    width: 100%;
+  height: 100vh;
+  width: 100%;
 }
 
 .navbar {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    position: fixed;
-    height: 120px;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: white;
-    z-index: 3;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  height: 120px;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 3;
 }
 
 .link_list {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    gap: 90px
-
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 90px;
 }
 
 .link {
-    font-size: 34px;
-    font-weight: 600;
-    word-wrap: break-word;
-    text-decoration: none;
-    color: inherit;
+  font-size: 34px;
+  font-weight: 600;
+  word-wrap: break-word;
+  text-decoration: none;
+  color: inherit;
 }
 
 .link_auth {
-    font-size: 34px;
-    font-weight: 600;
-    text-decoration: none;
-    word-wrap: break-word;
-    color: #33adff;
+  font-size: 34px;
+  font-weight: 600;
+  text-decoration: none;
+  word-wrap: break-word;
+  color: #33adff;
+}
+.user_name {
+  font-weight: 600;
+  font-size: 34px;
+  color: #33adff;
 }
 
 .page_content {
+}
+.avatar_circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%; /* Скругление */
+  overflow: hidden;
+  margin-right: 25px; /* Отступ между аватаром и именем */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+}
 
+.avatar_image {
+  width: 100%;
+  height: 100%;
+}
+
+.user_info {
+  display: flex;
+  align-items: center;
 }

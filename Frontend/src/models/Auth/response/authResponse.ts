@@ -11,3 +11,6 @@ export interface BaseStatusResponse {
   status: string
   message: string
 }
+export interface RefreshResponse {
+  accessToken: string
+}

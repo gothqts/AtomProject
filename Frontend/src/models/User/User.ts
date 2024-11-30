@@ -1,11 +1,11 @@
 export interface IUser {
-  id?: string
-  phone?: string
-  email?: string
-  fio?: string
-  roleTitle?: string
-  description?: string
-  status?: string
-  avatarImage?: string
-  createdEvents?: [{}]
+  id: string | null
+  phone: string | null
+  email: string | null
+  fio: string | null
+  roleTitle: string | null
+  description: string | null
+  status: string | null
+  avatarImage: string | null
+  createdEvents: [{}] | null
 }

@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import styles from './AuthForm.module.css'
 import BlueBtn from '../../shared/buttons/BlueBtn'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
-import Store from '../../store/store.ts'
 import { observer } from 'mobx-react-lite'
+import { useStores } from '../../stores/rootStoreContext.ts'
+import { Form } from 'react-router-dom'
 
 const AuthForm = observer(({ isLogin }) => {
   const [showSecondForm, setShowSecondForm] = useState<boolean>(false)
-  const { register, login } = Store
-
+  const { authStore, userStore } = useStores()
+  const navigate = useNavigate()
   const generateInputValues = () => ({
     email: '',
     password: '',
@@ -32,15 +33,18 @@ const AuthForm = observer(({ isLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
     if (isLogin) {
-      login(values.email, values.password)
+      authStore.login(values.email, values.password)
+      navigate(urls.events)
     } else {
-      register(values.email, values.password, values.fio, values.city, values.status)
+      authStore.register(values.email, values.password, values.fio, values.city, values.status)
+      navigate(urls.events)
     }
   }
 
   return (
-    <form className={styles.register_form} onSubmit={handleSubmit}>
+    <Form className={styles.register_form} onSubmit={handleSubmit} action={urls.events}>
       <div className={styles.form_title}>{isLogin ? 'Вход' : 'Регистрация'}</div>
 
       {!showSecondForm ? (
@@ -59,7 +63,7 @@ const AuthForm = observer(({ isLogin }) => {
             className={styles.form_input}
             placeholder='E-mail'
             type='email'
-            name='email' // Добавлен атрибут name
+            name='email'
             onChange={(e) => handleChange(e.target.value, 'email')}
             value={values.email}
           />
@@ -76,8 +80,9 @@ const AuthForm = observer(({ isLogin }) => {
               className={styles.form_input}
               placeholder='Повторите пароль'
               type='password'
-              name='password'
-              onChange={(e) => handleChange(e.target.value, 'password')}
+              name='confirmPassword'
+              onChange={(e) => handleChange(e.target.value, 'confirmPassword')}
+              value={values.confirmPassword}
             />
           )}
           {!isLogin && (
@@ -85,7 +90,8 @@ const AuthForm = observer(({ isLogin }) => {
               Уже есть аккаунт?
             </Link>
           )}
-          <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Далее'} type={isLogin ? 'submit' : 'button'} onClick={handleNext} />
+          {/* Кнопка "Далее" должна вызывать handleNext только для регистрации */}
+          <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Далее'} type={isLogin ? 'submit' : 'button'} onClick={isLogin ? handleSubmit : handleNext} />
         </>
       ) : (
         <>
@@ -108,7 +114,7 @@ const AuthForm = observer(({ isLogin }) => {
           <BlueBtn btn_placeholder={isLogin ? 'Войти' : 'Зарегистрироваться'} type='submit' />
         </>
       )}
-    </form>
+    </Form>
   )
 })
 
