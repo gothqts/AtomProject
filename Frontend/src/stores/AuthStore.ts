@@ -6,6 +6,7 @@ import UserInfoService from '../services/UserInfo/UserInfoService.ts'
 import axios from 'axios'
 import { AuthResponse } from '../models/Auth/response/authResponse.ts'
 import config from '../config.ts'
+import { http } from '../services/http'
 
 interface IAuthState {
   user: IUser | null
@@ -38,11 +39,11 @@ export default class AuthStore {
     }
   }
   refreshTokenInterval = null // Для хранения идентификатора интервала
-  startTokenRefreshInterval() {
-    this.refreshTokenInterval = setInterval(async () => {
-      await this.RefreshTokens()
-    }, 10000) // Обновление токена каждые 8 минут
-  }
+  // startTokenRefreshInterval() {
+  //   this.refreshTokenInterval = setInterval(async () => {
+  //     await this.RefreshTokens()
+  //   }, 10000) // Обновление токена каждые 8 минут
+  // }
 
   stopTokenRefreshInterval() {
     if (this.refreshTokenInterval) {
@@ -70,15 +71,14 @@ export default class AuthStore {
   async register(email, password, fio, city, status) {
     try {
       const response = await AuthService.register({ email, password, fio, status, city })
-      console.log('Response data:', response.data)
       await this.updateAuthState(response.data.userId, response.data.accessToken)
       await this.fetchUser()
-      this.startTokenRefreshInterval()
+      // this.startTokenRefreshInterval()
       console.log(response.data.message)
       console.log(this.AuthState)
     } catch (error) {
       console.log(error)
-      console.log(this.AuthState)
+      this.resetAuthState()
     }
   }
 
@@ -91,7 +91,7 @@ export default class AuthStore {
       const response = await AuthService.login({ email, password })
       await this.updateAuthState(response.data.userId, response.data.accessToken)
       await this.fetchUser()
-      this.startTokenRefreshInterval()
+      // this.startTokenRefreshInterval()
       console.log(response.data.message)
       console.log(this.AuthState, localStorage.getItem('token'))
     } catch (err) {
@@ -101,7 +101,7 @@ export default class AuthStore {
 
   async logout() {
     try {
-      await this.RefreshTokens()
+      // await AuthService.refreshTokens()
       const response = await AuthService.logout()
       localStorage.removeItem('token')
       this.resetAuthState()
@@ -113,15 +113,15 @@ export default class AuthStore {
     }
   }
 
-  async RefreshTokens() {
-    try {
-      const response = await AuthService.refreshTokens()
-      console.log(response.data.accessToken)
-      console.log(this.AuthState)
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  // async RefreshTokens() {
+  //   try {
+  //     const response = await AuthService.refreshTokens()
+  //     console.log(response.data.accessToken)
+  //     console.log(this.AuthState)
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
   async fetchUser() {
     try {
@@ -142,10 +142,10 @@ export default class AuthStore {
   async checkAuth() {
     this.setLoading(true)
     try {
-      const response = await AuthService.refreshTokens()
+      const response = await http.post('http://localhost:8080/api/auth/refresh', { withCredentials: true })
       console.log(response)
       localStorage.setItem('token', response.data.accessToken)
-      this.fetchUser()
+      await this.fetchUser()
       this.AuthState.isAuth = true
       console.log(this.AuthState.isAuth)
     } catch (e) {
