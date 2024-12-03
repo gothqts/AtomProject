@@ -1,9 +1,14 @@
-const EventDetails = () => {
+import { useParams } from 'react-router-dom'
+
+const EventDetail = () => {
+  const { eventId } = useParams()
+
   return (
     <div>
-      <img src='Frontend/src/assets/images/Event.svg' />
+      <h1>Детали мероприятия {eventId}</h1>
+      <p>Здесь будет информация о мероприятии.</p>
     </div>
   )
 }
 
-export default EventDetails
+export default EventDetail

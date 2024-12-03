@@ -1,6 +1,7 @@
 import { urls } from './app.urls.ts'
 import { lazy } from 'react'
 import { IRoute } from './navigation.types.ts'
+import EventDetails from '../screens/EventDetails'
 
 const Register = lazy(() => import('../screens/Register'))
 const Login = lazy(() => import('../screens/Login'))
@@ -41,7 +42,7 @@ const appRoutes: IRoute[] = [
   },
   {
     path: urls.event,
-    element: <Event />,
+    element: <EventDetails />,
   },
 ]
 export default appRoutes

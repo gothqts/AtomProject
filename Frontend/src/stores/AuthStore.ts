@@ -38,19 +38,19 @@ export default class AuthStore {
       isLoading: false,
     }
   }
-  refreshTokenInterval = null // Для хранения идентификатора интервала
+  // refreshTokenInterval = null // Для хранения идентификатора интервала
   // startTokenRefreshInterval() {
   //   this.refreshTokenInterval = setInterval(async () => {
   //     await this.RefreshTokens()
   //   }, 10000) // Обновление токена каждые 8 минут
   // }
 
-  stopTokenRefreshInterval() {
-    if (this.refreshTokenInterval) {
-      clearInterval(this.refreshTokenInterval)
-      this.refreshTokenInterval = null
-    }
-  }
+  // stopTokenRefreshInterval() {
+  //   if (this.refreshTokenInterval) {
+  //     clearInterval(this.refreshTokenInterval)
+  //     this.refreshTokenInterval = null
+  //   }
+  // }
 
   refactorFio(fio) {
     if (fio && fio.length > 0) {
@@ -105,7 +105,7 @@ export default class AuthStore {
       const response = await AuthService.logout()
       localStorage.removeItem('token')
       this.resetAuthState()
-      this.stopTokenRefreshInterval()
+      // this.stopTokenRefreshInterval()
       console.log(response.data.message)
       console.log(this.AuthState)
     } catch (err) {

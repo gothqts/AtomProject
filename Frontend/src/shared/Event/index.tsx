@@ -1,20 +1,18 @@
 import styles from './Event.module.css'
 import Event_Detailed_Arrow from '../../assets/images/Event_Detailed_Arrow.svg?react'
 import { Link } from 'react-router-dom'
+import { urls } from '../../navigate/app.urls.ts'
 
-const Event = () => {
+const Event = ({ id, name, date, description }) => {
   return (
     <div className={styles.container}>
       <div className={styles.image}></div>
 
       <div className={styles.container_info}>
-        <div className={styles.title}>Мероприятие 1</div>
-
-        <div className={styles.date}>22 августа 18:00</div>
-
-        <div className={styles.description}>Краткое описание...</div>
-
-        <Link className={styles.detailed}>
+        <div className={styles.title}>{name}</div>
+        <div className={styles.date}>{date}</div>
+        <div className={styles.description}>{description}</div>
+        <Link to={urls.event.replace(':id', id)} className={styles.detailed}>
           Подробнее
           <Event_Detailed_Arrow />
         </Link>
