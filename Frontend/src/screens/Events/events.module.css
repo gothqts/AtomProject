@@ -1,0 +1,12 @@
+.container {
+  margin-top: 200px;
+  display: flex;
+  flex-direction: column;
+  padding-left: 120px;
+}
+.events_list {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: row;
+  gap: 60px;
+}

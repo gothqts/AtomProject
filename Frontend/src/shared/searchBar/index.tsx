@@ -4,7 +4,7 @@ const SearchBar = () => {
   return (
     <div className={styles.container}>
       <div>
-        <input placeholder='Поиск' />
+        <input className={styles.search_input} placeholder='Поиск' />
         <Loupe />
       </div>
       <select name='city'>

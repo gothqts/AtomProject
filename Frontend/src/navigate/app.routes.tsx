@@ -39,5 +39,9 @@ const appRoutes: IRoute[] = [
     path: urls.profile,
     element: <Profile />,
   },
+  {
+    path: urls.event,
+    element: <Event />,
+  },
 ]
 export default appRoutes
