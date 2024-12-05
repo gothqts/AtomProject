@@ -5,6 +5,7 @@ import { useStores } from '../../../stores/rootStoreContext.ts'
 import { PropsWithChildren, useEffect, useRef, useCallback } from 'react'
 import LogoutImg from '../../../assets/images/logout-icon.svg?react'
 import ProfileImg from '../../../assets/images/user-icon.svg?react'
+import MyEventsIcon from '../../../assets/images/myEventsIcon.svg?react'
 
 const DroppedMenu: React.FC<
   PropsWithChildren<{
@@ -44,6 +45,10 @@ const DroppedMenu: React.FC<
       <button className={styles.logout_btn} type='submit' onClick={() => authStore.logout()}>
         <LogoutImg style={{ marginLeft: '4px' }} />
         <span>Выход</span>
+      </button>
+      <button className={styles.logout_btn} type='submit' onClick={() => navigate(urls.myEvents)}>
+        <MyEventsIcon style={{ marginLeft: '4px' }} />
+        <span>Мои мероприятия</span>
       </button>
     </div>
   )

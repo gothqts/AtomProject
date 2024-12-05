@@ -7,4 +7,5 @@ export const urls = {
   register: '/registration',
   profile: '/profile/:id',
   event: '/event/:id',
+  myEvents: '/myEvents',
 }

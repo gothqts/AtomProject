@@ -4,8 +4,12 @@ import Arrow from '../../assets/images/arrow_down.svg?react'
 import BlueBtn from '../../shared/buttons/BlueBtn'
 import { urls } from '../../navigate/app.urls.ts'
 import { Link } from 'react-router-dom'
+import { observer } from 'mobx-react-lite'
+import { useStores } from '../../stores/rootStoreContext.ts'
 
-const Home = () => {
+const Home = observer(() => {
+  const { authStore } = useStores()
+
   const events = [
     {
       id: 1,
@@ -40,12 +44,15 @@ const Home = () => {
           <br />
           для вас
         </div>
-
-        <div className={styles.btn}>
-          <Link className={styles.link} to={urls.register}>
-            <BlueBtn btn_placeholder={'Зарегестрироваться'} />
-          </Link>
-        </div>
+        {!authStore.AuthState.isAuth ? (
+          <div className={styles.btn}>
+            <Link className={styles.link} to={urls.register}>
+              <BlueBtn btn_placeholder={'Зарегестрироваться'} type='submit' />
+            </Link>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
 
       <div className={styles.selection_of_events}>
@@ -58,6 +65,6 @@ const Home = () => {
       </div>
     </div>
   )
-}
+})
 
 export default Home

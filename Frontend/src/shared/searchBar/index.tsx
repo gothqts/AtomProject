@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite'
 import Select from './Select'
 
 const SearchBar = observer(() => {
-  const { userStore } = useStores()
+  const { eventStore } = useStores()
   const [value, setValue] = useState('')
   const [selectedFilters, setSelectedFilters] = useState({})
   const [params, setParams] = useState({})
@@ -16,8 +16,8 @@ const SearchBar = observer(() => {
   }
 
   useEffect(() => {
-    userStore.fetchCities()
-  }, [userStore])
+    eventStore.fetchCities()
+  }, [eventStore])
   return (
     <div className={styles.container}>
       <div className={styles.input_container}>
@@ -28,15 +28,15 @@ const SearchBar = observer(() => {
       </div>
       <form onSubmit={handleSearch}>
         <div className={styles.select_list}>
-          <Select label='Город' options={userStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
+          <Select label='Город' options={eventStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
           <Select
             label='Дата начала'
-            options={userStore.cities}
+            options={eventStore.cities}
             onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })}
           />
-          <Select label='Время' options={userStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
-          <Select label='Формат' options={userStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
-          <Select label='Тематика' options={userStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
+          <Select label='Время' options={eventStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
+          <Select label='Формат' options={eventStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
+          <Select label='Тематика' options={eventStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
         </div>
       </form>
     </div>

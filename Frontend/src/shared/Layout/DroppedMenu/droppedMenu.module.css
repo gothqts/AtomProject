@@ -1,12 +1,12 @@
 .container {
-  height: 136px;
-  width: 253px;
+  height: 200px;
+  width: 366px;
   box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.21);
   background: #fff;
   color: black;
   position: absolute;
   top: calc(100%);
-  right: 190px;
+  right: 150px;
   padding-top: 23px;
   padding-bottom: 23px;
   padding-left: 21px;
