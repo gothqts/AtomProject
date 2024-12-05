@@ -1,26 +1,25 @@
-.container{
-	margin-top: 200px;
-	padding-left: 120px;
-	display: flex;
-	justify-content: space-between;
-	height: 100vh;
-    width: 100%;
-
-	background-image: url("src/assets/images/Profile_Line.svg");
-    background-position: right bottom;
+.profile_container {
+  margin-top: 200px;
+  padding-left: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  background-image: url('../../assets/backgrounds/BackgroundProfile.svg');
+  background-position: right;
+  background-size: contain;
+  gap: 90px;
 }
 
-.section{
-	margin-top: 90px;
+.section {
 }
 
-.section_title{
-	color: #000;
-	font-family: Inter;
-	font-size: 50px;
-	font-style: normal;
-	font-weight: 700;
-	line-height: normal;
-
-	margin-bottom: 60px;
+.section_title {
+  color: #000;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 60px;
 }

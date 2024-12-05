@@ -12,11 +12,4 @@ export default class UserStore {
     makeAutoObservable(this, { rootStore: false })
     this.rootStore = rootStore
   }
-
-  setUser(user: IUser) {
-    this.user = user
-  }
-  getUserId() {
-    return this.rootStore.authStore.AuthState.user?.id || ''
-  }
 }

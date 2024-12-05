@@ -1,11 +1,11 @@
 import styles from './searchBar.module.css'
-import Loupe from '../../assets/images/lupa.svg?react'
+import Lupe from '../../assets/images/lupa.svg?react'
 const SearchBar = () => {
   return (
     <div className={styles.container}>
-      <div>
+      <div className={styles.input_container}>
         <input className={styles.search_input} placeholder='Поиск' />
-        <Loupe />
+        <Lupe className={styles.icon} />
       </div>
       <select name='city'>
         <option>1</option>

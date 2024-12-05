@@ -1,6 +1,11 @@
 .container {
   display: flex;
 }
+
+.input_container {
+  position: relative; /* Позволяет дочерним элементам позиционироваться относительно этого контейнера */
+}
+
 .search_input {
   border: 1px solid #000;
   border-radius: 1000px;
@@ -11,4 +16,12 @@
   font-size: 32px;
   line-height: 172%;
   color: rgba(0, 0, 0, 0.4);
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  cursor: pointer;
+  transform: translateY(-50%); /* Центрируем иконку по вертикали */
 }
