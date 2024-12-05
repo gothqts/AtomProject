@@ -46,7 +46,7 @@ img {
   font-size: 46px;
   font-weight: 600;
   border-bottom: 4px dashed #ff7b00;
-  width: 70%;
+  width: fit-content;
 }
 
 .event_description {

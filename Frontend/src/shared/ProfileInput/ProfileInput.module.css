@@ -1,0 +1,54 @@
+.container{
+	display: flex;
+	width: 1046px;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 18px;
+	margin-bottom: 50px;
+}
+
+.title{
+	font-size: 38px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.input_container{
+	display: flex;
+	gap: 40px;
+}
+
+.input{
+	padding: 25px;
+	width: 1046px;
+	height: 96px;
+	border: 3px solid #33ADFF;
+
+	color: #000;
+	font-family: Inter;
+	font-size: 38px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
+
+.input:focus{
+	outline: none;
+}
+
+.edit{
+	border: none;
+	background: none;
+	padding: 0;
+	cursor: pointer;
+	margin-top: 25px;
+	display: flex;
+
+	color: #33ADFF;
+	font-family: Inter;
+	font-size: 38px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
