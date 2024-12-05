@@ -1,0 +1,84 @@
+.container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 32px;
+}
+.option {
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+  align-items: center;
+}
+
+.label {
+  cursor: pointer;
+}
+
+.arrow_top {
+  transform: rotate(180deg);
+  transition: 0.3s;
+  padding-top: 5px;
+}
+
+.arrow_bottom {
+  transform: rotate(0deg);
+  transition: 0.3s;
+  padding-top: 8px;
+}
+
+label {
+  cursor: pointer;
+}
+
+.menu {
+  margin: 0;
+  list-style: none;
+  padding: 20px 20px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 270px;
+  overflow-y: hidden;
+  height: 245px;
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  transition: 0.3s;
+  box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.21);
+  background: #fff;
+  font-weight: 400;
+  font-size: 28px;
+}
+
+.menu_element {
+  margin-bottom: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+}
+
+.check_input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 19px;
+  height: 19px;
+  background-image: var(--emptyCheckbox);
+  cursor: pointer;
+}
+
+.check_input:checked {
+  cursor: pointer;
+  background-image: var(--checkbox);
+}
+
+.menu.active {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
