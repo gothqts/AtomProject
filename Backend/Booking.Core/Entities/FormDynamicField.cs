@@ -13,15 +13,15 @@ public class FormDynamicField : IHasId
     
     public required bool IsRequired { get; set; }
     
-    public required Guid FieldTypeId { get; set; }
+    public Guid? FieldTypeId { get; set; }
     [ForeignKey("FieldTypeId")] 
     public DynamicFieldType? FieldType { get; set; } = null!;
 
-    public int MaxSymbols { get; set; } = -1;
+    public int? MaxSymbols { get; set; }
 
-    public string MinValue { get; set; } = null!;
+    public string? MinValue { get; set; }
     
-    public string MaxValue { get; set; } = null!;
+    public string? MaxValue { get; set; }
     
     public required Guid EventFormId { get; set; }
     [ForeignKey("EventFormId")] 

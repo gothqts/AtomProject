@@ -1,9 +1,7 @@
-﻿namespace UnbeatableBookingSystem.Controllers.UserActions.Responses;
+﻿namespace UnbeatableBookingSystem.Controllers.EventOrganizerContacts.Requests;
 
-public class ContactsResponse
+public class UpdateOrganizerContactsRequest
 {
-    public required Guid Id { get; set; }
-    
     public required string Email { get; set; }
     
     public string Fio { get; set; } = null!;

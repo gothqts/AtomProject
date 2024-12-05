@@ -1,13 +1,14 @@
 ﻿using Booking.Application.Services;
-using Booking.Application.Services.AuthService;
-using Booking.Core;
 using Booking.Core.DataQuery;
 using Booking.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.Events.Requests;
+using UnbeatableBookingSystem.Controllers.Events.Responses;
 using UnbeatableBookingSystem.Controllers.UserActions.Responses;
+using UnbeatableBookingSystem.Controllers.UserInfo.Responses;
 using UnbeatableBookingSystem.Utility;
 
 namespace UnbeatableBookingSystem.Controllers.Events;
@@ -21,30 +22,28 @@ public class EventCreationController : Controller
     private readonly BaseService<OrganizerContacts> _contactsService;
     private readonly BaseService<EventSignupForm> _eventFormService;
     private readonly BaseService<FormDynamicField> _formDynamicFieldsService;
-    private readonly EventSignupService _eventSignupService;
-    private readonly BaseService<User> _userService;
-    private readonly BaseService<UserRole> _roleService;
     private readonly BaseService<EntryFieldValue> _entryFieldValueService;
     private readonly BaseService<EventSignupEntry> _entryService;
-    private readonly IAuthService _authService;
+    private readonly ControllerUtils _controllerUtils;
+    private readonly EventBannerImageService _eventImageService;
+    private readonly IWebHostEnvironment _env;
 
     public EventCreationController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
         BaseService<OrganizerContacts> contactsService, BaseService<EventSignupForm> eventFormService,
-        BaseService<FormDynamicField> formDynamicFieldsService, EventSignupService eventSignupService,
-        BaseService<User> userService, BaseService<UserRole> roleService, BaseService<EntryFieldValue> entryFieldValueService,
-        BaseService<EventSignupEntry> entryService, IAuthService authService)
+        BaseService<FormDynamicField> formDynamicFieldsService, BaseService<EntryFieldValue> entryFieldValueService,
+        BaseService<EventSignupEntry> entryService, ControllerUtils controllerUtils, 
+        EventBannerImageService eventImageService, IWebHostEnvironment env)
     {
         _eventService = eventService;
         _eventSignupWindowService = eventSignupWindowService;
         _contactsService = contactsService;
         _eventFormService = eventFormService;
         _formDynamicFieldsService = formDynamicFieldsService;
-        _eventSignupService = eventSignupService;
-        _userService = userService;
-        _roleService = roleService;
         _entryFieldValueService = entryFieldValueService;
         _entryService = entryService;
-        _authService = authService;
+        _controllerUtils = controllerUtils;
+        _eventImageService = eventImageService;
+        _env = env;
     }
     
     [HttpGet]
@@ -52,10 +51,10 @@ public class EventCreationController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetUserEvents([FromQuery] int? skip, [FromQuery] int? take)
     {
-        var info = TryGetUserId();
+        var info = _controllerUtils.TryGetUserId(HttpContext);
         if (!info.Succes)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var userId = info.UserId!.Value;
         var events = await _eventService.GetAsync(new DataQueryParams<UserEvent>
@@ -75,8 +74,56 @@ public class EventCreationController : Controller
         
         var res = new UpcomingEventsResponse
         {
-            Events = events.Select(DtoConverter.ConvertEventToBasicInfo).ToArray()
+            Events = events.Select(e => DtoConverter.ConvertEventToBasicInfo(e, 
+                    _eventImageService.EventImagesRelativePath, _eventImageService.DefaultEventImageFilename, Request))
+                .ToArray()
         };
+        return Ok(res);
+    }
+    
+    [HttpGet("{eventId:guid}")]
+    [ProducesResponseType(typeof(EventResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetEvent([FromRoute] Guid eventId)
+    {
+        var info = _controllerUtils.TryGetUserId(HttpContext);
+        if (!info.Succes)
+        {
+            return CustomResults.FailedRequest(info.ErrorMsg);
+        }
+        var userId = info.UserId!.Value;
+        var userEvents = await _eventService.GetAsync(new DataQueryParams<UserEvent>
+        {
+            Expression = e => e.Id == eventId && e.CreatorUserId == userId
+        });
+        if (userEvents.Length != 1)
+        {
+            return CustomResults.FailedRequest("События с заданным id не существует, либо его создал другой пользователь.");
+        }
+        var userEvent = userEvents[1];
+        var windows = await _eventSignupWindowService.GetAsync(new DataQueryParams<EventSignupWindow>
+        {
+            Expression = e => e.EventId == eventId
+        });
+        var forms = await _eventFormService.GetAsync(new DataQueryParams<EventSignupForm>
+        {
+            Expression = f => f.EventId == eventId
+        });
+        var form = forms[0];
+        var fields = await _formDynamicFieldsService.GetAsync(new DataQueryParams<FormDynamicField>
+        {
+            Expression = field => field.EventFormId == form.Id,
+            IncludeParams = new IncludeParams<FormDynamicField>
+            {
+                IncludeProperties = [f => f.FieldType]
+            }
+        });
+        var contacts = await _contactsService.GetAsync(new DataQueryParams<OrganizerContacts>
+        {
+            Expression = c => c.EventId == eventId
+        });
+        var res = DtoConverter.CreateEventResponse(userEvent, windows, form, fields, contacts,
+            _eventImageService.EventImagesRelativePath, _eventImageService.DefaultEventImageFilename, Request);
         return Ok(res);
     }
     
@@ -85,10 +132,10 @@ public class EventCreationController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUserEvent()
     {
-        var info = TryGetUserId();
+        var info = _controllerUtils.TryGetUserId(HttpContext);
         if (!info.Succes)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var userId = info.UserId!.Value;
         var userEvent = new UserEvent
@@ -106,177 +153,169 @@ public class EventCreationController : Controller
             Description = "Заполните описание нового мероприятия"
         };
         await _eventService.SaveAsync(userEvent);
-        var res = DtoConverter.ConvertEventToBasicInfo(userEvent);
-        return Ok(res);
-    }
-    
-    [HttpPost("{eventId:guid}/windows")]
-    [ProducesResponseType(typeof(SignupWindowResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateSignupWindowForUserEvent([FromRoute] Guid eventId, 
-        [FromBody] AddSignupWindowRequest request)
-    {
-        var check = await CheckUserCanEditEventAsync(eventId);
-        if (!check.Success)
-        {
-            return FailedRequest(check.ErrorMsg);
-        }
-
-        var window = new EventSignupWindow
+        var form = new EventSignupForm
         {
             Id = Guid.NewGuid(),
-            EventId = eventId,
-            Title = request.Title,
-            Date = DateOnly.ParseExact(request.Date, "dd-MM-yyyy"),
-            Time = TimeOnly.ParseExact(request.Time, "HH-mm"),
-            MaxVisitors = request.MaxVisitors,
-            TicketsLeft = request.MaxVisitors - request.AlreadyOccupiedPlaces
+            IsFioRequired = false,
+            IsPhoneRequired = false,
+            IsEmailRequired = false,
+            EventId = userEvent.Id
         };
-        if (window.TicketsLeft < 0)
-        {
-            window.TicketsLeft = 0;
-        }
-
-        await _eventSignupWindowService.SaveAsync(window);
-        var res = DtoConverter.SignupWindowToResponse(window);
+        await _eventFormService.SaveAsync(form);
+        var res = DtoConverter.ConvertEventToBasicInfo(userEvent, 
+            _eventImageService.EventImagesRelativePath, _eventImageService.DefaultEventImageFilename, Request);
         return Ok(res);
     }
     
-    [HttpDelete("{eventId:guid}/windows/{windowId:guid}")]
+    [HttpPut("{eventId:guid}")]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RemoveSignupWindowFromUserEvent([FromRoute] Guid eventId, [FromRoute] Guid windowId)
+    public async Task<IActionResult> UpdateUserEvent([FromRoute] Guid eventId, 
+        [FromBody] UpdateEventRequest request)
     {
-        var check = await CheckUserCanEditEventAsync(eventId);
-        if (!check.Success)
+        var info = await _controllerUtils.CheckUserCanEditEventAsync(HttpContext, eventId);
+        if (!info.Success)
         {
-            return FailedRequest(check.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
-
-        var window = await _eventSignupWindowService.GetByIdOrDefaultAsync(windowId);
-        if (window == null)
-        {
-            return FailedRequest("No window with that Id was found.");
-        }
-
-        var entries = await _entryService.GetAsync(new DataQueryParams<EventSignupEntry>
-        {
-            Expression = entry => entry.SignupWindowId == windowId
-        });
-        // TODO Добавить оповещения на почту пользователей, чьи записи были отменены?
-        foreach (var entry in entries)
-        {
-            var fieldValues = await _entryFieldValueService.GetAsync(new DataQueryParams<EntryFieldValue>
-            {
-                Expression = fieldValue => fieldValue.EventSignupEntryId == entry.Id
-            });
-            await _entryFieldValueService.RemoveRangeAsync(fieldValues);
-        }
-
-        await _entryService.RemoveRangeAsync(entries);
-        
-        await _eventSignupWindowService.TryRemoveAsync(window.Id);
-        return Ok(new BaseStatusResponse
-        {
-            Completed = true,
-            Status = "Removed",
-            Message = "Window has been successfully deleted."
-        });
-    }
-    
-    [HttpPut("{eventId:guid}/windows/{windowId:guid}")]
-    [ProducesResponseType(typeof(SignupWindowResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> EditSignupWindowFromUserEvent([FromRoute] Guid eventId, [FromRoute] Guid windowId,
-        [FromBody] UpdateSignupWindowRequest request)
-    {
-        var check = await CheckUserCanEditEventAsync(eventId);
-        if (!check.Success)
-        {
-            return FailedRequest(check.ErrorMsg);
-        }
-
-        var window = await _eventSignupWindowService.GetByIdOrDefaultAsync(windowId);
-        if (window == null)
-        {
-            return FailedRequest("No window with that Id was found.");
-        }
-        if (window.Date != request.Date || window.Time != request.Time)
-        {
-            // TODO Добавить оповещения на почту пользователей, чьи записи были изменены?
-        }
-        window.Title = request.Title;
-        window.Date = request.Date;
-        window.Time = request.Time;
-        var alreadyOccupied = window.MaxVisitors - window.TicketsLeft;
-        window.MaxVisitors = request.MaxVisitors < alreadyOccupied ? alreadyOccupied : request.MaxVisitors;
-        
-        await _eventSignupWindowService.SaveAsync(window);
-        
-        return Ok(DtoConverter.SignupWindowToResponse(window));
-    }
-    
-    private BadRequestObjectResult FailedRequest(string msg)
-    {
-        return BadRequest(new BaseStatusResponse
-        {
-            Status = "Failed",
-            Message = msg,
-            Completed = false
-        });
-    }
-
-    private async Task<(bool Success, string ErrorMsg, User? User)> CheckUserCanEditEventAsync(Guid eventId)
-    {
-        var info = await TryGetSelfUserAsync(true);
-        if (!info.Succes)
-        {
-            return (false, info.ErrorMsg, null);
-        }
-        var user = info.User!;
         var userEvent = (await _eventService.GetAsync(new DataQueryParams<UserEvent>
         {
             Expression = e => e.Id == eventId
         }))[0];
-        if (userEvent.CreatorUserId != user.Id || !(user.Role.CanEditOthersEvents || user.Role.IsAdmin))
+        userEvent.IsPublic = request.IsPublic;
+        userEvent.Title = request.Title;
+        userEvent.IsOnline = request.IsOnline;
+        userEvent.IsSignupOpened = request.IsSignupOpened;
+        userEvent.City = request.City;
+        userEvent.Address = request.Address;
+        userEvent.DateStart = request.DateStart;
+        userEvent.DateEnd = request.DateEnd;
+        userEvent.Description = request.Description;
+        await _eventService.SaveAsync(userEvent);
+        
+        var res = new BaseStatusResponse
         {
-            return (false, "You cannot edit this event.", null);
-        }
-
-        return (true, "", user);
+            Completed = true,
+            Status = "Успех",
+            Message = "Информация о событии была обновлена."
+        };
+        return Ok(res);
     }
     
-    private async Task<(bool Succes, User? User, string ErrorMsg)> TryGetSelfUserAsync(bool includeRole = false)
+    [HttpDelete("{eventId:guid}")]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteUserEvent([FromRoute] Guid eventId)
     {
-        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeUserId);
-        if (idClaim == null)
+        var info = await _controllerUtils.CheckUserCanEditEventAsync(HttpContext, eventId);
+        if (!info.Success)
         {
-            return (false, null, "User doesn't have proper claims.");
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
-        var user = await _userService.GetByIdOrDefaultAsync(new Guid(idClaim.Value));
-        if (user == null)
+        var contacts = await _contactsService.GetAsync(new DataQueryParams<OrganizerContacts>
         {
-            await _authService.RemoveRefreshTokenAsync(new Guid(idClaim.Value));
-            return (false, null, "Operation failed. No user with that id was found. Unauthorized.");
-        }
+            Expression = c => c.EventId == eventId
+        });
+        await _contactsService.RemoveRangeAsync(contacts);
+        var windows = await _eventSignupWindowService.GetAsync(new DataQueryParams<EventSignupWindow>
+        {
+            Expression = w => w.EventId == eventId,
+            Paging = null,
+            Sorting = null,
+            Filters = null,
+            IncludeParams = null
+        });
+        foreach (var window in windows)
+        {
+            var entries = await _entryService.GetAsync(new DataQueryParams<EventSignupEntry>
+            {
+                Expression = e => e.SignupWindowId == window.Id
+            });
+            foreach (var entry in entries)
+            {
+                var fieldValues = await _entryFieldValueService.GetAsync(new DataQueryParams<EntryFieldValue>
+                {
+                    Expression = v => v.EventSignupEntryId == entry.Id
+                });
+                await _entryFieldValueService.RemoveRangeAsync(fieldValues);
+            }
 
-        if (includeRole)
-        {
-            var role = await _roleService.GetByIdOrDefaultAsync(user.RoleId);
-            user.Role = role!;
+            await _entryService.RemoveRangeAsync(entries);
         }
+        await _eventSignupWindowService.RemoveRangeAsync(windows);
         
-        return (true, user, "");
+        var form = (await _eventFormService.GetAsync(new DataQueryParams<EventSignupForm>
+        {
+            Expression = f => f.EventId == eventId
+        }))[0];
+        var fields = await _formDynamicFieldsService.GetAsync(new DataQueryParams<FormDynamicField>
+        {
+            Expression = f => f.EventFormId == form.Id
+        });
+        await _formDynamicFieldsService.RemoveRangeAsync(fields);
+        await _eventFormService.TryRemoveAsync(form.Id);
+        await _eventService.TryRemoveAsync(eventId);
+        
+        var res = new BaseStatusResponse
+        {
+            Completed = true,
+            Status = "Успех",
+            Message = "Вся информация о событии и записях была удалена."
+        };
+        return Ok(res);
     }
     
-    private (bool Succes, Guid? UserId, string ErrorMsg) TryGetUserId()
+    [HttpPost("{eventId:guid}/image")]
+    [Authorize]
+    [ProducesResponseType(typeof(UpdateAvatarResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateEventImage([FromRoute] Guid eventId, IFormFile? file)
     {
-        var idClaim = User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeUserId);
-        if (idClaim == null)
+        if (file == null)
         {
-            return (false, null, "User doesn't have proper claims.");
+            return CustomResults.FailedRequest("Запрос не содержит файл.");
         }
+        var info = await _controllerUtils.CheckUserCanEditEventAsync(HttpContext, eventId);
+        if (!info.Success)
+        {
+            return CustomResults.FailedRequest(info.ErrorMsg);
+        }
+
+        var userEvent = await _eventService.GetByIdOrDefaultAsync(eventId);
+        await _eventImageService.UpdateEventImageAsync(userEvent!, _env.WebRootPath, file);
         
-        return (true, new Guid(idClaim.Value), "");
+        return Ok(new UpdateAvatarResponse
+        {
+            Status = "Успех",
+            Message = "Изображение мероприятия было успешно обновлено.",
+            Completed = true,
+            Image = DtoConverter.GetEventImageUrl(userEvent!, _eventImageService.EventImagesRelativePath, 
+                _eventImageService.DefaultEventImageFilename, Request)
+        });
+    }
+    
+    [HttpDelete("{eventId:guid}/image")]
+    [Authorize]
+    [ProducesResponseType(typeof(UpdateAvatarResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateEventImage([FromRoute] Guid eventId)
+    {
+        var info = await _controllerUtils.CheckUserCanEditEventAsync(HttpContext, eventId);
+        if (!info.Success)
+        {
+            return CustomResults.FailedRequest(info.ErrorMsg);
+        }
+
+        var userEvent = await _eventService.GetByIdOrDefaultAsync(eventId);
+        await _eventImageService.UpdateEventImageAsync(userEvent!, _env.WebRootPath, null);
+        
+        return Ok(new UpdateAvatarResponse
+        {
+            Status = "Успех",
+            Message = "Изображение мероприятия было успешно обновлено.",
+            Completed = true,
+            Image = DtoConverter.GetEventImageUrl(userEvent!, _eventImageService.EventImagesRelativePath, 
+                _eventImageService.DefaultEventImageFilename, Request)
+        });
     }
 }

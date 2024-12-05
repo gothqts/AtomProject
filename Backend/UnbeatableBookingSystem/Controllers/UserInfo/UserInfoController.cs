@@ -1,10 +1,9 @@
 ﻿using Booking.Application.Services;
-using Booking.Application.Services.AuthService;
 using Booking.Application.Utility;
-using Booking.Core;
 using Booking.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.UserInfo.Requests;
 using UnbeatableBookingSystem.Controllers.UserInfo.Responses;
@@ -16,27 +15,18 @@ namespace UnbeatableBookingSystem.Controllers.UserInfo;
 public class UserInfoController : Controller
 {
     private readonly BaseService<User> _userService;
-    private readonly BaseService<UserEvent> _eventsService;
-    private readonly BaseService<UserRole> _roleService;
     private readonly IWebHostEnvironment _env;
     private readonly UserInfoService _userInfoService;
-    private readonly IAuthService _authService;
+    private readonly ControllerUtils _controllerUtils;
 
-    private readonly string _avatarImagesRelativePath = Path.Combine("images", "user-avatars");
-    
-    private readonly string _defaultAvatarFilename = "default-avatar.jpg";
-    
-    public UserInfoController(BaseService<User> userService, BaseService<UserEvent> eventsService,
-        BaseService<UserRole> roleService, IWebHostEnvironment env, UserInfoService userInfoService,
-        IAuthService authService)
+    public UserInfoController(BaseService<User> userService, IWebHostEnvironment env, 
+        UserInfoService userInfoService, ControllerUtils controllerUtils)
     {
         _userService = userService;
-        _eventsService = eventsService;
-        _roleService = roleService;
         _env = env;
         _userInfoService = userInfoService;
-        _authService = authService;
-        var avatarImagesFullPath = Path.Combine(_env.WebRootPath, _avatarImagesRelativePath);
+        _controllerUtils = controllerUtils;
+        var avatarImagesFullPath = Path.Combine(_env.WebRootPath, _userInfoService.AvatarImagesRelativePath);
         if (!Directory.Exists(avatarImagesFullPath))
         {
             Directory.CreateDirectory(avatarImagesFullPath);
@@ -52,10 +42,10 @@ public class UserInfoController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetSelfUserProfile()
     {
-        var info = await TryGetSelfUserAsync(true);
-        if (!info.Succes || info.User == null)
+        var info = await _controllerUtils.TryGetSelfUserAsync(HttpContext, true);
+        if (!info.Success || info.User == null)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var user = info.User;
         var events = await _userInfoService.GetEventsForProfileAsync(user.Id, 10);
@@ -69,8 +59,10 @@ public class UserInfoController : Controller
             RoleTitle = user.Role.Title,
             Description = user.Description,
             Status = user.UserStatus,
-            AvatarImage = DtoConverter.GetAvatarUrl(user, _avatarImagesRelativePath, _defaultAvatarFilename, Request),
-            CreatedEvents = events.Select(DtoConverter.ConvertEventToBasicInfo).ToArray()
+            AvatarImage = DtoConverter.GetAvatarUrl(user, _userInfoService.AvatarImagesRelativePath, _userInfoService.DefaultAvatarFilename, Request),
+            CreatedEvents = events.Select(e => DtoConverter.ConvertEventToBasicInfo(e, 
+                    _userInfoService.AvatarImagesRelativePath, _userInfoService.DefaultAvatarFilename, Request))
+                .ToArray()
         };
         return Ok(res);
     }
@@ -86,7 +78,7 @@ public class UserInfoController : Controller
         var user = await _userService.GetByIdOrDefaultAsync(userId);
         if (user == null)
         {
-            return NoUserFound();
+            return CustomResults.NoUserFound();
         }
         var events = await _userInfoService.GetEventsForProfileAsync(user.Id, 10);
 
@@ -96,8 +88,11 @@ public class UserInfoController : Controller
             Fio = user.Fio,
             Description = user.Description,
             Status = user.UserStatus,
-            AvatarImage = DtoConverter.GetAvatarUrl(user, _avatarImagesRelativePath, _defaultAvatarFilename, Request),
-            CreatedEvents = events.Select(DtoConverter.ConvertEventToBasicInfo).ToArray()
+            AvatarImage = DtoConverter.GetAvatarUrl(user, _userInfoService.AvatarImagesRelativePath, 
+                _userInfoService.DefaultAvatarFilename, Request),
+            CreatedEvents = events.Select(e => DtoConverter.ConvertEventToBasicInfo(e, 
+                    _userInfoService.AvatarImagesRelativePath, _userInfoService.DefaultAvatarFilename, Request))
+                .ToArray()
         };
         return Ok(res);
     }
@@ -113,14 +108,15 @@ public class UserInfoController : Controller
         var user = await _userService.GetByIdOrDefaultAsync(userId);
         if (user == null)
         {
-            return NoUserFound();
+            return CustomResults.NoUserFound();
         }
         
         var res = new BriefUserInfoResponse()
         {
             Id = user.Id,
             Fio = user.Fio,
-            AvatarImage = DtoConverter.GetAvatarUrl(user, _avatarImagesRelativePath, _defaultAvatarFilename, Request)
+            AvatarImage = DtoConverter.GetAvatarUrl(user, _userInfoService.AvatarImagesRelativePath, 
+                _userInfoService.DefaultAvatarFilename, Request)
         };
         return Ok(res);
     }
@@ -131,10 +127,10 @@ public class UserInfoController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserInfoRequest dto)
     {
-        var info = await TryGetSelfUserAsync();
-        if (!info.Succes || info.User == null)
+        var info = await _controllerUtils.TryGetSelfUserAsync(HttpContext);
+        if (!info.Success || info.User == null)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var user = info.User;
         user.UserStatus = dto.Status;
@@ -162,23 +158,24 @@ public class UserInfoController : Controller
     {
         if (file == null)
         {
-            return FailedRequest("Request doesn't contain file.");
+            return CustomResults.FailedRequest("Request doesn't contain file.");
         }
-        var info = await TryGetSelfUserAsync();
-        if (!info.Succes || info.User == null)
+        var info = await _controllerUtils.TryGetSelfUserAsync(HttpContext);
+        if (!info.Success || info.User == null)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var user = info.User;
-        await _userInfoService.UpdateUserAvatarAsync(user, _env.WebRootPath, _avatarImagesRelativePath,
-            _defaultAvatarFilename, file);
+        await _userInfoService.UpdateUserAvatarAsync(user, _env.WebRootPath, _userInfoService.AvatarImagesRelativePath,
+            _userInfoService.DefaultAvatarFilename, file);
 
         return Ok(new UpdateAvatarResponse
         {
             Status = "Success",
             Message = "User avatar successfully updated.",
             Completed = true,
-            Image = DtoConverter.GetAvatarUrl(user, _avatarImagesRelativePath, _defaultAvatarFilename, Request)
+            Image = DtoConverter.GetAvatarUrl(user, _userInfoService.AvatarImagesRelativePath, 
+                _userInfoService.DefaultAvatarFilename, Request)
         });
     }
     
@@ -191,21 +188,22 @@ public class UserInfoController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RemoveUserAvatar()
     {
-        var info = await TryGetSelfUserAsync();
-        if (!info.Succes || info.User == null)
+        var info = await _controllerUtils.TryGetSelfUserAsync(HttpContext);
+        if (!info.Success || info.User == null)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var user = info.User;
-        await _userInfoService.UpdateUserAvatarAsync(user, _env.WebRootPath, _avatarImagesRelativePath,
-            _defaultAvatarFilename, null);
+        await _userInfoService.UpdateUserAvatarAsync(user, _env.WebRootPath, _userInfoService.AvatarImagesRelativePath,
+            _userInfoService.DefaultAvatarFilename, null);
 
         return Ok(new UpdateAvatarResponse
         {
             Status = "Success",
             Message = "User avatar successfully updated.",
             Completed = true,
-            Image = DtoConverter.GetAvatarUrl(user, _avatarImagesRelativePath, _defaultAvatarFilename, Request),
+            Image = DtoConverter.GetAvatarUrl(user, _userInfoService.AvatarImagesRelativePath, 
+                _userInfoService.DefaultAvatarFilename, Request),
         });
     }
 
@@ -215,15 +213,15 @@ public class UserInfoController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordRequest dto)
     {
-        var info = await TryGetSelfUserAsync();
-        if (!info.Succes || info.User == null)
+        var info = await _controllerUtils.TryGetSelfUserAsync(HttpContext);
+        if (!info.Success || info.User == null)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var user = info.User;
         if (!PasswordHelper.VerifyPassword(user.PasswordHash, dto.CurrentPassword))
         {
-            return FailedRequest("Current password is incorrect.");
+            return CustomResults.FailedRequest("Current password is incorrect.");
         }
 
         user.PasswordHash = PasswordHelper.HashPassword(dto.NewPassword);
@@ -243,10 +241,10 @@ public class UserInfoController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserPhone([FromBody] UpdatePhoneRequest dto)
     {
-        var info = await TryGetSelfUserAsync();
-        if (!info.Succes || info.User == null)
+        var info = await _controllerUtils.TryGetSelfUserAsync(HttpContext);
+        if (!info.Success || info.User == null)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var user = info.User;
         
@@ -267,10 +265,10 @@ public class UserInfoController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserEmail([FromBody] UpdateEmailRequest dto)
     {
-        var info = await TryGetSelfUserAsync();
-        if (!info.Succes || info.User == null)
+        var info = await _controllerUtils.TryGetSelfUserAsync(HttpContext);
+        if (!info.Success || info.User == null)
         {
-            return FailedRequest(info.ErrorMsg);
+            return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var user = info.User;
         
@@ -288,46 +286,5 @@ public class UserInfoController : Controller
         });
     }
     
-    private BadRequestObjectResult NoUserFound()
-    {
-        return BadRequest(new BaseStatusResponse
-        {
-            Status = "Failed",
-            Message = "User with provided userId doesn't exist.",
-            Completed = false
-        });
-    }
     
-    private BadRequestObjectResult FailedRequest(string msg)
-    {
-        return BadRequest(new BaseStatusResponse
-        {
-            Status = "Failed",
-            Message = msg,
-            Completed = false
-        });
-    }
-    
-    private async Task<(bool Succes, User? User, string ErrorMsg)> TryGetSelfUserAsync(bool includeRole = false)
-    {
-        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeUserId);
-        if (idClaim == null)
-        {
-            return (false, null, "User doesn't have proper claims, unauthorized.");
-        }
-        var user = await _userService.GetByIdOrDefaultAsync(new Guid(idClaim.Value));
-        if (user == null)
-        {
-            await _authService.RemoveRefreshTokenAsync(new Guid(idClaim.Value));
-            return (false, null, "Operation failed. No user with that id was found. Unauthorized.");
-        }
-
-        if (includeRole)
-        {
-            var role = await _roleService.GetByIdOrDefaultAsync(user.RoleId);
-            user.Role = role!;
-        }
-        
-        return (true, user, "");
-    }
 }

@@ -6,9 +6,12 @@ namespace Booking.Application.Services;
 
 public class UserInfoService
 {
+    public readonly string AvatarImagesRelativePath = Path.Combine("images", "user-avatars");
+    public readonly string DefaultAvatarFilename = "default-avatar.jpg";
+    
     private readonly BaseService<UserEvent> _eventsService;
     private readonly BaseService<User> _userService;
-
+    
     public UserInfoService(BaseService<UserEvent> eventsService, BaseService<User> userService)
     {
         _eventsService = eventsService;
@@ -36,6 +39,12 @@ public class UserInfoService
 
     public async Task UpdateUserAvatarAsync(User user, string webRootPath, string imagesFolderRelativePath, string defaultAvatarFilename, IFormFile? newFile)
     {
+        var folder = Path.Combine(webRootPath, imagesFolderRelativePath);
+        if (!Directory.Exists(folder))
+        {
+            Directory.CreateDirectory(folder);
+        }
+        
         var imagePath = Path.Combine(webRootPath, user.AvatarImageFilepath);
         if (!string.IsNullOrWhiteSpace(user.AvatarImageFilepath) && !user.AvatarImageFilepath.Contains(defaultAvatarFilename) && File.Exists(imagePath))
         {

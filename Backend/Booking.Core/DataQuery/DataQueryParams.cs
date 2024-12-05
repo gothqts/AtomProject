@@ -1,9 +1,8 @@
 ﻿using System.Linq.Expressions;
-using Booking.Core.Interfaces;
 
 namespace Booking.Core.DataQuery;
 
-public class DataQueryParams<TEntity> where TEntity : class, IHasId
+public class DataQueryParams<TEntity> where TEntity : class
 {
     public Expression<Func<TEntity, bool>>? Expression { get; set; }
     

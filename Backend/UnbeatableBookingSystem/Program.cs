@@ -2,6 +2,7 @@ using Booking.Application;
 using Booking.Infrastructure;
 using Booking.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Middlewares;
 using UnbeatableBookingSystem.Utility;
 
@@ -15,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddHostedService<RevokedAccessTokenCleanupService>();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
+builder.Services.AddScoped<ControllerUtils>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

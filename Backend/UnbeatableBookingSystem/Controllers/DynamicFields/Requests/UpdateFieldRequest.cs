@@ -1,17 +1,15 @@
-﻿namespace UnbeatableBookingSystem.Controllers.UserActions.Responses;
+﻿namespace UnbeatableBookingSystem.Controllers.DynamicFields.Requests;
 
-public class FormFieldResponse
+public class UpdateFieldRequest
 {
-    public required Guid Id { get; set; }
-    
     public required string Title { get; set; }
     
     public required bool IsRequired { get; set; }
     
-    public string? Type { get; set; }
-    
+    public required Guid FieldTypeId { get; set; }
+
     public int? MaxSymbols { get; set; }
-    
+
     public string? MinValue { get; set; }
     
     public string? MaxValue { get; set; }

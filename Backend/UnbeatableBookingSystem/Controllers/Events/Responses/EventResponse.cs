@@ -1,25 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Booking.Core.Interfaces;
+﻿using UnbeatableBookingSystem.Controllers.UserActions.Responses;
 
-namespace Booking.Core.Entities;
+namespace UnbeatableBookingSystem.Controllers.Events.Responses;
 
-public class UserEvent : IHasId
+public class EventResponse
 {
-    [Key]
     public Guid Id { get; set; }
     
     public DateTime CreationDate { get; set; }
-    
-    public required Guid CreatorUserId { get; set; }
-    [ForeignKey("CreatorUserId")] 
-    public User CreatorUser { get; set; } = null!;
     
     public required bool IsPublic { get; set; }
     
     public required string Title { get; set; }
 
-    public string? BannerImageFilepath { get; set; }
+    public required string BannerImage { get; set; }
     
     public required bool IsOnline { get; set; }
     
@@ -34,4 +27,10 @@ public class UserEvent : IHasId
     public required DateTime DateEnd { get; set; }
 
     public string Description { get; set; } = null!;
+
+    public required SignupWindowResponse[] SignupWindows { get; set; }
+    
+    public required EventFormResponse SignupForm { get; set; }
+    
+    public required ContactsResponse[] Contacts { get; set; }
 }
