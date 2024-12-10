@@ -81,33 +81,35 @@ export default class AuthStore {
   }
 
   async login(email: string, password: string) {
-    if (localStorage.getItem('token')) {
+    if (this.AuthState.isAuth) {
       console.log('Пользователь уже авторизован')
       return
     }
+    this.setLoading(true)
     try {
       const response = await AuthService.login({ email, password })
       await this.updateAuthState(response.data.userId, response.data.accessToken)
       await this.fetchUser()
-      // this.startTokenRefreshInterval()
       console.log(response.data.message)
       console.log(this.AuthState, localStorage.getItem('token'))
     } catch (err) {
-      console.log(err)
+      console.log('login error', err)
+    } finally {
+      this.setLoading(false)
     }
   }
 
   async logout() {
+    this.setLoading(true)
     try {
-      // await AuthService.refreshTokens()
       const response = await AuthService.logout()
       localStorage.removeItem('token')
       this.resetAuthState()
-      // this.stopTokenRefreshInterval()
       console.log(response.data.message)
-      console.log(this.AuthState)
     } catch (err) {
-      console.log(err)
+      console.log('logout err', err)
+    } finally {
+      this.setLoading(false)
     }
   }
 
@@ -143,11 +145,9 @@ export default class AuthStore {
     this.setLoading(true)
     try {
       const response = await http.post('http://localhost:8080/api/auth/refresh', { withCredentials: true })
-      console.log(response)
       localStorage.setItem('token', response.data.accessToken)
       await this.fetchUser()
       this.AuthState.isAuth = true
-      console.log(this.AuthState.isAuth)
     } catch (e) {
       console.log(e.response?.data?.message)
     } finally {

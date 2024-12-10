@@ -27,7 +27,6 @@ const DroppedMenu: React.FC<
   )
 
   useEffect(() => {
-    // Добавляем обработчик клика на документ
     document.addEventListener('mousedown', handleClickOutside)
 
     // Удаляем обработчик при размонтировании

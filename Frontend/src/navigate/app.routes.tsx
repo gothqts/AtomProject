@@ -1,6 +1,7 @@
 import { urls } from './app.urls.ts'
 import { lazy } from 'react'
 import { IRoute } from './navigation.types.ts'
+import PrivateRoute from './PrivateRoutes.tsx'
 
 const Register = lazy(() => import('../screens/Register'))
 const Login = lazy(() => import('../screens/Login'))
@@ -39,7 +40,11 @@ const appRoutes: IRoute[] = [
   },
   {
     path: urls.profile,
-    element: <Profile />,
+    element: (
+      <PrivateRoute>
+        <Profile />
+      </PrivateRoute>
+    ),
   },
   {
     path: urls.event,
@@ -47,7 +52,11 @@ const appRoutes: IRoute[] = [
   },
   {
     path: urls.myEvents,
-    element: <MyEvents />,
+    element: (
+      <PrivateRoute>
+        <MyEvents />
+      </PrivateRoute>
+    ),
   },
 ]
 export default appRoutes

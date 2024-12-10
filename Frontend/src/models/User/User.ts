@@ -6,6 +6,6 @@ export interface IUser {
   roleTitle: string | null
   description: string | null
   status: string | null
-  avatarImage: string | null
+  avatarImage: string
   createdEvents: [{}] | null
 }
