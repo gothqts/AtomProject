@@ -3,9 +3,7 @@ import AuthService from '../services/Auth/AuthService.ts'
 import { IUser } from '../models/User/User.ts'
 import RootStore from './rootStore.ts'
 import UserInfoService from '../services/UserInfo/UserInfoService.ts'
-import axios from 'axios'
 import { AuthResponse } from '../models/Auth/response/authResponse.ts'
-import config from '../config.ts'
 import { http } from '../services/http'
 
 interface IAuthState {
@@ -127,11 +125,13 @@ export default class AuthStore {
     try {
       const response = await UserInfoService.getUser()
       console.log('User data:', response.data)
+      const userStore = this.rootStore.userStore
       runInAction(() => {
         this.AuthState.user = {
           ...response.data,
           fio: this.refactorFio(response.data.fio),
         }
+        userStore.user = this.AuthState.user
       })
       console.log(this.AuthState.user)
     } catch (err) {

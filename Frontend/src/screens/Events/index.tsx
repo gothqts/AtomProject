@@ -1,6 +1,6 @@
 import SearchBar from '../../shared/searchBar'
 import Event from '../../shared/Event'
-import styles from './events.module.css'
+import styles from './Events.module.css'
 
 const Events = () => {
   const events = [

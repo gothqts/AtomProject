@@ -9,7 +9,7 @@ import { http } from '../services/http'
 
 export default class UserStore {
   rootStore: RootStore
-  user
+  user: IUser
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false })
