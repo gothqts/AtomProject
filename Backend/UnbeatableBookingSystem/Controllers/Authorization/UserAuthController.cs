@@ -87,7 +87,20 @@ public class UserAuthController : Controller
                 Message = "Refresh token not found in cookies."
             });
         }
-        await RevokeAccessTokenAsync();
+        try
+        {
+            await RevokeAccessTokenAsync();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new BaseStatusResponse
+            {
+                Completed = false,
+                Status = "Failed to read user Claims",
+                Message = $"Error while revoking access token. Exception: {e.Message}"
+            });
+        }
+        
         var refreshInfo = await _authService.TryRefreshUsersTokens(refreshToken);
         if (refreshInfo.User == null)
         {
@@ -259,12 +272,15 @@ public class UserAuthController : Controller
     
     private async Task RevokeAccessTokenAsync()
     {
-        var jtiClaim = User.Claims.First(c => c.Type == AuthOptions.ClaimTypeJti);
-        var expTimeClaim = User.Claims.First(c => c.Type == AuthOptions.ClaimTypeExpireTime);
-        var jti = Guid.Parse(jtiClaim.Value);
-        var expTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expTimeClaim.Value)).UtcDateTime;
+        var jtiClaim = User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeJti);
+        var expTimeClaim = User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeExpireTime);
+        if (jtiClaim != null && expTimeClaim != null)
+        {
+            var jti = Guid.Parse(jtiClaim.Value);
+            var expTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expTimeClaim.Value)).UtcDateTime;
+            await _authService.RevokeAccessToken(jti, expTime);
+        }
         RemoveRefreshTokenFromCookies();
-        await _authService.RevokeAccessToken(jti, expTime);
     }
     
     private void WriteRefreshTokenToCookies(string token)

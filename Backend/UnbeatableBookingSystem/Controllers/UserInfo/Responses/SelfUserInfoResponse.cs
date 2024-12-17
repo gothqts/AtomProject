@@ -23,5 +23,7 @@ public class SelfUserInfoResponse
     
     public required string AvatarImage { get; set; }
     
+    public string City { get; set; }
+    
     public required BasicEventInfoResponse[] CreatedEvents { get; set; }
 }
