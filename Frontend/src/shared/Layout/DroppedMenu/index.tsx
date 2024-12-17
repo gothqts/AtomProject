@@ -15,7 +15,6 @@ const DroppedMenu: React.FC<
   const { authStore } = useStores()
   const menuRef = useRef(null)
   const navigate = useNavigate()
-  const userID = authStore.AuthState.user?.id
 
   const handleClickOutside = useCallback(
     (event) => {
@@ -37,7 +36,7 @@ const DroppedMenu: React.FC<
 
   return (
     <div ref={menuRef} className={styles.container}>
-      <button className={styles.profile_btn} onClick={() => navigate(`/profile/ ${userID}`)}>
+      <button className={styles.profile_btn} onClick={() => navigate(urls.profile)}>
         <ProfileImg />
         <span style={{ marginLeft: '21px' }}>Профиль</span>
       </button>

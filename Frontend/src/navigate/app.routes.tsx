@@ -1,7 +1,7 @@
 import { urls } from './app.urls.ts'
 import { lazy } from 'react'
 import { IRoute } from './navigation.types.ts'
-import PrivateRoute from './PrivateRoutes.tsx'
+import PrivateRoute from './PrivateRoute.tsx'
 
 const Register = lazy(() => import('../screens/Register'))
 const Login = lazy(() => import('../screens/Login'))

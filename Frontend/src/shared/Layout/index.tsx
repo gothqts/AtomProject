@@ -36,7 +36,7 @@ const Layout = observer(() => {
           </Link>
         </ul>
 
-        {!authStore.AuthState.isAuth ? (
+        {!localStorage.getItem('token') ? (
           <Link className={styles.link_auth} to={urls.register}>
             Вход / Регистрация
           </Link>

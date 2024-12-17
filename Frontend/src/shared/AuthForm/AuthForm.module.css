@@ -1,38 +1,40 @@
-.register_form{
-    margin-top: 11vh;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    width: 664px;
-    height: 600px;
+.register_form {
+  margin-top: 11vh;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 664px;
+  height: 600px;
 }
-.form_title{
-    font-weight: 500;
-    font-size: 50px;
-    text-align: center;
+.form_title {
+  font-weight: 500;
+  font-size: 50px;
+  text-align: center;
 }
-.form_paragraph{
-    font-weight: 400;
-    font-size: 24px;
-    color: black;
-    word-wrap: break-word;
-    text-decoration: none;
-    text-align: right;
-    margin-left: auto;
-    width: 100%;
+.form_paragraph {
+  font-weight: 400;
+  font-size: 24px;
+  color: black;
+  word-wrap: break-word;
+  text-decoration: none;
+  text-align: right;
+  margin-left: auto;
+  width: 100%;
+}
+.form_input {
+  font-weight: 500;
+  width: 664px;
+  font-size: 36px;
+  color: rgba(0, 0, 0, 0.5);
+  border: 3px solid #ff7b00;
+  padding: 25px;
+  background: rgba(51, 173, 255, 0.09);
+}
 
+.form_input:focus {
+  outline: none;
 }
-.form_input{
-    font-weight: 500;
-    width: 664px;
-    font-size: 36px;
-    color: rgba(0, 0, 0, 0.5);
-    border: 3px solid #ff7b00;
-    padding: 25px;
-    background: rgba(51, 173, 255, 0.09);
-}
-
-.form_input:focus{
-    outline: none;
+.error_message {
+  color: brown;
 }
