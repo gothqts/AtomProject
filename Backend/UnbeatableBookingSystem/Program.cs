@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactHttpOrigin",
-        policy => policy.WithOrigins("http://localhost:5175")
+        policy => policy.WithOrigins("http://localhost:5175", "http://localhost:8080")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());

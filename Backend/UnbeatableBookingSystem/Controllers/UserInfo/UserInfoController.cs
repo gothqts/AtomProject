@@ -59,6 +59,7 @@ public class UserInfoController : Controller
             RoleTitle = user.Role.Title,
             Description = user.Description,
             Status = user.UserStatus,
+            City = user.City,
             AvatarImage = DtoConverter.GetAvatarUrl(user, _userInfoService.AvatarImagesRelativePath, _userInfoService.DefaultAvatarFilename, Request),
             CreatedEvents = events.Select(e => DtoConverter.ConvertEventToBasicInfo(e, 
                     _userInfoService.AvatarImagesRelativePath, _userInfoService.DefaultAvatarFilename, Request))
@@ -86,6 +87,7 @@ public class UserInfoController : Controller
         {
             Id = user.Id,
             Fio = user.Fio,
+            City = user.City,
             Description = user.Description,
             Status = user.UserStatus,
             AvatarImage = DtoConverter.GetAvatarUrl(user, _userInfoService.AvatarImagesRelativePath, 

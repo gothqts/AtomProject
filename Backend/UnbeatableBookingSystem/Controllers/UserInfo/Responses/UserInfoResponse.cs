@@ -8,6 +8,8 @@ public class UserInfoResponse
     
     public required string Fio { get; set; }
     
+    public string City { get; set; }
+    
     public required string Description { get; set; }
     
     public required string Status { get; set; }
