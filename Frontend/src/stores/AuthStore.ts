@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import AuthService from '../services/Auth/AuthService.ts'
-import { IUser } from '../models/User/User.ts'
+import { IUser } from '../models/User/response/User.ts'
 import RootStore from './rootStore.ts'
 import UserInfoService from '../services/UserInfo/UserInfoService.ts'
 import { AuthResponse } from '../models/Auth/response/authResponse.ts'

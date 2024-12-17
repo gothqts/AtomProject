@@ -2,31 +2,48 @@ import styles from './Profile.module.css'
 import { useStores } from '../../stores/rootStoreContext.ts'
 import ProfileInput from '../../shared/ProfileInput/index.tsx'
 import { observer } from 'mobx-react-lite'
-import { FC } from 'react'
+import { FC, useState, useEffect } from 'react'
+import { UserRequest } from '../../models/User/request/userRequest.ts'
 
 const Profile: FC = observer(() => {
   const { userStore } = useStores()
   const { user } = userStore
 
-  const personal_data_fields = [
-    { title: 'ФИО', type: 'text', value: user?.fio },
-    { title: 'Телефон', type: 'tel', value: user?.phone },
-    { title: 'E-mail', type: 'email', value: user?.email },
-    { title: 'Фото', type: 'text', value: user?.avatarImage },
-  ]
+  const generateProfileData = () => ({
+    PersonalData: [
+      { title: 'ФИО', type: 'text', value: user?.fio },
+      { title: 'Описание', type: 'text', value: user?.description },
+      { title: 'Статус', type: 'text', value: user?.status },
+      { title: 'Город', type: 'text', value: user?.city },
+    ],
+    Avatar: [{ title: 'Фото', type: 'text', value: user?.avatarImage }],
+    Telephone: [{ title: 'Телефон', type: 'tel', value: user?.phone }],
+    Email: [{ title: 'E-mail', type: 'email', value: user?.email }],
+    Password: [
+      { title: 'Текущий пароль', type: 'password', value: '' },
+      { title: 'Новый пароль', type: 'password', value: '' },
+    ],
+  })
 
-  const safety_fields = [
-    { title: 'Пароль', type: 'password', value: '' }, // Пароль не сохраняем в состоянии
-  ]
+  const [profileData, setProfileData] = useState(generateProfileData())
 
-  const about_fields = [
-    { title: 'Город', type: 'text', value: user?.status }, // Используем статус как пример
-    { title: 'Статус', type: 'text', value: user?.status },
-  ]
+  useEffect(() => {
+    setProfileData(generateProfileData())
+  }, [user])
 
-  // Обработчик изменения значений инпутов
+  const handleClick = () => {
+    const updatedData = {
+      fio: profileData.PersonalData.find((field) => field.title === 'ФИО')?.value,
+      description: profileData.PersonalData.find((field) => field.title === 'Описание')?.value,
+      status: profileData.PersonalData.find((field) => field.title === 'Статус')?.value,
+      city: profileData.PersonalData.find((field) => field.title === 'Город')?.value,
+    }
+    console.log(updatedData)
+    userStore.UpdateData(updatedData)
+  }
+
   const handleInputChange = (title: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
+    const value: string = event.target.value
     switch (title) {
       case 'ФИО':
         userStore.setUserFields('fio', value)
@@ -41,10 +58,17 @@ const Profile: FC = observer(() => {
         userStore.setUserFields('avatarImage', value)
         break
       case 'Город':
-        userStore.setUserFields('status', value) // Предполагается, что мы используем статус здесь
+        userStore.setUserFields('city', value)
         break
       case 'Статус':
         userStore.setUserFields('status', value)
+        break
+      case 'Описание':
+        userStore.setUserFields('description', value)
+        break
+      case 'Текущий пароль':
+        break
+      case 'Новый пароль':
         break
       default:
         break
@@ -55,47 +79,44 @@ const Profile: FC = observer(() => {
     <div className={styles.profile_container}>
       <div className={styles.section}>
         <div className={styles.section_title}>Личные данные</div>
-        {personal_data_fields.map((field) => (
-          <ProfileInput
-            key={field.title}
-            title={field.title}
-            type={field.type}
-            value={field.value || ''} // Передаем значение из user
-            onChange={handleInputChange(field.title)} // Передаем обработчик изменения
-          />
+        {profileData.PersonalData.map((field) => (
+          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
         ))}
+        <button className={styles.update_btn} onClick={handleClick}>
+          Сохранить
+        </button>
       </div>
 
       <div className={styles.section}>
-        <div className={styles.section_title}>Безопасность</div>
-        {safety_fields.map((field, index) => (
-          <ProfileInput
-            key={index}
-            title={field.title}
-            type={field.type}
-            value={field.value} // Для пароля можно оставить пустым или не выставлять значение
-            onChange={() => {}} // Убедитесь, что обработчик корректный или оставьте пустым
-          />
+        <div className={styles.section_title}>Аватар</div>
+        {profileData.Avatar.map((field) => (
+          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
         ))}
+        <button className={styles.update_btn}>Сохранить</button>
       </div>
 
       <div className={styles.section}>
-        <div className={styles.section_title}>Информация о себе</div>
-        {about_fields.map((field) => (
-          <ProfileInput
-            key={field.title}
-            title={field.title}
-            type={field.type}
-            value={field.value}
-            onChange={handleInputChange(field.title)} // Передаем обработчик изменения
-          />
+        <div className={styles.section_title}>Телефон</div>
+        {profileData.Telephone.map((field) => (
+          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
         ))}
-        <ProfileInput
-          title='О себе'
-          type='text'
-          value={user?.description} // Добавляем поле "О себе" для редактирования
-          onChange={handleInputChange('О себе')}
-        />
+        <button className={styles.update_btn}>Сохранить</button>
+      </div>
+
+      <div className={styles.section}>
+        <div className={styles.section_title}>Email</div>
+        {profileData.Email.map((field) => (
+          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
+        ))}
+        <button className={styles.update_btn}>Сохранить</button>
+      </div>
+
+      <div className={styles.section}>
+        <div className={styles.section_title}>Пароль</div>
+        {profileData.Password.map((field) => (
+          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
+        ))}
+        <button className={styles.update_btn}>Сохранить</button>
       </div>
     </div>
   )

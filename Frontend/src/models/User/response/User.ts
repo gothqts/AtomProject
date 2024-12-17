@@ -3,6 +3,7 @@ export interface IUser {
   phone: string | null
   email: string | null
   fio: string | null
+  city: string | null
   roleTitle: string | null
   description: string | null
   status: string | null

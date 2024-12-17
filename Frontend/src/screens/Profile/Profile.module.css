@@ -23,3 +23,23 @@
   line-height: normal;
   margin-bottom: 60px;
 }
+.update_btn {
+  background: #33adff;
+  border: none;
+  color: #f0f0f0;
+  width: 300px;
+  height: 100px;
+  font-size: 35px;
+  border-radius: 20px;
+  transition:
+    background 0.1s ease,
+    border 0.3s ease;
+}
+.update_btn:active {
+  background: #ffffff;
+  border: 2px solid #33adff;
+  color: #33adff;
+}
+.update_btn:hover {
+  cursor: pointer;
+}

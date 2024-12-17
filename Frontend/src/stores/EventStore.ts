@@ -3,7 +3,7 @@ import RootStore from './rootStore.ts'
 import { useStores } from './rootStoreContext.ts'
 import UserInfoService from '../services/UserInfo/UserInfoService.ts'
 import rootStore from './rootStore.ts'
-import { IUser } from '../models/User/User.ts'
+import { IUser } from '../models/User/response/User.ts'
 import axios from 'axios'
 import { http } from '../services/http'
 
