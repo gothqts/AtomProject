@@ -3,7 +3,6 @@ import { useStores } from '../../stores/rootStoreContext.ts'
 import ProfileInput from '../../shared/ProfileInput/index.tsx'
 import { observer } from 'mobx-react-lite'
 import { FC, useState, useEffect } from 'react'
-import { c } from 'vite/dist/node/types.d-aGj9QkWt'
 
 interface IUpdatedData {
   fio: string
@@ -74,7 +73,6 @@ const Profile: FC = observer(() => {
     const currentPassword = user.CurrentPassword
     const newPassword = user.NewPassword
 
-    // Проверка на наличие паролей перед обновлением
     if (currentPassword && newPassword) {
       console.log(currentPassword, newPassword)
       userStore.UpdatePsw(currentPassword, newPassword)

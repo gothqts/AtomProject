@@ -8,3 +8,6 @@ export interface IPasswords {
   currentPassword: string
   newPassword: string
 }
+export interface IEmail {
+  email: string
+}

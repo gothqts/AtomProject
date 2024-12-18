@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { http } from '../http'
 import { IUser } from '../../models/User/response/User.ts'
 import { BaseStatusResponse } from '../../models/Auth/response/authResponse.ts'
-import { IPasswords, UserRequest } from '../../models/User/request/userRequest.ts'
+import { IEmail, UserRequest } from '../../models/User/request/userRequest.ts'
 
 export default class UserInfoService {
   static async getUser(): Promise<AxiosResponse<IUser>> {
@@ -12,10 +12,10 @@ export default class UserInfoService {
     return http.put('/api/user', Params)
   }
   static async UpdateUserTel(tel: string): Promise<AxiosResponse<BaseStatusResponse>> {
-    return http.put('/api/user/phone', tel)
+    return http.put('/api/user/phone', { phone: tel })
   }
-  static async UpdateEmail(email: string): Promise<AxiosResponse<BaseStatusResponse>> {
-    return http.put('/api/user/email', email)
+  static async UpdateEmail(email: IEmail): Promise<AxiosResponse<BaseStatusResponse>> {
+    return http.put('/api/user/email', { email: email })
   }
   static async UpdatePassword(currentPassword, newPassword): Promise<AxiosResponse<BaseStatusResponse>> {
     return http.put('/api/user/password', { currentPassword: currentPassword, newPassword: newPassword })
