@@ -4,3 +4,7 @@ export interface UserRequest {
   status: string | null
   city: string | null
 }
+export interface IPasswords {
+  currentPassword: string
+  newPassword: string
+}

@@ -26,8 +26,8 @@ export default class EventStore {
     try {
       const response = await http.get(`/api/cities?skip=${skip}&take=${take}`)
       this.cities = response.data.cities.map((city) => ({
-        label: city.name, // Ключ label будет равен имени города
-        value: city.name, // Ключ value тоже будет равен имени города
+        label: city.name,
+        value: city.name,
       }))
       console.log(response.data)
     } catch (error) {

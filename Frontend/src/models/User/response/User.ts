@@ -9,4 +9,6 @@ export interface IUser {
   status: string | null
   avatarImage: string
   createdEvents: [{}] | null
+  CurrentPassword: string
+  NewPassword: string
 }

@@ -102,9 +102,10 @@ export default class AuthStore {
     try {
       const response = await AuthService.logout()
       localStorage.removeItem('token')
-      localStorage.removeItem('tokenExpiry') // Удаляем время жизни токена
+      localStorage.removeItem('tokenExpiry')
       this.resetAuthState()
       console.log(response.data.message)
+      location.replace(urls.login)
     } catch (err) {
       console.log('logout err', err)
     } finally {
