@@ -1,0 +1,37 @@
+.container{
+	width: 688px;
+	height: 140px;
+	flex-shrink: 0;
+	background: #FF7B00;
+	padding-left: 14px;
+	padding-top: 28px;
+}
+
+.title{
+	font-size: 36px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 55px; 
+}
+
+.edit_div{
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	border: none;
+	background: none;
+	cursor: pointer;
+	padding: 0;
+}
+
+.edit_div:focus{
+	outline: none;
+	background: none;
+}
+
+.edit{
+	font-size: 30px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 55px;
+}
