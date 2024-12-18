@@ -145,7 +145,7 @@ public class EventCreationController : Controller
             CreatorUserId = userId,
             IsPublic = false,
             Title = "Новое мероприятие",
-            BannerImageFilepath = null, // TODO: default image
+            BannerImageFilepath = Path.Combine(_eventImageService.EventImagesRelativePath, _eventImageService.DefaultEventImageFilename),
             IsOnline = true,
             IsSignupOpened = false,
             DateStart = DateTime.Now.ToUniversalTime(),
