@@ -3,8 +3,6 @@ import AuthService from '../services/Auth/AuthService.ts'
 import { IUser } from '../models/User/response/User.ts'
 import RootStore from './rootStore.ts'
 import UserInfoService from '../services/UserInfo/UserInfoService.ts'
-import { AuthResponse } from '../models/Auth/response/authResponse.ts'
-import { http } from '../services/http'
 import { urls } from '../navigate/app.urls.ts'
 
 interface IAuthState {
@@ -38,21 +36,25 @@ export default class AuthStore {
     }
   }
 
-  refactorFio(fio) {
-    if (fio && fio.length > 0) {
-      const refactoredFio = fio.split(' ')
-      return refactoredFio.length >= 2 ? refactoredFio.slice(0, 2).join(' ') : fio
-    }
-    return fio
-  }
-
-  // Устанавливаем время жизни токена равным 12 минутам (720 секунд)
   updateAuthState(userId: string, accessToken: string) {
     const expiresIn = 720 // Время жизни токена в секундах (12 минут)
     const expiryTime = Date.now() + expiresIn * 1000 // Переводим в миллисекунды
 
     runInAction(() => {
-      this.AuthState.user = { id: userId }
+      this.AuthState.user = {
+        id: userId,
+        phone: '',
+        email: '',
+        fio: '',
+        city: '',
+        roleTitle: '',
+        description: '',
+        status: '',
+        avatarImage: '',
+        createdEvents: null,
+        CurrentPassword: '',
+        NewPassword: '',
+      }
       this.AuthState.isAuth = true
       localStorage.setItem('token', accessToken)
       localStorage.setItem('tokenExpiry', expiryTime.toString()) // Сохраняем время жизни токена
@@ -120,7 +122,6 @@ export default class AuthStore {
       runInAction(() => {
         this.AuthState.user = {
           ...response.data,
-          fio: this.refactorFio(response.data.fio),
         }
         userStore.user = this.AuthState.user
       })

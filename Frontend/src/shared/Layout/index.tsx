@@ -11,6 +11,17 @@ const Layout = observer(() => {
   const { authStore } = useStores()
   const avatar = authStore.AuthState.user?.avatarImage
   const name = authStore.AuthState.user?.fio
+
+  const refactorName = (name) => {
+    if (name && name.length > 0) {
+      const refactoredFio = name.split(' ')
+      return refactoredFio.length >= 2 ? refactoredFio.slice(0, 2).join(' ') : name
+    }
+    return name
+  }
+
+  const formattedName = refactorName(name)
+
   const [expanded, setExpanded] = useState<boolean>(false) // Состояние для управления DropDown меню
 
   const handleNameClick = () => {
@@ -46,7 +57,7 @@ const Layout = observer(() => {
               <img src={avatar} alt='Avatar' className={styles.avatar_image} />
             </div>
             <div className={styles.user_name} onClick={handleNameClick}>
-              {name}
+              {formattedName}
             </div>
             {expanded && <DroppedMenu setExpanded={setExpanded} />}
           </div>

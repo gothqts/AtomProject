@@ -1,12 +1,12 @@
 export interface IUser {
-  id: string | null
-  phone: string | null
-  email: string | null
-  fio: string | null
-  city: string | null
-  roleTitle: string | null
-  description: string | null
-  status: string | null
+  id: string
+  phone: string
+  email: string
+  fio: string
+  city: string
+  roleTitle: string
+  description: string
+  status: string
   avatarImage: string
   createdEvents: [{}] | null
   CurrentPassword: string

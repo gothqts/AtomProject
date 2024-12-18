@@ -12,6 +12,7 @@ const Events = lazy(() => import('../screens/Events'))
 const Profile = lazy(() => import('../screens/Profile'))
 const EventDetails = lazy(() => import('../screens/EventDetails'))
 const MyEvents = lazy(() => import('../screens/MyEvents'))
+const CreateEvent = lazy(() => import('../screens/CreateEvent'))
 
 const appRoutes: IRoute[] = [
   {
@@ -55,6 +56,14 @@ const appRoutes: IRoute[] = [
     element: (
       <PrivateRoute>
         <MyEvents />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: urls.createEvent,
+    element: (
+      <PrivateRoute>
+        <CreateEvent />
       </PrivateRoute>
     ),
   },
