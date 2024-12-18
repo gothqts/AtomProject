@@ -1,5 +1,5 @@
 import styles from './LastEvents.module.css'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Arrow from '../../assets/images/arrow-right.svg?react'
 
 const Index = ({ events }) => {

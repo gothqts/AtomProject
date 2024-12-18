@@ -3,6 +3,7 @@
   height: 100vh;
   margin-top: 200px;
   background-image: url('../../assets/backgrounds/MyEventsGraph.svg');
+  background-position: center;
 
   display: flex;
   justify-content: space-between;
@@ -66,4 +67,14 @@
 .show_more:focus{
 	outline: none;
 	background: none;
+
+.create_btn {
+  width: 300px;
+  height: 100px;
+  color: #f0f0f0;
+  background: #33adff;
+  font-size: 32px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
 }
