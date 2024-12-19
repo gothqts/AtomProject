@@ -74,3 +74,9 @@ img {
   outline: none;
   background-color: transparent;
 }
+.event_address {
+  font-size: 40px;
+  font-weight: 500;
+  padding-top: 10px;
+  padding-bottom: 25px;
+}
