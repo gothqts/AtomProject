@@ -125,7 +125,6 @@ export default class AuthStore {
         }
         userStore.user = this.AuthState.user
       })
-      console.log(this.AuthState.user)
     } catch (err) {
       console.log(err)
     }

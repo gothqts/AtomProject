@@ -1,39 +1,21 @@
 import styles from './home.module.css'
-import HomeSection from '../../shared/LastEvents'
+import LastEvents from '../../shared/LastEvents'
 import Arrow from '../../assets/images/arrow_down.svg?react'
 import BlueBtn from '../../shared/buttons/BlueBtn'
 import { urls } from '../../navigate/app.urls.ts'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import { useStores } from '../../stores/rootStoreContext.ts'
+import { useEffect } from 'react'
 
 const Home = observer(() => {
-  const { authStore } = useStores()
+  const { authStore, eventStore } = useStores()
 
-  const events = [
-    {
-      id: 1,
-      image: 'src/assets/images/Event.svg',
-      title: `Лекция "Просто о науке"`,
-      date: '21 сентября',
-      time: '20:00',
-      description:
-        'Защита частных персональных данных является важным аспектом обеспечения конфиденциальности\n' +
-        'и безопасности личности. Законодательство многих стран регулирует обработку таких данных, требуя согласия владельца на их использование и установления мер\n' +
-        'по их защите.',
-    },
-    {
-      id: 2,
-      image: 'src/assets/images/Event.svg',
-      title: `Лекция "Разработка сайтов"`,
-      date: '21 сентября',
-      time: '20:00',
-      description:
-        'Защита частных персональных данных является важным аспектом обеспечения конфиденциальности\n' +
-        'и безопасности личности. Законодательство многих стран регулирует обработку таких данных, требуя согласия владельца на их использование и установления мер\n' +
-        'по их защите.',
-    },
-  ]
+  useEffect(() => {
+    eventStore.FetchUpcomingEvents()
+  }, [])
+  console.log(eventStore.upcomingEvents)
+
   return (
     <div className={styles.home_container}>
       <div className={styles.main_wrapper}>
@@ -57,7 +39,7 @@ const Home = observer(() => {
 
       <div className={styles.selection_of_events}>
         <div className={styles.selection_of_events_title}>Подборка мероприятий</div>
-        <HomeSection events={events} />
+        <LastEvents events={eventStore.upcomingEvents} />
       </div>
       <div className={styles.footer_link}>
         Интересные факты о нас

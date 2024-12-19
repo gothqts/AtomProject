@@ -10,3 +10,6 @@ export interface IBasicEventInfo {
   address: string
   isSignupOpened: boolean
 }
+export interface IBasicEventResponse {
+  events: IBasicEventInfo[]
+}

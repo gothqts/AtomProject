@@ -3,7 +3,7 @@ import styles from './MyEvents.module.css'
 import EventsMeddleLine from '../../assets/images/myEventsGraph.svg?react'
 import UpcomingEvent from '../../shared/MyEvent/UpcomingEvent/index.tsx'
 import PastEvent from '../../shared/MyEvent/PastEvent/index.tsx'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
 import { useStores } from '../../stores/rootStoreContext.ts'
 
@@ -22,27 +22,23 @@ const MyEvents: FC = () => {
         <div className={styles.upcoming}>
           <div className={styles.upcoming_title}>Предстоящие</div>
           <div className={styles.events_list}>
-            <UpcomingEvent title='Новый год'/>
-            <UpcomingEvent title='Пасха'/>
-            <PastEvent title='Прошедшее мероприятие'/>
+            <UpcomingEvent title='Новый год' />
+            <UpcomingEvent title='Пасха' />
+            <PastEvent title='Прошедшее мероприятие' />
           </div>
           <button className={styles.show_more}>Показать ещё</button>
         </div>
 
-        <div>
-          
-        </div>
+        <div></div>
       </div>
 
       <EventsMeddleLine />
 
       <div className={styles.section_div}>
-
         <div className={styles.left_section_titles}>
           <div className={styles.section_title}>Активность в мероприятиях</div>
           <div className={styles.upcoming_title}>Предстоящие</div>
         </div>
-
       </div>
       <button className={styles.create_btn} onClick={handleClick}>
         Создать мероприятие

@@ -7,6 +7,7 @@ import { IUser } from '../models/User/response/User.ts'
 import axios from 'axios'
 import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
+import { IUpcomingEvents } from '../screens/Home/types/homeTypes.ts'
 
 interface ICity {
   label: string
@@ -29,10 +30,34 @@ type ICities = ICity[]
 export default class EventStore {
   rootStore: RootStore
   cities: ICities = []
-  creatingEvent: null | IEvent
+  creatingEvent: {
+    id: ''
+    isPublic: ''
+    title: ''
+    bannerImage: ''
+    dateStart: ''
+    dateEnd: ''
+    isOnline: false
+    city: ''
+    address: ''
+    isSignupOpened: true
+  }
+  upcomingEvents: IUpcomingEvents[] = []
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false })
     this.rootStore = rootStore
+  }
+
+  async FetchUpcomingEvents() {
+    try {
+      const response = await EventsService.FetchUpcomingEvents()
+      this.upcomingEvents = response.data.events
+    } catch (error) {
+      console.log(error, 'Ошибка загрузки последних событий')
+    }
+  }
+  setDateStart(value) {
+    this.creatingEvent.dateStart = value
   }
   async fetchCities(skip: number = 0, take: number = 10) {
     try {
@@ -52,6 +77,25 @@ export default class EventStore {
       this.creatingEvent = response.data
     } catch (error) {
       console.log(error, 'Ошибка создания меро')
+    }
+  }
+  async UpdateEvent(data) {
+    try {
+      const response = await EventsService.UpdateEvent(data)
+      this.creatingEvent = {
+        id: '',
+        isPublic: '',
+        title: '',
+        bannerImage: '',
+        dateStart: '',
+        dateEnd: '',
+        isOnline: false,
+        city: '',
+        address: '',
+        isSignupOpened: true,
+      }
+    } catch (error) {
+      console.log(error, 'Ошибка обноления события')
     }
   }
 }

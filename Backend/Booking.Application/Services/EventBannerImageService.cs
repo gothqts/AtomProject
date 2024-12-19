@@ -28,7 +28,7 @@ public class EventBannerImageService
             var imagePath = Path.Combine(webRootPath, userEvent.BannerImageFilepath);
             if (File.Exists(imagePath))
             {
-                File.Exists(imagePath);
+                File.Delete(imagePath);
             }
         }
 
