@@ -21,7 +21,8 @@ public static class DtoConverter
             City = userEvent.City,
             Address = userEvent.Address,
             IsSignupOpened = userEvent.IsSignupOpened,
-            IsPublic = userEvent.IsPublic
+            IsPublic = userEvent.IsPublic,
+            Description = userEvent.Description
         };
     }
 

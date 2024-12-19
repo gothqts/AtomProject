@@ -21,4 +21,6 @@ public class BasicEventInfoResponse
     public string? Address { get; set; }
     
     public required bool IsSignupOpened { get; set; }
+
+    public string Description { get; set; } = null!;
 }
