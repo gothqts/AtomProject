@@ -5,24 +5,21 @@
   padding-left: 120px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   background-image: url('../../assets/backgrounds/BackgroundProfile.svg');
   background-position: right;
   background-size: contain;
-  gap: 90px;
+  gap: 50px;
 }
 
 .header {
   font-weight: 700;
   font-size: 50px;
 }
-.dates {
-}
 .dates_header {
   font-weight: 600;
   font-size: 38px;
-  margin-top: 20px;
-  margin-bottom: 50px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 .update_btn {
   background: #33adff;

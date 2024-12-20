@@ -13,17 +13,20 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(
   (response) => {
+    console.log(response.status)
     return response
   },
+
   async (error) => {
     const originalRequest = error.config
     originalRequest._isRetry = false
-    if (error.status === 401) {
+    console.log(error)
+    if (error) {
       localStorage.removeItem('token')
       if (!originalRequest._isRetry) {
         originalRequest._isRetry = true
         try {
-          const resp = await http.post('http://localhost:8080/api/auth/refresh')
+          const resp = await http.post('http://localhost:8080/api/auth/refresh', { withCredentials: true })
           localStorage.setItem('token', resp.data.accessToken)
           return http.request(originalRequest)
         } catch (refreshError) {

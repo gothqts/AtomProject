@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { http } from '../http'
-import { IUser } from '../../models/User/response/User.ts'
+import { IAvatarUpdateResponse, IUser } from '../../models/User/response/User.ts'
 import { BaseStatusResponse } from '../../models/Auth/response/authResponse.ts'
 import { IEmail, UserRequest } from '../../models/User/request/userRequest.ts'
 
@@ -19,5 +19,8 @@ export default class UserInfoService {
   }
   static async UpdatePassword(currentPassword, newPassword): Promise<AxiosResponse<BaseStatusResponse>> {
     return http.put('/api/user/password', { currentPassword: currentPassword, newPassword: newPassword })
+  }
+  static async UpdateAva(file: File): Promise<AxiosResponse<IAvatarUpdateResponse>> {
+    return http.post('/api/user/avatar', file)
   }
 }

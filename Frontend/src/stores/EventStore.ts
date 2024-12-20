@@ -1,51 +1,29 @@
-import { makeAutoObservable, observable, runInAction } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import RootStore from './rootStore.ts'
-import { useStores } from './rootStoreContext.ts'
-import UserInfoService from '../services/UserInfo/UserInfoService.ts'
-import rootStore from './rootStore.ts'
-import { IUser } from '../models/User/response/User.ts'
-import axios from 'axios'
 import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
 import { IUpcomingEvents } from '../screens/Home/types/homeTypes.ts'
+import { IBasicEventInfo } from '../models/Events/response/EventsResponse.ts'
 
 interface ICity {
   label: string
   value: string
-}
-interface IEvent {
-  id: string
-  isPublic: boolean
-  title: string
-  bannerImage: string
-  dateStart: string
-  dateEnd: string
-  isOnline: boolean
-  city: string
-  address: string
-  isSignupOpened: boolean
 }
 type ICities = ICity[]
 
 export default class EventStore {
   rootStore: RootStore
   cities: ICities = []
-  creatingEvent: {
-    id: ''
-    isPublic: ''
-    title: ''
-    bannerImage: ''
-    dateStart: ''
-    dateEnd: ''
-    isOnline: false
-    city: ''
-    address: ''
-    isSignupOpened: true
-  }
+  creatingEvent: IBasicEventInfo | null = null
   upcomingEvents: IUpcomingEvents[] = []
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false })
     this.rootStore = rootStore
+  }
+  setCreatingEventData(field: keyof IBasicEventInfo, value: string) {
+    if (this.creatingEvent) {
+      this.creatingEvent = { ...this.creatingEvent, [field]: value }
+    }
   }
 
   async FetchUpcomingEvents() {
@@ -55,9 +33,6 @@ export default class EventStore {
     } catch (error) {
       console.log(error, 'Ошибка загрузки последних событий')
     }
-  }
-  setDateStart(value) {
-    this.creatingEvent.dateStart = value
   }
   async fetchCities(skip: number = 0, take: number = 10) {
     try {
@@ -75,24 +50,16 @@ export default class EventStore {
     try {
       const response = await EventsService.createEvent()
       this.creatingEvent = response.data
+      console.log(this.creatingEvent)
     } catch (error) {
       console.log(error, 'Ошибка создания меро')
     }
   }
-  async UpdateEvent(data) {
+  async UpdateEvent(data, id) {
     try {
-      const response = await EventsService.UpdateEvent(data)
-      this.creatingEvent = {
-        id: '',
-        isPublic: '',
-        title: '',
-        bannerImage: '',
-        dateStart: '',
-        dateEnd: '',
-        isOnline: false,
-        city: '',
-        address: '',
-        isSignupOpened: true,
+      const response = await EventsService.UpdateEvent(data, id)
+      if (response.status == 200) {
+        this.creatingEvent = null
       }
     } catch (error) {
       console.log(error, 'Ошибка обноления события')

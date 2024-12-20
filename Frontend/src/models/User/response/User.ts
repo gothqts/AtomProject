@@ -12,3 +12,10 @@ export interface IUser {
   CurrentPassword: string
   NewPassword: string
 }
+
+export interface IAvatarUpdateResponse {
+  completed: boolean
+  status: string
+  message: string
+  image: string
+}

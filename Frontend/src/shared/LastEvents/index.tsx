@@ -30,6 +30,7 @@ const LastEvents: React.FC<IPropsLastEvents> = ({ events }) => {
                 {event.city}, {event.address}
               </div>
               <div className={styles.date}>{formatDate(event.dateStart)}</div>
+              <div className={styles.event_description}>{event.description}</div>
             </div>
             <button onClick={() => navigateToDetails(event)} className={styles.detail_button}>
               Подробнее

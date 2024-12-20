@@ -9,6 +9,7 @@ export interface IBasicEventInfo {
   city: string
   address: string
   isSignupOpened: boolean
+  description: string
 }
 export interface IBasicEventResponse {
   events: IBasicEventInfo[]

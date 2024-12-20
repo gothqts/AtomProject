@@ -52,6 +52,13 @@ export default class UserStore {
       console.log(error.status, 'Ошибка изменения пароля пользователя')
     }
   }
+  // async UpdateAvatar(file) {
+  //   try {
+  //     const response = await UserInfoService.UpdateAva(file)
+  //   } catch (error) {
+  //     console.log(error, 'Ошибка обновления аватара')
+  //   }
+  // }
 
   async UpdateEmail(email) {
     try {

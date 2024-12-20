@@ -9,4 +9,5 @@ export interface IUpcomingEvents {
   city: string
   address: string
   isSignupOpened: boolean
+  description: string
 }

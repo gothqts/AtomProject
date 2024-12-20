@@ -34,7 +34,7 @@ const Profile: FC = observer(() => {
       { title: 'Статус', type: 'text', value: user?.status },
       { title: 'Город', type: 'text', value: user?.city },
     ],
-    Avatar: [{ title: 'Фото', type: 'text', value: user?.avatarImage }],
+    Avatar: [{ title: 'Фото', type: 'avatar', value: user?.avatarImage }],
     Telephone: [{ title: 'Телефон', type: 'tel', value: user?.phone }],
     Email: [{ title: 'E-mail', type: 'email', value: user?.email }],
     Password: [
@@ -77,9 +77,26 @@ const Profile: FC = observer(() => {
       console.log(currentPassword, newPassword)
       userStore.UpdatePsw(currentPassword, newPassword)
     } else {
-      console.error('Пароли не могут быть пустыми')
+      console.log('Пароли не могут быть пустыми')
     }
   }
+
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0] // Получаем первый файл из списка
+  //   if (file) {
+  //     userStore.setUserFields('avatarImage', file)
+  //   } else {
+  //     console.log('Выберите файл для загрузки')
+  //   }
+  // }
+  // const handleUpdateImg = async () => {
+  //   const img = user.avatarImage
+  //   if (img) {
+  //     await userStore.UpdateAvatar(img)
+  //   } else {
+  //     console.log('Аватар не может быть пустым')
+  //   }
+  // }
 
   const handleInputChange = (title: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = event.target.value
@@ -128,13 +145,13 @@ const Profile: FC = observer(() => {
         </button>
       </div>
 
-      <div className={styles.section}>
-        <div className={styles.section_title}>Аватар</div>
-        {profileData.Avatar.map((field) => (
-          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
-        ))}
-        <button className={styles.update_btn}>Сохранить</button>
-      </div>
+      {/*<div className={styles.section}>*/}
+      {/*  <div className={styles.section_title}>Аватар</div>*/}
+      {/*  {profileData.Avatar.map((field) => (*/}
+      {/*    <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleUpdateImg} />*/}
+      {/*  ))}*/}
+      {/*  <button className={styles.update_btn}>Сохранить</button>*/}
+      {/*</div>*/}
 
       <div className={styles.section}>
         <div className={styles.section_title}>Телефон</div>
