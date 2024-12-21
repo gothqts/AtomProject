@@ -20,7 +20,7 @@ export default class UserInfoService {
   static async UpdatePassword(currentPassword, newPassword): Promise<AxiosResponse<BaseStatusResponse>> {
     return http.put('/api/user/password', { currentPassword: currentPassword, newPassword: newPassword })
   }
-  static async UpdateAva(file: File): Promise<AxiosResponse<IAvatarUpdateResponse>> {
+  static async UpdateAva(file): Promise<AxiosResponse<IAvatarUpdateResponse>> {
     return http.post('/api/user/avatar', file)
   }
 }

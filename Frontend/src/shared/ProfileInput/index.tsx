@@ -1,13 +1,15 @@
 import styles from './ProfileInput.module.css'
+import { observer } from 'mobx-react-lite'
 
 interface ProfileInputProps {
   title: string
   type: string
   value: string
-  placeholder?: string
+  placeholder: string
+  onChange: React.ChangeEventHandler<HTMLInputElement>
 }
 
-const ProfileInput: React.FC<ProfileInputProps> = ({ title, type, value, onChange, placeholder }) => {
+const ProfileInput: React.FC<ProfileInputProps> = observer(({ title, type, value, onChange, placeholder }) => {
   const shouldDisplayTitle: boolean = title !== 'E-mail' && title !== 'Телефон'
 
   return (
@@ -18,6 +20,6 @@ const ProfileInput: React.FC<ProfileInputProps> = ({ title, type, value, onChang
       </div>
     </div>
   )
-}
+})
 
 export default ProfileInput

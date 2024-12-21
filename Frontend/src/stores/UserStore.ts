@@ -13,10 +13,11 @@ export default class UserStore {
     this.rootStore = rootStore
   }
 
-  setUserFields(field: string, value: string) {
-    this.user = { ...this.user, [field]: value }
+  setUserFields(field: keyof IUser, value: string) {
+    if (this.user) {
+      this.user = { ...this.user, [field]: value }
+    }
   }
-
   async UpdateData(InputValue: UserRequest) {
     try {
       const response = await UserInfoService.UpdateUserData(InputValue)
@@ -52,13 +53,16 @@ export default class UserStore {
       console.log(error.status, 'Ошибка изменения пароля пользователя')
     }
   }
-  // async UpdateAvatar(file) {
-  //   try {
-  //     const response = await UserInfoService.UpdateAva(file)
-  //   } catch (error) {
-  //     console.log(error, 'Ошибка обновления аватара')
-  //   }
-  // }
+  async UpdateAvatar(file) {
+    try {
+      const response = await UserInfoService.UpdateAva(file)
+      if (response.status == 200) {
+        alert('Аватар успешно загружен')
+      }
+    } catch (error) {
+      console.log(error, 'Ошибка обновления аватара')
+    }
+  }
 
   async UpdateEmail(email) {
     try {

@@ -9,8 +9,6 @@ export interface IUser {
   status: string
   avatarImage: string
   createdEvents: [{}] | null
-  CurrentPassword: string
-  NewPassword: string
 }
 
 export interface IAvatarUpdateResponse {

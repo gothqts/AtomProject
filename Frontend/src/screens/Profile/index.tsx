@@ -2,134 +2,59 @@ import styles from './Profile.module.css'
 import { useStores } from '../../stores/rootStoreContext.ts'
 import ProfileInput from '../../shared/ProfileInput/index.tsx'
 import { observer } from 'mobx-react-lite'
-import { FC, useState, useEffect } from 'react'
+import { FC, ChangeEvent, useEffect, useState } from 'react'
+import { IUser } from '../../models/User/response/User.ts'
+import AvatarUploader from './Components/AvatarUploader'
+import { IPasswords } from '../../models/User/request/userRequest.ts'
 
-interface IUpdatedData {
-  fio: string
-  description: string
-  status: string
-  city: string
-}
-interface ProfileField {
-  title: string
-  type: string
-  value: string | null | undefined
-}
-
-interface ProfileData {
-  PersonalData: ProfileField[]
-  Avatar: ProfileField[]
-  Telephone: ProfileField[]
-  Email: ProfileField[]
-  Password: ProfileField[]
-}
 const Profile: FC = observer(() => {
   const { userStore } = useStores()
-  const { user } = userStore
+  const user: IUser | null = userStore.user
 
-  const generateProfileData = (): ProfileData => ({
-    PersonalData: [
-      { title: 'ФИО', type: 'text', value: user?.fio },
-      { title: 'Описание', type: 'text', value: user?.description },
-      { title: 'Статус', type: 'text', value: user?.status },
-      { title: 'Город', type: 'text', value: user?.city },
-    ],
-    Avatar: [{ title: 'Фото', type: 'avatar', value: user?.avatarImage }],
-    Telephone: [{ title: 'Телефон', type: 'tel', value: user?.phone }],
-    Email: [{ title: 'E-mail', type: 'email', value: user?.email }],
-    Password: [
-      { title: 'Текущий пароль', type: 'password', value: user?.CurrentPassword },
-      { title: 'Новый пароль', type: 'password', value: user?.NewPassword },
-    ],
-  })
-
-  const [profileData, setProfileData] = useState(generateProfileData())
-
-  useEffect(() => {
-    setProfileData(generateProfileData())
-  }, [user])
-
-  const handleUpdatePersonalData = () => {
-    const updatedData: IUpdatedData = {
-      fio: profileData.PersonalData.find((field): boolean => field.title === 'ФИО')?.value || '',
-      description: profileData.PersonalData.find((field): boolean => field.title === 'Описание')?.value || '',
-      status: profileData.PersonalData.find((field): boolean => field.title === 'Статус')?.value || '',
-      city: profileData.PersonalData.find((field): boolean => field.title === 'Город')?.value || '',
-    }
-    userStore.UpdateData(updatedData)
+  const handleInputChange = (field: keyof IUser) => (event: ChangeEvent<HTMLInputElement>) => {
+    const value: string = event.target.value
+    userStore.setUserFields(field, value)
   }
-
+  const handlePasswordChange = (field: keyof IPasswords) => (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value
+    setPasswords((prevPasswords) => ({
+      ...prevPasswords,
+      [field]: value,
+    }))
+  }
+  const handleUpdateData = () => {
+    const UserData = {
+      fio: user.fio,
+      status: user.status,
+      city: user.city,
+      description: user.description,
+    }
+    console.log(UserData)
+    userStore.UpdateData(UserData)
+  }
   const handleUpdateTel = () => {
-    const telephone: string | null = user.phone
+    const telephone = user.phone
     console.log(telephone)
-    userStore.UpdateTel('+79222222222')
+    userStore.UpdateTel(telephone)
   }
   const handleUpdateEmail = () => {
-    const email: string | null = user.email
+    const email = user.email
     console.log(email)
     userStore.UpdateEmail(email)
   }
+  const generatePasswords = (): IPasswords => ({
+    currentPassword: '',
+    newPassword: '',
+  })
+  const [passwords, setPasswords] = useState(generatePasswords())
   const handleUpdatePassword = () => {
-    const currentPassword = user.CurrentPassword
-    const newPassword = user.NewPassword
+    const currentPassword = passwords.currentPassword
+    const newPassword = passwords.newPassword
 
     if (currentPassword && newPassword) {
-      console.log(currentPassword, newPassword)
       userStore.UpdatePsw(currentPassword, newPassword)
     } else {
       console.log('Пароли не могут быть пустыми')
-    }
-  }
-
-  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0] // Получаем первый файл из списка
-  //   if (file) {
-  //     userStore.setUserFields('avatarImage', file)
-  //   } else {
-  //     console.log('Выберите файл для загрузки')
-  //   }
-  // }
-  // const handleUpdateImg = async () => {
-  //   const img = user.avatarImage
-  //   if (img) {
-  //     await userStore.UpdateAvatar(img)
-  //   } else {
-  //     console.log('Аватар не может быть пустым')
-  //   }
-  // }
-
-  const handleInputChange = (title: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value: string = event.target.value
-    switch (title) {
-      case 'ФИО':
-        userStore.setUserFields('fio', value)
-        break
-      case 'Телефон':
-        userStore.setUserFields('phone', value)
-        break
-      case 'E-mail':
-        userStore.setUserFields('email', value)
-        break
-      case 'Фото':
-        userStore.setUserFields('avatarImage', value)
-        break
-      case 'Город':
-        userStore.setUserFields('city', value)
-        break
-      case 'Статус':
-        userStore.setUserFields('status', value)
-        break
-      case 'Описание':
-        userStore.setUserFields('description', value)
-        break
-      case 'Текущий пароль':
-        userStore.setUserFields('CurrentPassword', value)
-        break
-      case 'Новый пароль':
-        userStore.setUserFields('NewPassword', value)
-        break
-      default:
-        break
     }
   }
 
@@ -137,27 +62,24 @@ const Profile: FC = observer(() => {
     <div className={styles.profile_container}>
       <div className={styles.section}>
         <div className={styles.section_title}>Личные данные</div>
-        {profileData.PersonalData.map((field) => (
-          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
-        ))}
-        <button className={styles.update_btn} onClick={handleUpdatePersonalData}>
+        <ProfileInput title='ФИО' type='text' value={user.fio} onChange={handleInputChange('fio')} placeholder='Введите ФИО' />
+        <ProfileInput
+          title='О себе'
+          type='text'
+          value={userStore.user.description}
+          onChange={handleInputChange('description')}
+          placeholder='Введите описание'
+        />
+        <ProfileInput title='Статус' type='text' value={user.status} onChange={handleInputChange('status')} placeholder='Введите статаус' />
+        <ProfileInput title='Город' type='text' value={user.city} onChange={handleInputChange('city')} placeholder='Введите город' />
+        <button className={styles.update_btn} onClick={handleUpdateData}>
           Сохранить
         </button>
       </div>
-
-      {/*<div className={styles.section}>*/}
-      {/*  <div className={styles.section_title}>Аватар</div>*/}
-      {/*  {profileData.Avatar.map((field) => (*/}
-      {/*    <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleUpdateImg} />*/}
-      {/*  ))}*/}
-      {/*  <button className={styles.update_btn}>Сохранить</button>*/}
-      {/*</div>*/}
-
+      <AvatarUploader />
       <div className={styles.section}>
         <div className={styles.section_title}>Телефон</div>
-        {profileData.Telephone.map((field) => (
-          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
-        ))}
+        <ProfileInput title='Телефон' type='text' value={user.phone} onChange={handleInputChange('phone')} placeholder='Введите телефон' />
         <button className={styles.update_btn} onClick={handleUpdateTel}>
           Сохранить
         </button>
@@ -165,9 +87,9 @@ const Profile: FC = observer(() => {
 
       <div className={styles.section}>
         <div className={styles.section_title}>Email</div>
-        {profileData.Email.map((field) => (
-          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
-        ))}
+
+        <ProfileInput title='Email' type='email' value={user.email} onChange={handleInputChange('email')} placeholder='Введите email' />
+
         <button className={styles.update_btn} onClick={handleUpdateEmail}>
           Сохранить
         </button>
@@ -175,9 +97,20 @@ const Profile: FC = observer(() => {
 
       <div className={styles.section}>
         <div className={styles.section_title}>Пароль</div>
-        {profileData.Password.map((field) => (
-          <ProfileInput key={field.title} title={field.title} type={field.type} value={field.value} onChange={handleInputChange(field.title)} />
-        ))}
+        <ProfileInput
+          title='Текущий пароль'
+          type='password'
+          value={passwords.currentPassword}
+          onChange={handlePasswordChange('currentPassword')}
+          placeholder='Текущий пароль'
+        />
+        <ProfileInput
+          title='Новый пароль'
+          type='password'
+          value={passwords.newPassword}
+          onChange={handlePasswordChange('newPassword')}
+          placeholder='Новый пароль'
+        />
         <button className={styles.update_btn} onClick={handleUpdatePassword}>
           Сохранить
         </button>

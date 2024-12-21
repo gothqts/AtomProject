@@ -3,6 +3,7 @@ import { urls } from './navigate/app.urls.ts'
 import { RouterProvider } from 'react-router-dom'
 import appRouter from './navigate/app.router.tsx'
 import { useStores } from './stores/rootStoreContext.ts'
+import { observer } from 'mobx-react-lite'
 
 const App: FC = () => {
   const { authStore } = useStores()
@@ -10,12 +11,15 @@ const App: FC = () => {
     if (localStorage.getItem('token')) {
       authStore.checkAuth()
     }
+
     if (location.pathname === '/') {
       location.replace(urls.home)
     }
   }, [])
-
+  if (authStore.AuthState.isLoading) {
+    return <div>Идёт загрузка</div>
+  }
   return <RouterProvider router={appRouter} />
 }
 
-export default App
+export default observer(App)

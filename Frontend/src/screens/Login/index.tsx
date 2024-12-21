@@ -1,6 +1,5 @@
 import styles from './Login.module.css'
 import AuthForm from '../../shared/AuthForm'
-import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
   return (

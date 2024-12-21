@@ -133,12 +133,6 @@ export default class AuthStore {
   async checkAuth() {
     this.setLoading(true)
     try {
-      // const tokenExpiry = localStorage.getItem('tokenExpiry')
-      // if (tokenExpiry && Date.now() > Number(tokenExpiry)) {
-      //   await this.logout()
-      //   location.replace(urls.login)
-      //   return
-      // }
       await this.fetchUser()
       this.AuthState.isAuth = true
     } catch (error) {
@@ -147,6 +141,7 @@ export default class AuthStore {
       this.setLoading(false)
     }
   }
+
   // async checkAuth() {
   //   this.setLoading(true)
   //   try {
