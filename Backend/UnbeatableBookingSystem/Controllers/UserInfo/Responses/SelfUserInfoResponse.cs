@@ -22,8 +22,8 @@ public class SelfUserInfoResponse
     public required string Status { get; set; }
     
     public required string AvatarImage { get; set; }
-    
-    public string City { get; set; }
+
+    public string City { get; set; } = null!;
     
     public required BasicEventInfoResponse[] CreatedEvents { get; set; }
 }

@@ -7,8 +7,8 @@ public class UserInfoResponse
     public required Guid Id { get; set; }
     
     public required string Fio { get; set; }
-    
-    public string City { get; set; }
+
+    public string City { get; set; } = null!;
     
     public required string Description { get; set; }
     
