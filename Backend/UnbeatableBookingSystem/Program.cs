@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactHttpOrigin",
-        policy => policy.WithOrigins("http://localhost:5175", "http://localhost:8080")
+        policy => policy.WithOrigins("http://localhost:5175")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
@@ -38,10 +38,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowReactHttpOrigin");
 
 app.UseMiddleware<RevokedAccessTokenMiddleware>();
 
-app.UseCors("AllowReactHttpOrigin");
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseStaticFiles();

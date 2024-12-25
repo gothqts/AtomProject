@@ -49,7 +49,7 @@ public class EventCreationController : Controller
     [HttpGet]
     [ProducesResponseType(typeof(UpcomingEventsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetUserEvents([FromQuery] int? skip, [FromQuery] int? take)
+    public async Task<IActionResult> GetUserEvents([FromQuery] int? skip, [FromQuery] int? take, [FromQuery] bool? finished)
     {
         var info = _controllerUtils.TryGetUserId(HttpContext);
         if (!info.Succes)
@@ -57,7 +57,7 @@ public class EventCreationController : Controller
             return CustomResults.FailedRequest(info.ErrorMsg);
         }
         var userId = info.UserId!.Value;
-        var events = await _eventService.GetAsync(new DataQueryParams<UserEvent>
+        var dataQueryParams = new DataQueryParams<UserEvent>
         {
             Expression = e => e.CreatorUserId == userId,
             Paging = new PagingParams
@@ -70,7 +70,16 @@ public class EventCreationController : Controller
                 OrderBy = e => e.CreationDate,
                 Ascending = false
             }
-        });
+        };
+        if (finished.HasValue && finished.Value)
+        {
+            dataQueryParams.Filters = [e => e.DateEnd < DateTime.Today.ToUniversalTime()];
+        }
+        else if (finished.HasValue && !finished.Value)
+        {
+            dataQueryParams.Filters = [e => e.DateEnd >= DateTime.Today.ToUniversalTime()];
+        }
+        var events = await _eventService.GetAsync(dataQueryParams);
         
         var res = new UpcomingEventsResponse
         {
