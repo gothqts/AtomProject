@@ -196,7 +196,7 @@ namespace Booking.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     signup_window_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true),
                     phone = table.Column<string>(type: "text", nullable: false),
                     fio = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false)

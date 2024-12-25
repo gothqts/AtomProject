@@ -19,7 +19,7 @@ public class EventSignupService
         _fieldValueService = fieldValueService;
     }
     
-    public async Task<(bool Completed, EventSignupEntry? Entry, string Comment)> SignupUserToEventAsync(Guid userId, Guid eventWindowId, 
+    public async Task<(bool Completed, EventSignupEntry? Entry, string Comment)> SignupUserToEventAsync(Guid? userId, Guid eventWindowId, 
         string? phone, string? email, string? fio, Dictionary<Guid, string> dynamicFieldValues)
     {
         var window = (await _eventSignupWindowService.GetAsync(new DataQueryParams<EventSignupWindow>
