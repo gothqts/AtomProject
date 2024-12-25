@@ -13,9 +13,9 @@ public class EventSignupEntry : IHasId
     [ForeignKey("SignupWindowId")]
     public EventSignupWindow SignupWindow { get; set; } = null!;
 
-    public required Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
     [ForeignKey("UserId")]
-    public User User { get; set; } = null!;
+    public User? User { get; set; } = null!;
     
     public string? Phone { get; set; } = null!;
     
