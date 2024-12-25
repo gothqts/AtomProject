@@ -1,22 +1,23 @@
-import { Stack, TextField } from '@mui/material'
-import { DateTimePicker } from '@mui/x-date-pickers'
-import { useState, useEffect } from 'react'
+import { Stack } from '@mui/material'
+import { DateTimePicker, renderTimeViewClock } from '@mui/x-date-pickers'
 
 const MuiPicker = ({ title, value, onChange }) => {
-  const [selectedDateTime, setSelectedTime] = useState<Date | null>(value || null)
-
-  useEffect(() => {
-    setSelectedTime(value)
-  }, [value])
-
-  const changeHandler = (newValue) => {
-    setSelectedTime(newValue)
-    onChange(newValue)
-  }
-
   return (
     <Stack spacing={4} sx={{ width: '700px' }}>
-      <DateTimePicker label={title} renderInput={(params) => <TextField {...params} />} value={selectedDateTime} onChange={changeHandler} />
+      <DateTimePicker
+        format='DD - MM - YYYY'
+        ampm={false}
+        viewRenderers={{
+          hours: renderTimeViewClock,
+          minutes: renderTimeViewClock,
+        }}
+        label={title}
+        slotProps={{ textField: { variant: 'outlined' } }}
+        value={value}
+        onChange={(newValue) => {
+          onChange(newValue)
+        }}
+      />
     </Stack>
   )
 }

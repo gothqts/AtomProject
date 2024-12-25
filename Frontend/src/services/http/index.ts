@@ -13,15 +13,13 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(
   (response) => {
-    console.log(response.status)
     return response
   },
 
   async (error) => {
     const originalRequest = error.config
     originalRequest._isRetry = false
-    console.log(error)
-    if (error) {
+    if (error.config) {
       localStorage.removeItem('token')
       if (!originalRequest._isRetry) {
         originalRequest._isRetry = true

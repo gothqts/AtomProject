@@ -1,14 +1,16 @@
-import { makeAutoObservable, runInAction } from 'mobx'
+import { makeAutoObservable } from 'mobx'
 import RootStore from './rootStore.ts'
 import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
 import { IUpcomingEvents } from '../screens/Home/types/homeTypes.ts'
 import { IBasicEventInfo } from '../models/Events/response/EventsResponse.ts'
+import myEvents from '../screens/MyEvents'
 
 interface ICity {
   label: string
   value: string
 }
+
 type ICities = ICity[]
 
 export default class EventStore {
@@ -16,10 +18,19 @@ export default class EventStore {
   cities: ICities = []
   creatingEvent: IBasicEventInfo | null = null
   upcomingEvents: IUpcomingEvents[] = []
+  myEvents: IBasicEventInfo[] = []
+  myPastEvents: IBasicEventInfo[] = []
+
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false })
     this.rootStore = rootStore
   }
+
+  setMyPastEvents(myEvents: IBasicEventInfo[]) {
+    const currentDate = new Date()
+    this.myPastEvents = myEvents.filter((event) => new Date(event.dateEnd) < currentDate)
+  }
+
   setCreatingEventData(field: keyof IBasicEventInfo, value: string) {
     if (this.creatingEvent) {
       this.creatingEvent = { ...this.creatingEvent, [field]: value }
@@ -34,6 +45,7 @@ export default class EventStore {
       console.log(error, 'Ошибка загрузки последних событий')
     }
   }
+
   async fetchCities(skip: number = 0, take: number = 10) {
     try {
       const response = await http.get(`/api/cities?skip=${skip}&take=${take}`)
@@ -46,6 +58,7 @@ export default class EventStore {
       console.error('Ошибка при загрузке городов:', error)
     }
   }
+
   async CreateEvent() {
     try {
       const response = await EventsService.createEvent()
@@ -55,6 +68,7 @@ export default class EventStore {
       console.log(error, 'Ошибка создания меро')
     }
   }
+
   async UpdateEvent(data, id) {
     try {
       const response = await EventsService.UpdateEvent(data, id)
@@ -63,6 +77,17 @@ export default class EventStore {
       }
     } catch (error) {
       console.log(error, 'Ошибка обноления события')
+    }
+  }
+
+  async FetchMyEvents() {
+    try {
+      const response = await EventsService.FetchMyEvents()
+      if (response.status == 200) {
+        this.myEvents = response.data.events
+      }
+    } catch (error) {
+      console.log(error, 'Ошибка загрузки моих событий')
     }
   }
 }

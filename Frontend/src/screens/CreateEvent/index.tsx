@@ -5,6 +5,7 @@ import MuiPicker from '../../shared/muiDatePicker/MuiPicker.tsx'
 import ProfileInput from '../../shared/ProfileInput'
 import { IBasicEventInfo } from '../../models/Events/response/EventsResponse.ts'
 import { observer } from 'mobx-react-lite'
+import BannerUploader from './Components/BannerUploader'
 
 const CreateEvent: FC = observer(() => {
   const { eventStore } = useStores()
@@ -15,8 +16,12 @@ const CreateEvent: FC = observer(() => {
     eventStore.setCreatingEventData(field, value)
   }
 
-  const handleDateChange = (field: 'dateStart' | 'dateEnd') => (value) => {
-    eventStore.setCreatingEventData(field, value)
+  const handleDateChange = (field: 'dateStart' | 'dateEnd') => (newValue) => {
+    if (newValue) {
+      eventStore.setCreatingEventData(field, newValue.toISOString())
+    } else {
+      eventStore.setCreatingEventData(field, '')
+    }
   }
 
   const handleUpdate = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -35,13 +40,7 @@ const CreateEvent: FC = observer(() => {
       <MuiPicker title='Выберите время начала мероприятия' value={CreatingEvent?.dateStart} onChange={handleDateChange('dateStart')} />
       <div className={styles.dates_header}>Дата окончания мероприятия</div>
       <MuiPicker title='Выберите время окончания мероприятия' value={CreatingEvent?.dateEnd} onChange={handleDateChange('dateEnd')} />
-      <ProfileInput
-        type='text'
-        title='Баннер'
-        value={CreatingEvent?.bannerImage || ''}
-        placeholder='Введите ссылку на изображение'
-        onChange={handleInputChange('bannerImage')}
-      />
+      <BannerUploader />
       <ProfileInput
         type='text'
         title='Город'

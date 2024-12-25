@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import styles from './AvatarUploader.module.css'
+import styles from './BannerUploader.module.css'
 import { useStores } from '../../../../stores/rootStoreContext.ts'
 import { observer } from 'mobx-react-lite'
 import PhotoIcon from '../../../../assets/images/photoIcon.svg?react'
 
-const AvatarUploader: React.FC = () => {
-  const { userStore } = useStores()
+const BannerUploader: React.FC = () => {
+  const { eventStore } = useStores()
   const [drag, setDrag] = useState<boolean>(false)
 
   function DragStartHandler(e) {
@@ -23,7 +23,7 @@ const AvatarUploader: React.FC = () => {
     let file = e.dataTransfer.files
     const formData = new FormData()
     formData.append('file', file[0])
-    userStore.UpdateAvatar(formData)
+    eventStore.UpdateBanner(formData)
     setDrag(false)
   }
 
@@ -55,4 +55,4 @@ const AvatarUploader: React.FC = () => {
   )
 }
 
-export default observer(AvatarUploader)
+export default observer(BannerUploader)

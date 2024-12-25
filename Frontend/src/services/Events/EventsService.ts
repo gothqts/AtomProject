@@ -14,4 +14,10 @@ export default class EventsService {
   static async FetchUpcomingEvents(): Promise<AxiosResponse<IBasicEventResponse>> {
     return http.get('/api/events/upcoming/2')
   }
+  static async FetchMyEvents(): Promise<AxiosResponse<IBasicEventResponse>> {
+    return http.get('/api/my-events?skip=0&take=10')
+  }
+  static async FetchMyPastEvents(): Promise<AxiosResponse<IBasicEventResponse>> {
+    return http.get('/api/my-events?skip=0&take=10&finished=true')
+  }
 }

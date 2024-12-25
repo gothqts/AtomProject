@@ -1,0 +1,34 @@
+.container {
+  height: 450px;
+  width: 515px;
+  border: 3px solid #33adff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-image: url('../../../../assets/images/bannerIcon.svg');
+  background-position: 96px 50px;
+  background-color: rgba(240, 245, 249, 0.58);
+  font-weight: 500;
+  font-size: 28px;
+  color: #33adff;
+}
+
+.drop_area,
+.drag_area {
+  display: flex;
+  justify-content: center;
+  border: 3px solid #33adff;
+  width: 335px;
+  height: 79px;
+  position: absolute;
+  z-index: 10;
+  gap: 10px;
+  margin-top: 210px;
+}
+
+.drag_area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
