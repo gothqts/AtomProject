@@ -1,7 +1,7 @@
 .container {
   width: 100%;
   height: 100vh;
-  margin-top: 130px;
+  margin-top: 150px;
   background-image: url('../../assets/backgrounds/myEventsGraph.svg');
   background-position: center;
   background-size: contain;
@@ -16,7 +16,11 @@
   flex-direction: column;
   gap: 10px;
 }
-
+.header_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .left_section_titles {
   display: flex;
   flex-direction: column;
@@ -71,8 +75,8 @@ h2 {
 }
 .create_btn {
   margin-top: 20px;
-  width: 300px;
-  height: 100px;
+  width: 220px;
+  height: 70px;
   color: #f0f0f0;
   background: #33adff;
   font-size: 32px;

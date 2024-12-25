@@ -4,7 +4,6 @@ import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
 import { IUpcomingEvents } from '../screens/Home/types/homeTypes.ts'
 import { IBasicEventInfo } from '../models/Events/response/EventsResponse.ts'
-import myEvents from '../screens/MyEvents'
 
 interface ICity {
   label: string
@@ -24,11 +23,6 @@ export default class EventStore {
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false })
     this.rootStore = rootStore
-  }
-
-  setMyPastEvents(myEvents: IBasicEventInfo[]) {
-    const currentDate = new Date()
-    this.myPastEvents = myEvents.filter((event) => new Date(event.dateEnd) < currentDate)
   }
 
   setCreatingEventData(field: keyof IBasicEventInfo, value: string) {
@@ -87,7 +81,17 @@ export default class EventStore {
         this.myEvents = response.data.events
       }
     } catch (error) {
-      console.log(error, 'Ошибка загрузки моих событий')
+      console.log(error, 'Ошибка загрузки моих мероприятий')
+    }
+  }
+  async FetchMyPastEvents() {
+    try {
+      const response = await EventsService.FetchMyPastEvents()
+      if (response.status == 200) {
+        this.myPastEvents = response.data.events
+      }
+    } catch (error) {
+      console.log(error, 'Ошибка загрузки завершенный мероприятий')
     }
   }
 }
