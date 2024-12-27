@@ -54,22 +54,16 @@ public class ControllerUtils
             return (false, info.ErrorMsg, null);
         }
         var user = info.User!;
-        var userEvents = (await _eventService.GetAsync(new DataQueryParams<UserEvent>
-        {
-            Expression = e => e.Id == eventId
-        }));
-        if (userEvents.Length != 1)
+        var userEvent = await _eventService.GetByIdOrDefaultAsync(eventId);
+        if (userEvent == null)
         {
             return (false, "Событие с указанным id не было найдено.", null);
         }
-
-        var userEvent = userEvents[0];
-        if (userEvent.CreatorUserId != user.Id || !(user.Role.CanEditOthersEvents || user.Role.IsAdmin))
+        if (userEvent.CreatorUserId == user.Id || user.Role.CanEditOthersEvents || user.Role.IsAdmin)
         {
-            return (false, "Вы не можете редактировать данное событие.", null);
+            return (true, "", user);
         }
-
-        return (true, "", user);
+        return (false, "Вы не можете редактировать данное событие.", null);
     }
     
     public async Task<(bool Success, string ErrorMsg, User? User)> CheckUserIsAdminAsync(HttpContext httpContext)

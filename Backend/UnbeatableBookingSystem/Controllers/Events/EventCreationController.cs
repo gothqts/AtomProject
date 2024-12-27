@@ -105,11 +105,11 @@ public class EventCreationController : Controller
         {
             Expression = e => e.Id == eventId && e.CreatorUserId == userId
         });
-        if (userEvents.Length != 1)
+        if (userEvents.Length == 0)
         {
             return CustomResults.FailedRequest("События с заданным id не существует, либо его создал другой пользователь.");
         }
-        var userEvent = userEvents[1];
+        var userEvent = userEvents[0];
         var windows = await _eventSignupWindowService.GetAsync(new DataQueryParams<EventSignupWindow>
         {
             Expression = e => e.EventId == eventId

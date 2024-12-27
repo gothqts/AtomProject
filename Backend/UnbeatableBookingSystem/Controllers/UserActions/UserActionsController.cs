@@ -4,6 +4,7 @@ using Booking.Core;
 using Booking.Core.DataQuery;
 using Booking.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
+using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.UserActions.Requests;
 using UnbeatableBookingSystem.Controllers.UserActions.Responses;
@@ -151,10 +152,12 @@ public class UserActionsController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetEventFullInfo([FromRoute] Guid id)
     {
-        var userEvent = (await _eventService.GetAsync(new DataQueryParams<UserEvent>
+        var userEvent = await _eventService.GetByIdOrDefaultAsync(id);
+        if (userEvent == null)
         {
-            Expression = e => e.Id == id
-        }))[0];
+            return CustomResults.FailedRequest("Мероприятия с указанным id не существует.");
+        }
+        
         var windows = await _eventSignupWindowService.GetAsync(new DataQueryParams<EventSignupWindow>
         {
             Expression = w => w.EventId == userEvent.Id,
@@ -166,20 +169,27 @@ public class UserActionsController : Controller
                 Ascending = true
             }
         });
-        var contacts = (await _contactsService.GetAsync(new DataQueryParams<OrganizerContacts>
+        var foundContacts = await _contactsService.GetAsync(new DataQueryParams<OrganizerContacts>
         {
             Expression = c => c.EventId == userEvent.Id
-        }))[0];
+        });
         var res = new FullEventInfoResponse
         {
+            Id = userEvent.Id,
             IsPublic = userEvent.IsPublic,
             Title = userEvent.Title,
+            BannerImageFilepath = DtoConverter.GetEventImageUrl(userEvent, _eventImageService.EventImagesRelativePath, 
+                _eventImageService.DefaultEventImageFilename, Request),
             IsOnline = userEvent.IsOnline,
             IsSignupOpened = userEvent.IsSignupOpened,
+            City = userEvent.City,
+            Address = userEvent.City,
             DateStart = userEvent.DateStart,
             DateEnd = userEvent.DateEnd,
-            OrganizerContacts = DtoConverter.OrganizerContactsToResponse(contacts),
-            SignupWindows = windows.Select(DtoConverter.SignupWindowToResponse).ToArray()
+            Description = userEvent.Description,
+            OrganizerContacts = foundContacts.Select(DtoConverter.OrganizerContactsToResponse).ToArray(),
+            SignupWindows = windows.Select(DtoConverter.SignupWindowToResponse)
+                .ToArray()
         };
         return Ok(res);
     }

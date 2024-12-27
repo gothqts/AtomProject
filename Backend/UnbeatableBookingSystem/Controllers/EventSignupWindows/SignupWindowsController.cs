@@ -63,17 +63,28 @@ public class SignupWindowsController : Controller
         {
             return CustomResults.FailedRequest(check.ErrorMsg);
         }
-
         var window = new EventSignupWindow
         {
             Id = Guid.NewGuid(),
             EventId = eventId,
             Title = request.Title,
-            Date = DateOnly.ParseExact(request.Date, "dd-MM-yyyy"),
-            Time = TimeOnly.ParseExact(request.Time, "HH-mm"),
+            Date = DateOnly.MinValue,
+            Time = TimeOnly.MinValue,
             MaxVisitors = request.MaxVisitors,
             TicketsLeft = request.MaxVisitors - request.AlreadyOccupiedPlaces
         };
+        
+        try
+        {
+            window.Date = DateOnly.ParseExact(request.Date, "dd-MM-yyyy");
+            window.Time = TimeOnly.ParseExact(request.Time, "HH-mm");
+        }
+        catch (FormatException e)
+        {
+            return CustomResults.FailedRequest(
+                "Дата или время указаны в неверном формате. Правильный формат даты: \"dd-MM-yyyy\"; Правильный формат времени: \"HH-mm\"");
+        }
+        
         if (window.TicketsLeft < 0)
         {
             window.TicketsLeft = 0;
@@ -96,6 +107,19 @@ public class SignupWindowsController : Controller
             return CustomResults.FailedRequest(check.ErrorMsg);
         }
 
+        DateOnly date;
+        TimeOnly time;
+        try
+        {
+            date = DateOnly.ParseExact(request.Date, "dd-MM-yyyy");
+            time = TimeOnly.ParseExact(request.Time, "HH-mm");
+        }
+        catch (FormatException e)
+        {
+            return CustomResults.FailedRequest(
+                "Дата или время указаны в неверном формате. Правильный формат даты: \"dd-MM-yyyy\"; Правильный формат времени: \"HH-mm\"");
+        }
+        
         var windows = await _eventSignupWindowService.GetAsync(new DataQueryParams<EventSignupWindow>
         {
             Expression = w => w.EventId == eventId && w.Id == windowId
@@ -104,16 +128,20 @@ public class SignupWindowsController : Controller
         {
             return CustomResults.FailedRequest("Не было найдено ни одного окна записи с указанным id.");
         }
-
+        
         var window = windows[0];
-        if (window.Date != request.Date || window.Time != request.Time)
+        if (window.Date != date || window.Time != time)
         {
             // TODO Добавить оповещения на почту пользователей, чьи записи были изменены?
         }
         window.Title = request.Title;
-        window.Date = request.Date;
-        window.Time = request.Time;
+        window.Date = date;
+        window.Time = time;
         var alreadyOccupied = window.MaxVisitors - window.TicketsLeft;
+        if (request.MaxVisitors > window.MaxVisitors)
+        {
+            window.TicketsLeft += request.MaxVisitors - window.MaxVisitors;
+        }
         window.MaxVisitors = request.MaxVisitors < alreadyOccupied ? alreadyOccupied : request.MaxVisitors;
         
         await _eventSignupWindowService.SaveAsync(window);

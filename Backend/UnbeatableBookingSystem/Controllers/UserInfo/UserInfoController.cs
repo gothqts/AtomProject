@@ -365,7 +365,7 @@ public class UserInfoController : Controller
         var userId = user.Id;
         var dataQueryParams = new DataQueryParams<EventSignupEntry>
         {
-            Expression = e => e.UserId != null && e.UserId == userId && e.Id == eventId,
+            Expression = e => e.UserId != null && e.UserId == userId && e.SignupWindow.EventId == eventId,
             Sorting = new SortingParams<EventSignupEntry>
             {
                 OrderBy = e => e.SignupWindow.Date,
