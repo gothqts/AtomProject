@@ -3,7 +3,7 @@ import RootStore from './rootStore.ts'
 import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
 import { IUpcomingEvents } from '../screens/Home/types/homeTypes.ts'
-import { IBasicEventInfo } from '../models/Events/response/EventsResponse.ts'
+import { IBasicEventInfo, IBasicEventResponse, IFullInfoEventResponse } from '../models/Events/response/EventsResponse.ts'
 
 interface ICity {
   label: string
@@ -19,6 +19,8 @@ export default class EventStore {
   upcomingEvents: IUpcomingEvents[] = []
   myEvents: IBasicEventInfo[] = []
   myPastEvents: IBasicEventInfo[] = []
+  userActivity: IBasicEventInfo[] = []
+  userPastActivity: IBasicEventInfo[] = []
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false })
@@ -92,6 +94,50 @@ export default class EventStore {
       }
     } catch (error) {
       console.log(error, 'Ошибка загрузки завершенный мероприятий')
+    }
+  }
+  async FetchUserActivity() {
+    try {
+      const response = await EventsService.FetchUserActivity()
+      if (response.status == 200) {
+        this.userActivity = response.data.events
+      }
+    } catch (error) {
+      console.log(error, 'Ошибка загрузки активности пользователя')
+    }
+  }
+  async FetchUserPastActivity() {
+    try {
+      const response = await EventsService.FetchUserPastActivity()
+      if (response.status == 200) {
+        this.userPastActivity = response.data.events
+      }
+    } catch (error) {
+      console.log(error, 'Ошибка загрузки прошедшей активности пользователя')
+    }
+  }
+
+  async FetchEventInfoById(eventId: string) {
+    try {
+      const response = await EventsService.FetchEventById(eventId)
+      const { id, isPublic, title, dateStart, dateEnd, isOnline, city, address, isSignupOpened, bannerImageFilepath, Description } = response.data
+
+      this.creatingEvent = {
+        id,
+        isPublic,
+        title,
+        bannerImage: bannerImageFilepath,
+        dateStart,
+        dateEnd,
+        isOnline,
+        city,
+        address,
+        isSignupOpened,
+        description: Description,
+      }
+      console.log(this.creatingEvent)
+    } catch (err) {
+      console.log(err)
     }
   }
 }

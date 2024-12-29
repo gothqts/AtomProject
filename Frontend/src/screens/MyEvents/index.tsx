@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect } from 'react'
 import styles from './MyEvents.module.css'
-import EventItem from './EventItem/index.tsx'
+import EventBlock from './EventsBlockType/index.tsx'
 import { useNavigate } from 'react-router-dom'
 import { urls } from '../../navigate/app.urls.ts'
 import { useStores } from '../../stores/rootStoreContext.ts'
@@ -11,39 +11,18 @@ const MyEvents: FC = () => {
   const { eventStore } = useStores()
   const myEvents = eventStore.myEvents
   const myPastEvents = eventStore.myPastEvents
-  const [upcomingDisplayCount, setUpcomingDisplayCount] = useState<number>(2)
-  const [pastEventDisplayCount, setPastEventDisplayCount] = useState<number>(2)
-  const [showAllUpcomingEvents, setShowAllUpcomingEvents] = useState<boolean>(false)
-  const [showAllPastEvents, setShowAllPastEvents] = useState<boolean>(false)
+  const myActivity = eventStore.userActivity
+  const myPastActivity = eventStore.userPastActivity
 
   useEffect(() => {
     eventStore.FetchMyEvents()
     eventStore.FetchMyPastEvents()
+    eventStore.FetchUserActivity()
+    eventStore.FetchUserPastActivity()
   }, [eventStore])
 
   const handleClick = () => {
     navigate(urls.createEvent)
-    eventStore.CreateEvent()
-  }
-
-  const handleShowMoreUpcoming = () => {
-    setUpcomingDisplayCount((prevCount) => prevCount + 10)
-    setShowAllUpcomingEvents(true)
-  }
-
-  const handleHideUpcomingEvents = () => {
-    setShowAllUpcomingEvents(false)
-    setUpcomingDisplayCount(2)
-  }
-
-  const handleShowMorePastEvents = () => {
-    setPastEventDisplayCount((prevCount) => prevCount + 10)
-    setShowAllPastEvents(true)
-  }
-
-  const handleHidePastEvents = () => {
-    setShowAllPastEvents(false)
-    setPastEventDisplayCount(2)
   }
 
   return (
@@ -55,48 +34,14 @@ const MyEvents: FC = () => {
             Создать
           </button>
         </div>
-
-        <h2>Предстоящие</h2>
-        {myEvents.slice(0, showAllUpcomingEvents ? myEvents.length : upcomingDisplayCount).map((event) => (
-          <EventItem key={event.id} title={event.title} past={false} />
-        ))}
-        {!showAllUpcomingEvents ? (
-          <button className={styles.show_more} onClick={handleShowMoreUpcoming}>
-            Показать ещё
-          </button>
-        ) : (
-          <button className={styles.show_more} onClick={handleHideUpcomingEvents}>
-            Скрыть события
-          </button>
-        )}
-
-        <h2>Прошедшие</h2>
-        {myPastEvents.slice(0, showAllPastEvents ? myPastEvents.length : pastEventDisplayCount).map((event) => (
-          <EventItem key={event.id} title={event.title} past={true} />
-        ))}
-        {pastEventDisplayCount < myPastEvents.length && !showAllPastEvents && (
-          <button className={styles.show_more} onClick={handleShowMorePastEvents}>
-            Показать ещё
-          </button>
-        )}
-        {showAllPastEvents && (
-          <button className={styles.show_more} onClick={handleHidePastEvents}>
-            Скрыть события
-          </button>
-        )}
+        <EventBlock title='Предстоящие' events={myEvents} isPast={false} isActivity={false} />
+        <EventBlock title='Прошедшие' events={myPastEvents} isPast={true} isActivity={false} />
       </div>
 
       <div className={styles.section}>
         <h1 className={styles.header_right}>Активность в мероприятиях</h1>
-        <h2 className={styles.header_right}>Предстоящие</h2>
-        <EventItem title='Мероприятие' past={false} />
-        <EventItem title='Мероприятие' past={false} />
-        <button className={styles.show_more}>Показать ещё</button>
-
-        <h2>Прошедшие</h2>
-        <EventItem title='Мероприятие' past={true} />
-        <EventItem title='Мероприятие' past={true} />
-        <button className={styles.show_more}>Показать ещё</button>
+        <EventBlock title='Предстоящие' events={myActivity} isPast={false} isActivity={true} />
+        <EventBlock title='Прошедшие' events={myPastActivity} isPast={true} isActivity={true} />
       </div>
     </div>
   )

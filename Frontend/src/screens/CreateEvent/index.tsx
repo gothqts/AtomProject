@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react'
+import { ChangeEvent, FC, useEffect } from 'react'
 import { useStores } from '../../stores/rootStoreContext.ts'
 import styles from './CreateEvent.module.css'
 import MuiPicker from '../../shared/muiDatePicker/MuiPicker.tsx'
@@ -6,11 +6,11 @@ import ProfileInput from '../../shared/ProfileInput'
 import { IBasicEventInfo } from '../../models/Events/response/EventsResponse.ts'
 import { observer } from 'mobx-react-lite'
 import BannerUploader from './Components/BannerUploader'
+import dayjs, { Dayjs } from 'dayjs'
 
-const CreateEvent: FC = observer(() => {
+const CreateEvent: React.FC = () => {
   const { eventStore } = useStores()
   const CreatingEvent: IBasicEventInfo | null = eventStore.creatingEvent
-
   const handleInputChange = (field: keyof IBasicEventInfo) => (event: ChangeEvent<HTMLInputElement>) => {
     const value: string = event.target.value
     eventStore.setCreatingEventData(field, value)
@@ -37,9 +37,9 @@ const CreateEvent: FC = observer(() => {
       <div className={styles.header}>Новое мероприятие</div>
       <ProfileInput title='Название' type='text' value={CreatingEvent?.title || ''} placeholder='Введите название' onChange={handleInputChange('title')} />
       <div className={styles.dates_header}>Дата начала мероприятия</div>
-      <MuiPicker title='Выберите время начала мероприятия' value={CreatingEvent?.dateStart} onChange={handleDateChange('dateStart')} />
+      <MuiPicker title='Выберите время начала мероприятия' value={dayjs(CreatingEvent?.dateStart)} onChange={handleDateChange('dateStart')} />
       <div className={styles.dates_header}>Дата окончания мероприятия</div>
-      <MuiPicker title='Выберите время окончания мероприятия' value={CreatingEvent?.dateEnd} onChange={handleDateChange('dateEnd')} />
+      <MuiPicker title='Выберите время окончания мероприятия' value={dayjs(CreatingEvent?.dateEnd)} onChange={handleDateChange('dateEnd')} />
       <BannerUploader />
       <ProfileInput
         type='text'
@@ -61,6 +61,6 @@ const CreateEvent: FC = observer(() => {
       </button>
     </div>
   )
-})
+}
 
-export default CreateEvent
+export default observer(CreateEvent)

@@ -1,0 +1,40 @@
+.eventBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eventBlock h2 {
+  color: #33adff;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 55px;
+  margin-bottom: 11px;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.showMore {
+  color: #33adff;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 55px;
+  align-self: center;
+  margin-top: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.showMore:focus {
+  outline: none;
+  background: none;
+}
+.error_container {
+  font-size: 30px;
+}

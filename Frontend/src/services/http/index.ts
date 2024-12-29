@@ -19,7 +19,7 @@ http.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
     originalRequest._isRetry = false
-    if (error.config) {
+    if (error.response.status == 401) {
       localStorage.removeItem('token')
       if (!originalRequest._isRetry) {
         originalRequest._isRetry = true
