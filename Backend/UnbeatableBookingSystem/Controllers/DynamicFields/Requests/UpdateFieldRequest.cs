@@ -8,7 +8,7 @@ public class UpdateFieldRequest
     
     public required Guid FieldTypeId { get; set; }
 
-    public int? MaxSymbols { get; set; }
+    public required int MaxSymbols { get; set; }
 
     public string? MinValue { get; set; }
     

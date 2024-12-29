@@ -17,7 +17,7 @@ public class FormDynamicField : IHasId
     [ForeignKey("FieldTypeId")] 
     public DynamicFieldType? FieldType { get; set; } = null!;
 
-    public int? MaxSymbols { get; set; }
+    public required int MaxSymbols { get; set; }
 
     public string? MinValue { get; set; }
     

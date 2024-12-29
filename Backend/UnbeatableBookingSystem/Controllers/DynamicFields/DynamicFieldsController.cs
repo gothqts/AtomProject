@@ -75,6 +75,10 @@ public class DynamicFieldsController : Controller
             return CustomResults.FailedRequest(check.ErrorMsg);
         }
 
+        var forms = await _formService.GetAsync(new DataQueryParams<EventSignupForm>
+        {
+            Expression = f => f.EventId == eventId
+        });
         var fieldTypes = await _fieldTypeService.GetAsync(new DataQueryParams<DynamicFieldType>());
         var field = new FormDynamicField
         {
@@ -82,13 +86,14 @@ public class DynamicFieldsController : Controller
             Title = "Новое поле",
             IsRequired = false,
             FieldTypeId = fieldTypes[0].Id,
-            MaxSymbols = null,
+            MaxSymbols = int.MaxValue,
             MinValue = null,
             MaxValue = null,
-            EventFormId = eventId,
+            EventFormId = forms[0].Id,
         };
 
         await _fieldsService.SaveAsync(field);
+        field.FieldType = fieldTypes[0];
         var res = DtoConverter.DynamicFieldToResponse(field);
         return Ok(res);
     }

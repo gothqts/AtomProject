@@ -14,17 +14,17 @@ public class FullEventInfoResponse
     
     public required bool IsSignupOpened { get; set; }
 
-    public string City { get; set; } = null!;
+    public string? City { get; set; } = null!;
 
-    public string Address { get; set; } = null!;
+    public string? Address { get; set; } = null!;
     
     public required DateTime DateStart { get; set; }
     
     public required DateTime DateEnd { get; set; }
 
     public string Description { get; set; } = null!;
-    
-    public required ContactsResponse OrganizerContacts { get; set; }
+
+    public ContactsResponse[] OrganizerContacts { get; set; } = null!;
     
     public required SignupWindowResponse[] SignupWindows { get; set; }
 }

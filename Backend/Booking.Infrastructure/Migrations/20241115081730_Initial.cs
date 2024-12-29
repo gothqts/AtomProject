@@ -169,8 +169,8 @@ namespace Booking.Infrastructure.Migrations
                     is_required = table.Column<bool>(type: "boolean", nullable: false),
                     field_type_id = table.Column<Guid>(type: "uuid", nullable: false),
                     max_symbols = table.Column<int>(type: "integer", nullable: false),
-                    min_value = table.Column<string>(type: "text", nullable: false),
-                    max_value = table.Column<string>(type: "text", nullable: false),
+                    min_value = table.Column<string>(type: "text", nullable: true),
+                    max_value = table.Column<string>(type: "text", nullable: true),
                     event_form_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
