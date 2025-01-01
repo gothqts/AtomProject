@@ -1,7 +1,7 @@
 ﻿using Booking.Core.Entities;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.Events.Responses;
-using UnbeatableBookingSystem.Controllers.UserActions.Responses;
+using UnbeatableBookingSystem.Controllers.MyEvents.Responses;
 
 namespace UnbeatableBookingSystem.Utility;
 

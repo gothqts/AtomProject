@@ -7,7 +7,7 @@ using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.DynamicFields.Requests;
 using UnbeatableBookingSystem.Controllers.DynamicFields.Responses;
-using UnbeatableBookingSystem.Controllers.UserActions.Responses;
+using UnbeatableBookingSystem.Controllers.Events.Responses;
 using UnbeatableBookingSystem.Utility;
 
 namespace UnbeatableBookingSystem.Controllers.DynamicFields;

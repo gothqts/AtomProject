@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.Events.Responses;
-using UnbeatableBookingSystem.Controllers.UserActions.Responses;
 using UnbeatableBookingSystem.Controllers.UserInfo.Requests;
 using UnbeatableBookingSystem.Controllers.UserInfo.Responses;
 using UnbeatableBookingSystem.Utility;

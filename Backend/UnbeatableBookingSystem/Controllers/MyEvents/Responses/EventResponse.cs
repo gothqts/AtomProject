@@ -1,6 +1,6 @@
-﻿using UnbeatableBookingSystem.Controllers.UserActions.Responses;
+﻿using UnbeatableBookingSystem.Controllers.Events.Responses;
 
-namespace UnbeatableBookingSystem.Controllers.Events.Responses;
+namespace UnbeatableBookingSystem.Controllers.MyEvents.Responses;
 
 public class EventResponse
 {

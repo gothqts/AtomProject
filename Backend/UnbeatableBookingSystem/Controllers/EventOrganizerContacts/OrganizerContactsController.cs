@@ -7,7 +7,7 @@ using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
 using UnbeatableBookingSystem.Controllers.EventOrganizerContacts.Requests;
 using UnbeatableBookingSystem.Controllers.EventOrganizerContacts.Responses;
-using UnbeatableBookingSystem.Controllers.UserActions.Responses;
+using UnbeatableBookingSystem.Controllers.Events.Responses;
 using UnbeatableBookingSystem.Utility;
 
 namespace UnbeatableBookingSystem.Controllers.EventOrganizerContacts;

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
+using UnbeatableBookingSystem.Controllers.Events.Responses;
 using UnbeatableBookingSystem.Controllers.EventSignupWindows.Requests;
 using UnbeatableBookingSystem.Controllers.EventSignupWindows.Responses;
-using UnbeatableBookingSystem.Controllers.UserActions.Responses;
 using UnbeatableBookingSystem.Utility;
 
 namespace UnbeatableBookingSystem.Controllers.EventSignupWindows;

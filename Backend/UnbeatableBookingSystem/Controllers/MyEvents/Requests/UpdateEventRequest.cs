@@ -1,4 +1,4 @@
-﻿namespace UnbeatableBookingSystem.Controllers.Events.Requests;
+﻿namespace UnbeatableBookingSystem.Controllers.MyEvents.Requests;
 
 public class UpdateEventRequest
 {

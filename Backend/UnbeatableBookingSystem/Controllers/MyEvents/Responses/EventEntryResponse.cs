@@ -1,10 +1,12 @@
-﻿namespace UnbeatableBookingSystem.Controllers.UserActions.Responses;
+﻿using UnbeatableBookingSystem.Controllers.UserInfo.Responses;
 
-public class SignupResponse
+namespace UnbeatableBookingSystem.Controllers.MyEvents.Responses;
+
+public class EventEntryResponse
 {
-    public required Guid EventId { get; set; }
+    public Guid EntryId { get; set; }
     
-    public required Guid EntryId { get; set; }
+    public BriefUserInfoResponse? UserInfo { get; set; }
     
     public string? Phone { get; set; }
     

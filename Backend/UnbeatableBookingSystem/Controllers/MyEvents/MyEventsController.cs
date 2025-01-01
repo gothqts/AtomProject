@@ -5,17 +5,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
-using UnbeatableBookingSystem.Controllers.Events.Requests;
 using UnbeatableBookingSystem.Controllers.Events.Responses;
-using UnbeatableBookingSystem.Controllers.UserActions.Responses;
+using UnbeatableBookingSystem.Controllers.MyEvents.Requests;
+using UnbeatableBookingSystem.Controllers.MyEvents.Responses;
 using UnbeatableBookingSystem.Controllers.UserInfo.Responses;
 using UnbeatableBookingSystem.Utility;
 
-namespace UnbeatableBookingSystem.Controllers.Events;
+namespace UnbeatableBookingSystem.Controllers.MyEvents;
 
 [Route("/api/my-events")]
 [Authorize]
-public class EventCreationController : Controller
+public class MyEventsController : Controller
 {
     private readonly BaseService<UserEvent> _eventService;
     private readonly BaseService<EventSignupWindow> _eventSignupWindowService;
@@ -28,7 +28,7 @@ public class EventCreationController : Controller
     private readonly EventBannerImageService _eventImageService;
     private readonly IWebHostEnvironment _env;
 
-    public EventCreationController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
+    public MyEventsController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
         BaseService<OrganizerContacts> contactsService, BaseService<EventSignupForm> eventFormService,
         BaseService<FormDynamicField> formDynamicFieldsService, BaseService<EntryFieldValue> entryFieldValueService,
         BaseService<EventSignupEntry> entryService, ControllerUtils controllerUtils, 
