@@ -134,7 +134,9 @@ export default class AuthStore {
     this.setLoading(true)
     try {
       await this.fetchUser()
-      this.AuthState.isAuth = true
+      runInAction(() => {
+        this.AuthState.isAuth = true
+      })
     } catch (error) {
       console.log(error, 'Ошибка при аутентификации')
     } finally {

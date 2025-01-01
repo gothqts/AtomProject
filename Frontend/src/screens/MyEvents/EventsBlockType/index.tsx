@@ -1,6 +1,7 @@
 import { FC, useState } from 'react'
 import EventItem from './EventItem/index.tsx'
 import styles from './EventsBlockType.module.css'
+import { observer } from 'mobx-react-lite'
 
 interface EventBlockProps {
   title: string
@@ -59,4 +60,4 @@ const EventBlock: FC<EventBlockProps> = ({ title, events, isPast, isActivity }) 
   }
 }
 
-export default EventBlock
+export default observer(EventBlock)

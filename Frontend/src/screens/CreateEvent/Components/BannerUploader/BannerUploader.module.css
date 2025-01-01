@@ -22,7 +22,7 @@
   width: 335px;
   height: 79px;
   position: absolute;
-  z-index: 10;
+  z-index: 1;
   gap: 10px;
   margin-top: 210px;
 }

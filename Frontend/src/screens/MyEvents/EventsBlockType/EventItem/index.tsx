@@ -15,9 +15,10 @@ interface IEventItemProps {
 const EventItem: React.FC<IEventItemProps> = ({ title, past, isActivity, id }) => {
   const { eventStore } = useStores()
   const navigate = useNavigate()
-  const handleClick = (e) => {
-    console.log(id)
-    eventStore.FetchEventInfoById(id)
+  const handleClick = async (e) => {
+    await eventStore.FetchEventInfoById(id)
+    const eventId = eventStore.creatingEvent.id
+    navigate(urls.createEvent.replace(`:id`, eventId))
   }
   return (
     <div className={styles.container} style={{ background: past ? 'rgba(255, 123.25, 0, 0.42)' : '#FF7B00' }}>

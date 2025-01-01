@@ -1,9 +1,10 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import RootStore from './rootStore.ts'
 import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
 import { IUpcomingEvents } from '../screens/Home/types/homeTypes.ts'
-import { IBasicEventInfo, IBasicEventResponse, IFullInfoEventResponse } from '../models/Events/response/EventsResponse.ts'
+import { IBasicEventInfo, IFullInfoEventResponse } from '../models/Events/response/EventsResponse.ts'
+import rootStore from './rootStore.ts'
 
 interface ICity {
   label: string
@@ -15,7 +16,19 @@ type ICities = ICity[]
 export default class EventStore {
   rootStore: RootStore
   cities: ICities = []
-  creatingEvent: IBasicEventInfo | null = null
+  creatingEvent: IBasicEventInfo = {
+    id: '',
+    description: '',
+    dateEnd: '',
+    dateStart: '',
+    isSignupOpened: false,
+    isPublic: false,
+    isOnline: false,
+    title: '',
+    address: '',
+    city: '',
+    bannerImage: '',
+  }
   upcomingEvents: IUpcomingEvents[] = []
   myEvents: IBasicEventInfo[] = []
   myPastEvents: IBasicEventInfo[] = []
@@ -27,7 +40,13 @@ export default class EventStore {
     this.rootStore = rootStore
   }
 
-  setCreatingEventData(field: keyof IBasicEventInfo, value: string) {
+  setCreatingEventData(field: keyof IBasicEventInfo, value: string | boolean) {
+    if (this.creatingEvent) {
+      this.creatingEvent = { ...this.creatingEvent, [field]: value }
+    }
+  }
+
+  setCreatingBooleanData(field: keyof IBasicEventInfo, value: boolean) {
     if (this.creatingEvent) {
       this.creatingEvent = { ...this.creatingEvent, [field]: value }
     }
@@ -36,7 +55,9 @@ export default class EventStore {
   async FetchUpcomingEvents() {
     try {
       const response = await EventsService.FetchUpcomingEvents()
-      this.upcomingEvents = response.data.events
+      runInAction(() => {
+        this.upcomingEvents = response.data.events
+      })
     } catch (error) {
       console.log(error, 'Ошибка загрузки последних событий')
     }
@@ -45,10 +66,13 @@ export default class EventStore {
   async fetchCities(skip: number = 0, take: number = 10) {
     try {
       const response = await http.get(`/api/cities?skip=${skip}&take=${take}`)
-      this.cities = response.data.cities.map((city) => ({
-        label: city.name,
-        value: city.name,
-      }))
+      runInAction(() => {
+        this.cities = response.data.cities.map((city) => ({
+          label: city.name,
+          value: city.name,
+        }))
+      })
+
       console.log(response.data)
     } catch (error) {
       console.error('Ошибка при загрузке городов:', error)
@@ -58,8 +82,10 @@ export default class EventStore {
   async CreateEvent() {
     try {
       const response = await EventsService.createEvent()
-      this.creatingEvent = response.data
-      console.log(this.creatingEvent)
+      runInAction(() => {
+        this.creatingEvent = response.data
+        console.log(this.creatingEvent)
+      })
     } catch (error) {
       console.log(error, 'Ошибка создания меро')
     }
@@ -68,9 +94,11 @@ export default class EventStore {
   async UpdateEvent(data, id) {
     try {
       const response = await EventsService.UpdateEvent(data, id)
-      if (response.status == 200) {
-        this.creatingEvent = null
-      }
+      runInAction(() => {
+        if (response.status == 200) {
+          alert('Изменение сохранено')
+        }
+      })
     } catch (error) {
       console.log(error, 'Ошибка обноления события')
     }
@@ -79,39 +107,50 @@ export default class EventStore {
   async FetchMyEvents() {
     try {
       const response = await EventsService.FetchMyEvents()
-      if (response.status == 200) {
-        this.myEvents = response.data.events
-      }
+      runInAction(() => {
+        if (response.status == 200) {
+          this.myEvents = response.data.events
+        }
+      })
     } catch (error) {
       console.log(error, 'Ошибка загрузки моих мероприятий')
     }
   }
+
   async FetchMyPastEvents() {
     try {
       const response = await EventsService.FetchMyPastEvents()
-      if (response.status == 200) {
-        this.myPastEvents = response.data.events
-      }
+      runInAction(() => {
+        if (response.status == 200) {
+          this.myPastEvents = response.data.events
+        }
+      })
     } catch (error) {
       console.log(error, 'Ошибка загрузки завершенный мероприятий')
     }
   }
+
   async FetchUserActivity() {
     try {
       const response = await EventsService.FetchUserActivity()
-      if (response.status == 200) {
-        this.userActivity = response.data.events
-      }
+      runInAction(() => {
+        if (response.status == 200) {
+          this.userActivity = response.data.events
+        }
+      })
     } catch (error) {
       console.log(error, 'Ошибка загрузки активности пользователя')
     }
   }
+
   async FetchUserPastActivity() {
     try {
       const response = await EventsService.FetchUserPastActivity()
-      if (response.status == 200) {
-        this.userPastActivity = response.data.events
-      }
+      runInAction(() => {
+        if (response.status == 200) {
+          this.userPastActivity = response.data.events
+        }
+      })
     } catch (error) {
       console.log(error, 'Ошибка загрузки прошедшей активности пользователя')
     }
@@ -120,24 +159,24 @@ export default class EventStore {
   async FetchEventInfoById(eventId: string) {
     try {
       const response = await EventsService.FetchEventById(eventId)
-      const { id, isPublic, title, dateStart, dateEnd, isOnline, city, address, isSignupOpened, bannerImageFilepath, Description } = response.data
-
-      this.creatingEvent = {
-        id,
-        isPublic,
-        title,
-        bannerImage: bannerImageFilepath,
-        dateStart,
-        dateEnd,
-        isOnline,
-        city,
-        address,
-        isSignupOpened,
-        description: Description,
-      }
-      console.log(this.creatingEvent)
+      runInAction(() => {
+        this.creatingEvent = response.data
+      })
     } catch (err) {
       console.log(err)
+    }
+  }
+
+  async DeleteEvent(eventId: string) {
+    try {
+      const response = await EventsService.DeleteEventById(eventId)
+      runInAction(() => {
+        if (response.status == 200) {
+          alert('Мероприятие удалено')
+        }
+      })
+    } catch (error) {
+      console.log(error, 'Ошибка удаления мероприятия')
     }
   }
 }

@@ -28,13 +28,6 @@ export interface IFullInfoEventResponse {
   address: string
   isSignupOpened: boolean
   Description: string
-  organizerContacts: {
-    email: string
-    fio: string
-    phone: string
-    telegram: string
-  }
-  signupWindows: ISignupWindowResponse[]
 }
 
 export interface ISignupWindowResponse {

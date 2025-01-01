@@ -15,29 +15,17 @@
   font-weight: 700;
   font-size: 50px;
 }
+
 .dates_header {
   font-weight: 600;
   font-size: 38px;
   margin-top: 10px;
   margin-bottom: 20px;
 }
-.update_btn {
-  background: #33adff;
-  border: none;
-  color: #f0f0f0;
-  width: 300px;
-  height: 100px;
-  font-size: 35px;
-  border-radius: 20px;
-  transition:
-    background 0.1s ease,
-    border 0.3s ease;
-}
-.update_btn:active {
-  background: #ffffff;
-  border: 2px solid #33adff;
-  color: #33adff;
-}
-.update_btn:hover {
-  cursor: pointer;
+.btn_container {
+  width: 1046px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }

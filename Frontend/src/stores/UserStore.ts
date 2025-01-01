@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import RootStore from './rootStore.ts'
 import { IUser } from '../models/User/response/User.ts'
 import UserInfoService from '../services/UserInfo/UserInfoService.ts'
@@ -56,9 +56,12 @@ export default class UserStore {
   async UpdateAvatar(file) {
     try {
       const response = await UserInfoService.UpdateAva(file)
-      if (response.status == 200) {
-        alert('Аватар успешно загружен')
-      }
+      runInAction(() => {
+        if (response.status == 200) {
+          this.user.avatarImage = response.data.image
+          alert('Аватар успешно загружен')
+        }
+      })
     } catch (error) {
       console.log(error, 'Ошибка обновления аватара')
     }

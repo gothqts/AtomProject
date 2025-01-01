@@ -33,7 +33,11 @@ export default class EventsService {
     return http.get('/api/user/signed-up-events?skip=0&take=100&finished=true')
   }
 
-  static async FetchEventById(id: string): Promise<AxiosResponse<IFullInfoEventResponse>> {
+  static async FetchEventById(id: string): Promise<AxiosResponse<IBasicEventInfo>> {
     return http.get(`/api/events/${id}`)
+  }
+
+  static async DeleteEventById(id: string): Promise<AxiosResponse<BaseStatusResponse>> {
+    return http.delete(`/api/my-events/${id}`)
   }
 }

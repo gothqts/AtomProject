@@ -8,5 +8,5 @@ export const urls = {
   profile: '/profile',
   event: '/event/:id',
   myEvents: '/myEvents',
-  createEvent: '/createEvent',
+  createEvent: '/createEvent/:id',
 }

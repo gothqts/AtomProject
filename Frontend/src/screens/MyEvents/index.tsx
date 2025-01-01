@@ -21,8 +21,14 @@ const MyEvents: FC = () => {
     eventStore.FetchUserPastActivity()
   }, [eventStore])
 
-  const handleClick = () => {
-    navigate(urls.createEvent)
+  const handleClick = async () => {
+    await eventStore.CreateEvent()
+    const eventId = eventStore.creatingEvent.id
+    if (eventId) {
+      navigate(urls.createEvent.replace(':id', eventId))
+    } else {
+      console.log('Не удалось получить ID мероприятия')
+    }
   }
 
   return (
