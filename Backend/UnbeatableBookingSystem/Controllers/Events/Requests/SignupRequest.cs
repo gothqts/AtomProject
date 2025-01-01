@@ -1,4 +1,4 @@
-﻿namespace UnbeatableBookingSystem.Controllers.UserActions.Requests;
+﻿namespace UnbeatableBookingSystem.Controllers.Events.Requests;
 
 public class SignupRequest
 {

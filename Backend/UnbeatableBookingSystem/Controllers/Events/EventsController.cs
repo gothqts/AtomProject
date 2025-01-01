@@ -6,14 +6,14 @@ using Booking.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using UnbeatableBookingSystem.Controllers.Base;
 using UnbeatableBookingSystem.Controllers.Base.Responses;
-using UnbeatableBookingSystem.Controllers.UserActions.Requests;
-using UnbeatableBookingSystem.Controllers.UserActions.Responses;
+using UnbeatableBookingSystem.Controllers.Events.Requests;
+using UnbeatableBookingSystem.Controllers.Events.Responses;
 using UnbeatableBookingSystem.Utility;
 
-namespace UnbeatableBookingSystem.Controllers.UserActions;
+namespace UnbeatableBookingSystem.Controllers.Events;
 
 [Route("/api/events")]
-public class UserActionsController : Controller
+public class EventsController : Controller
 {
     private readonly BaseService<UserEvent> _eventService;
     private readonly BaseService<EventSignupWindow> _eventSignupWindowService;
@@ -24,7 +24,7 @@ public class UserActionsController : Controller
     private readonly EventBannerImageService _eventImageService;
     private readonly BaseService<EventSignupEntry> _entriesService;
 
-    public UserActionsController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
+    public EventsController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
         BaseService<OrganizerContacts> contactsService, BaseService<EventSignupForm> eventFormService,
         BaseService<FormDynamicField> formDynamicFieldsService, EventSignupService eventSignupService,
         EventBannerImageService eventImageService, BaseService<EventSignupEntry> entriesService)
@@ -182,7 +182,7 @@ public class UserActionsController : Controller
                 _eventImageService.DefaultEventImageFilename, Request),
             IsOnline = userEvent.IsOnline,
             IsSignupOpened = userEvent.IsSignupOpened,
-            City = userEvent.City,
+            City = userEvent.Address,
             Address = userEvent.City,
             DateStart = userEvent.DateStart,
             DateEnd = userEvent.DateEnd,

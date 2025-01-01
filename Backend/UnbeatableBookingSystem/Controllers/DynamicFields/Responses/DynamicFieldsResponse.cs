@@ -1,4 +1,4 @@
-﻿using UnbeatableBookingSystem.Controllers.UserActions.Responses;
+﻿using UnbeatableBookingSystem.Controllers.Events.Responses;
 
 namespace UnbeatableBookingSystem.Controllers.DynamicFields.Responses;
 
