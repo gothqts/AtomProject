@@ -1,26 +1,25 @@
-import styles from './DeleteBtn.module.css'
 import { urls } from '../../../../../navigate/app.urls.ts'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useStores } from '../../../../../stores/rootStoreContext.ts'
-import { useNavigate } from 'react-router-dom'
+import styles from './DeleteBtn.module.css'
 
-const UpdateBtn = () => {
+const DeleteBtn = () => {
+  const { id } = useParams<{ id: string }>()
   const { eventStore } = useStores()
-  const CreatingEvent = eventStore.creatingEvent
   const navigate = useNavigate()
-  const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (CreatingEvent) {
-      const { id, ...UpdateEventData } = CreatingEvent
-      await eventStore.UpdateEvent(UpdateEventData, id)
+  const handleDelete = async () => {
+    if (id) {
+      await eventStore.DeleteEvent(id)
       navigate(urls.myEvents)
     }
   }
   return (
     <div>
-      <button className={styles.delete_btn} onClick={handleUpdate}>
-        Сохранить
+      <button className={styles.update_btn} onClick={handleDelete}>
+        Удалить
       </button>
     </div>
   )
 }
 
-export default UpdateBtn
+export default DeleteBtn

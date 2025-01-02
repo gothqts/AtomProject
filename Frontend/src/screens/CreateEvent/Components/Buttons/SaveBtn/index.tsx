@@ -1,22 +1,27 @@
-import { urls } from '../../../../../navigate/app.urls.ts'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useStores } from '../../../../../stores/rootStoreContext.ts'
 import styles from './SaveBtn.module.css'
+import { urls } from '../../../../../navigate/app.urls.ts'
+import { useStores } from '../../../../../stores/rootStoreContext.ts'
+import { useNavigate } from 'react-router-dom'
 
 const SaveBtn = () => {
-  const { id } = useParams<{ id: string }>()
   const { eventStore } = useStores()
+  const CreatingEvent = eventStore.creatingEvent
   const navigate = useNavigate()
-  const handleDelete = async () => {
-    if (id) {
-      await eventStore.DeleteEvent(id)
+  const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (CreatingEvent) {
+      const { id, ...UpdateEventData } = CreatingEvent
+      if (CreatingEvent.bannerImage) {
+        await eventStore.UpdateBanner(UpdateEventData.bannerImage, id)
+      }
+      await eventStore.UpdateEvent(UpdateEventData, id)
+
       navigate(urls.myEvents)
     }
   }
   return (
     <div>
-      <button className={styles.update_btn} onClick={handleDelete}>
-        Удалить
+      <button className={styles.delete_btn} onClick={handleUpdate}>
+        Сохранить
       </button>
     </div>
   )

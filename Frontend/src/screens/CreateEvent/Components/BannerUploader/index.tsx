@@ -23,8 +23,9 @@ const BannerUploader: React.FC = () => {
     let file = e.dataTransfer.files
     const formData = new FormData()
     formData.append('file', file[0])
-    eventStore.creatingEvent = formData[0]
+    eventStore.creatingEvent.bannerImage = formData
     setDrag(false)
+    console.log(eventStore.creatingEvent.bannerImage)
   }
 
   return (

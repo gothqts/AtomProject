@@ -1,4 +1,4 @@
-.update_btn {
+.delete_btn {
   background: #33adff;
   border: none;
   color: #f0f0f0;
@@ -11,12 +11,12 @@
     border 0.3s ease;
 }
 
-.update_btn:active {
+.delete_btn:active {
   background: #ffffff;
   border: 2px solid #33adff;
   color: #33adff;
 }
 
-.update_btn:hover {
+.delete_btn:hover {
   cursor: pointer;
 }

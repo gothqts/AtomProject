@@ -19,16 +19,13 @@ const LastEvents: React.FC<IPropsLastEvents> = ({ events }) => {
   }
 
   return (
-    <>
+    <div>
       {events.map((event, index) => (
         <div key={event.id} className={index % 2 !== 0 ? styles.wrapper_odd : styles.wrapper_even}>
-          {index % 2 !== 0 && <img src={event.bannerImage} alt='Изображение мероприятия' />}
+          {index % 2 == 1 && <img className={styles.img_banner} src={event.bannerImage} alt='Изображение мероприятия' />}
           <div className={styles.event_content}>
             <div className={styles.event_info}>
               <div className={styles.event_header}>{event.title}</div>
-              <div className={styles.event_address}>
-                {event.city}, {event.address}
-              </div>
               <div className={styles.date}>{formatDate(event.dateStart)}</div>
               <div className={styles.event_description}>{event.description}</div>
             </div>
@@ -37,10 +34,10 @@ const LastEvents: React.FC<IPropsLastEvents> = ({ events }) => {
               <Arrow style={{ marginLeft: '20px' }} />
             </button>
           </div>
-          {index % 2 === 0 && <img src={event.bannerImage} alt='Изображение мероприятия' />}
+          {index % 2 == 0 && <img className={styles.img_banner} src={event.bannerImage} alt='Изображение мероприятия' />}
         </div>
       ))}
-    </>
+    </div>
   )
 }
 

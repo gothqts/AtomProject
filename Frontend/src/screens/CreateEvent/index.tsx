@@ -9,12 +9,13 @@ import { observer } from 'mobx-react-lite'
 import BannerUploader from './Components/BannerUploader'
 import dayjs from 'dayjs'
 import BooleanToggle from './Components/BooleanToogle/index.tsx'
-import DeleteBtn from './Components/Buttons/DeleteBtn'
 import SaveBtn from './Components/Buttons/SaveBtn'
+import DeleteBtn from './Components/Buttons/DeleteBtn'
 
 interface IRouteParams {
   id: string
 }
+
 const CreateEvent: FC = () => {
   const { id } = useParams<IRouteParams>()
 
@@ -45,9 +46,9 @@ const CreateEvent: FC = () => {
       <div className={styles.header}>Новое мероприятие</div>
       <ProfileInput title='Название' type='text' value={CreatingEvent.title} placeholder='Введите название' onChange={handleInputChange('title')} />
       <div className={styles.dates_header}>Дата начала мероприятия</div>
-      <MuiPicker title='Выберите время начала мероприятия' value={dayjs(CreatingEvent?.dateStart)} onChange={handleDateChange('dateStart')} />
+      <MuiPicker title='Выберите время начала мероприятия' value={dayjs(CreatingEvent.dateStart)} onChange={handleDateChange('dateStart')} />
       <div className={styles.dates_header}>Дата окончания мероприятия</div>
-      <MuiPicker title='Выберите время окончания мероприятия' value={dayjs(CreatingEvent?.dateEnd)} onChange={handleDateChange('dateEnd')} />
+      <MuiPicker title='Выберите время окончания мероприятия' value={dayjs(CreatingEvent.dateEnd)} onChange={handleDateChange('dateEnd')} />
       <BannerUploader />
       <ProfileInput
         type='text'
@@ -78,8 +79,8 @@ const CreateEvent: FC = () => {
         onChange={(newValue) => eventStore.setCreatingEventData('isSignupOpened', newValue)}
       />
       <div className={styles.btn_container}>
-        <SaveBtn />
         <DeleteBtn />
+        <SaveBtn />
       </div>
     </div>
   )

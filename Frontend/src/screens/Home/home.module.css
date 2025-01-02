@@ -28,6 +28,7 @@
 .btn {
   padding-bottom: 66px;
 }
+
 .link {
   text-decoration: none;
 }
@@ -35,15 +36,18 @@
 .section_about_event {
   margin: 0 40px;
 }
+
 .selection_of_events {
   margin: 50px 40px;
 }
+
 .selection_of_events_title {
   padding-left: 80px;
   font-weight: 700;
   font-size: 68px;
   margin-bottom: 70px;
 }
+
 .footer_link {
   display: flex;
   flex-direction: column;

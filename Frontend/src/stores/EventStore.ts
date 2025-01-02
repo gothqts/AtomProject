@@ -179,4 +179,17 @@ export default class EventStore {
       console.log(error, 'Ошибка удаления мероприятия')
     }
   }
+  async UpdateBanner(ImgFile, eventId: string) {
+    try {
+      const response = await EventsService.UpdateEventBanner(ImgFile, eventId)
+      runInAction(() => {
+        if (response.status == 200) {
+          alert('Баннер обновлен!')
+          this.creatingEvent.bannerImage = response.data.image
+        }
+      })
+    } catch (error) {
+      console.log('Ошибка загрузки баннера')
+    }
+  }
 }

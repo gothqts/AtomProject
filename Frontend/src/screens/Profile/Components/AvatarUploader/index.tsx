@@ -23,6 +23,7 @@ const AvatarUploader: React.FC = () => {
     let file = e.dataTransfer.files
     const formData = new FormData()
     formData.append('file', file[0])
+    console.log(formData)
     userStore.UpdateAvatar(formData)
     setDrag(false)
   }

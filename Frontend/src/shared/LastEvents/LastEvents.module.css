@@ -6,8 +6,9 @@
   gap: 120px;
   padding-top: 50px;
   padding-left: 80px;
+  padding-right: 80px;
   margin-bottom: 200px;
-  background-image: url('src/assets/images/circle_vector.svg');
+  background-image: url('../../assets/images/circle_vector.svg');
   background-repeat: no-repeat;
   background-position: left top;
 }
@@ -18,28 +19,23 @@
   height: 100%;
   gap: 120px;
   padding-left: 80px;
+  padding-right: 80px;
   margin-bottom: 200px;
-  background-image: url('src/assets/images/square.svg');
+  background-image: url('../../assets/images/square.svg');
   background-repeat: no-repeat;
   background-position: right bottom;
 }
-img {
-  height: 100%;
-  z-index: 1;
-}
-.wrapper_even img {
-  height: 100%;
-  z-index: 1;
-  padding-right: 50px;
+.wrapper_even .img_banner {
+  margin-bottom: 40px;
 }
 .event_content {
   height: 100%;
   width: 50%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: start;
-  gap: 130px;
+  gap: 100px;
 }
 
 .event_header {
@@ -73,10 +69,15 @@ img {
   font-size: 40px;
   outline: none;
   background-color: transparent;
+  padding: 0 0;
 }
 .event_address {
   font-size: 40px;
   font-weight: 500;
   padding-top: 10px;
   padding-bottom: 25px;
+}
+.img_banner {
+  width: 800px;
+  height: auto;
 }

@@ -2,7 +2,7 @@ export interface IBasicEventInfo {
   id: string
   isPublic: boolean
   title: string
-  bannerImage: string
+  bannerImage: string | FormData
   dateStart: string
   dateEnd: string
   isOnline: boolean
@@ -36,4 +36,11 @@ export interface ISignupWindowResponse {
   dateTime: string
   maxVisitors: number
   ticketsLeft: number
+}
+
+export interface IUpdatedEventBanner {
+  completed: boolean
+  status: string
+  message: string
+  image: string
 }
