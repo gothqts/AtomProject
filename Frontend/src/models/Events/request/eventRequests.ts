@@ -9,3 +9,21 @@ export default interface IUpdateEventParams {
   isSignupOpened: boolean
   description: string
 }
+
+export interface IQueryParams {
+  city: string
+  date: string
+  time: string
+  subject: string
+  online: boolean | string
+  skip: number
+  take: number
+}
+
+export interface IWindowsParams {
+  title: string
+  date: string
+  time: string
+  maxVisitors: number
+  alreadyOccupiedPlaces: number
+}

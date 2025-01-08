@@ -1,24 +1,39 @@
 import SearchBar from '../../shared/searchBar'
 import Event from '../../shared/Event'
 import styles from './Events.module.css'
+import { useEffect, useState } from 'react'
+import { useStores } from '../../stores/rootStoreContext.ts'
+import { observer } from 'mobx-react-lite'
+import { formatDate } from '../../utils/formatingData/formatDate.ts'
+import { IQueryParams } from '../../models/Events/request/eventRequests.ts'
 
-const Events = () => {
-  const events = [
-    { id: 1, name: 'Мероприятие 1', date: '22 августа 18:00', description: 'Краткое описание мероприятия 1.' },
-    { id: 2, name: 'Мероприятие 2', date: '23 августа 19:00', description: 'Краткое описание мероприятия 2.' },
-    { id: 3, name: 'Мероприятие 3', date: '24 августа 20:00', description: 'Краткое описание мероприятия 3.' },
-  ]
+const Events: React.FC = () => {
+  const { eventStore } = useStores()
+  const allEvents = eventStore.allEvents
+  const [params, setParams] = useState<IQueryParams>({
+    city: '',
+    subject: '',
+    date: '',
+    take: 10,
+    time: '',
+    skip: 0,
+    online: '',
+  })
+
+  useEffect(() => {
+    eventStore.FetchFilteredEvents(params)
+  }, [params, eventStore])
 
   return (
     <div className={styles.container}>
-      <SearchBar />
+      <SearchBar setParams={setParams} params={params} />
       <div className={styles.events_list}>
-        {events.map((event) => (
-          <Event key={event.id} id={event.id} name={event.name} date={event.date} description={event.description} />
+        {allEvents.map((event) => (
+          <Event key={event.id} id={event.id} name={event.title} date={formatDate(event.dateStart)} description={event.description} image={event.bannerImage} />
         ))}
       </div>
     </div>
   )
 }
 
-export default Events
+export default observer(Events)

@@ -14,7 +14,6 @@ const Home = observer(() => {
   useEffect(() => {
     eventStore.FetchUpcomingEvents()
   }, [])
-  console.log(eventStore.upcomingEvents)
 
   return (
     <div className={styles.home_container}>

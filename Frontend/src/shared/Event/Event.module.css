@@ -1,52 +1,49 @@
-.container{
-	display: flex;
-	flex-direction: column;
-	width: 493px;
-	height: 657px;
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 493px;
+  height: 657px;
 }
 
-.container_info{
-	display: flex;
-	flex-direction: column;
-	margin-left: 10px;
+.container_info {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
 }
 
-.image{
-	width: 493px;
-	height: 336px;
-	flex-shrink: 0;
-	background-color: #FF7B00;   /* Заглушка */
+.image {
+  width: 493px;
+  height: 336px;
+  flex-shrink: 0;
 }
 
-.title{
-	font-size: 36px;
-	font-weight: 700;
-	line-height: 55px;
-	margin-top: 14px;
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 55px;
+  margin-top: 14px;
 }
 
-.date{
-	font-size: 30px;
-	font-weight: 600;
-	line-height: 55px; 
+.date {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 55px;
 }
 
-.description{
-	font-size: 30px;
-	font-weight: 400;
-	line-height: 55px;
-	margin-top: 10px;
+.description {
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 55px;
+  margin-top: 10px;
 }
 
-.detailed{
-	color: #33ADFF;
-	font-size: 30px;
-	font-weight: 400;
-	line-height: 55px;
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin-top: 77px;
+.detailed {
+  color: #33adff;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 55px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 77px;
 }
-
-

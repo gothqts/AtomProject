@@ -10,8 +10,8 @@ const SaveBtn = () => {
   const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (CreatingEvent) {
       const { id, ...UpdateEventData } = CreatingEvent
-      if (CreatingEvent.bannerImage) {
-        await eventStore.UpdateBanner(UpdateEventData.bannerImage, id)
+      if (CreatingEvent.bannerImageFilepath) {
+        await eventStore.UpdateBanner(UpdateEventData.bannerImageFilepath, id)
       }
       await eventStore.UpdateEvent(UpdateEventData, id)
 

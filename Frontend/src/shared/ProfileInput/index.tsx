@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 interface ProfileInputProps {
   title: string
   type: string
-  value: string
+  value: string | number
   placeholder: string
   onChange: React.ChangeEventHandler<HTMLInputElement>
 }

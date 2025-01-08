@@ -2,7 +2,7 @@ export interface IBasicEventInfo {
   id: string
   isPublic: boolean
   title: string
-  bannerImage: string | FormData
+  bannerImage: string
   dateStart: string
   dateEnd: string
   isOnline: boolean
@@ -15,19 +15,28 @@ export interface IBasicEventInfo {
 export interface IBasicEventResponse {
   events: IBasicEventInfo[]
 }
-
+export interface MyCreatingEvent extends IFullInfoEventResponse {}
 export interface IFullInfoEventResponse {
   id: string
+  creationDate: string
   isPublic: boolean
   title: string
-  bannerImageFilepath: string
-  dateStart: string
-  dateEnd: string
+  bannerImageFilepath: ''
   isOnline: boolean
+  isSignupOpened: boolean
   city: string
   address: string
-  isSignupOpened: boolean
-  Description: string
+  dateStart: string
+  dateEnd: string
+  description: string
+  signupWindows: ISignupWindowResponse[]
+  signupForm: {
+    isFioRequired: boolean
+    isEmailRequired: boolean
+    isPhoneRequired: boolean
+    dynamicFields: dynamicFields[]
+  }
+  contacts: contacts[]
 }
 
 export interface ISignupWindowResponse {
@@ -36,6 +45,24 @@ export interface ISignupWindowResponse {
   dateTime: string
   maxVisitors: number
   ticketsLeft: number
+}
+
+export interface dynamicFields {
+  id: string
+  title: string
+  isRequired: boolean
+  type: string
+  maxSymbols: number
+  minValue: string
+  maxValue: string
+}
+
+export interface contacts {
+  id: string
+  email: string
+  fio: string
+  phone: string
+  telegram: string
 }
 
 export interface IUpdatedEventBanner {

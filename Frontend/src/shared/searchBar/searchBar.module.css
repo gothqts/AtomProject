@@ -3,10 +3,15 @@
   align-items: center;
   gap: 10px;
 }
-
+.form {
+  display: flex;
+  flex-direction: row;
+  gap: 185px;
+}
 .input_container {
   position: relative;
 }
+
 .select_list {
   font-weight: 400;
   font-size: 28px;
@@ -16,6 +21,7 @@
   flex-direction: row;
   gap: 33px;
 }
+
 .search_input {
   border: 1px solid #000;
   border-radius: 1000px;
@@ -26,8 +32,9 @@
   font-size: 32px;
   line-height: 172%;
   color: rgba(0, 0, 0, 0.4);
-  flex: 1; /* Занимает доступное пространство */
+  flex: 1;
 }
+
 .search_button {
   background: transparent;
   border: none;
@@ -37,10 +44,12 @@
   right: 25px;
   top: 30px;
 }
+
 .icon {
   width: 29px;
   height: 29px;
 }
+
 .search_button:hover {
   opacity: 0.7;
 }

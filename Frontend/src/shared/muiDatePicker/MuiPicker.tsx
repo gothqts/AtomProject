@@ -13,7 +13,7 @@ const MuiPicker = ({ title, value, onChange }) => {
         }}
         label={title}
         slotProps={{ textField: { variant: 'outlined' } }}
-        value={value}
+        value={value == null ? 'null' : value}
         onChange={(newValue) => {
           onChange(newValue)
         }}

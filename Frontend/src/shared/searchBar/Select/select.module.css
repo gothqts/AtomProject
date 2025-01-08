@@ -4,6 +4,7 @@
   position: relative;
   padding-left: 32px;
 }
+
 .option {
   display: flex;
   gap: 12px;
@@ -37,10 +38,11 @@ label {
   padding: 20px 20px;
   position: absolute;
   top: 100%;
+  justify-content: center;
   right: 0;
   width: 270px;
   overflow-y: hidden;
-  height: 245px;
+  height: auto;
   opacity: 0;
   transform: translateY(-10px);
   visibility: hidden;
@@ -52,29 +54,27 @@ label {
 }
 
 .menu_element {
-  margin-bottom: 13px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 19px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .check_input {
-  -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   width: 19px;
   height: 19px;
-  background-image: var(--emptyCheckbox);
+  -webkit-appearance: radio;
   cursor: pointer;
 }
 
 .check_input:checked {
   cursor: pointer;
-  background-image: var(--checkbox);
 }
 
 .menu.active {

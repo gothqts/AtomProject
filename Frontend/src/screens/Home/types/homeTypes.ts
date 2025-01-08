@@ -2,7 +2,7 @@ export interface IUpcomingEvents {
   id: string
   isPublic: boolean
   title: string
-  bannerImage: string
+  bannerImage: string | FormData
   dateStart: string
   dateEnd: string
   isOnline: boolean

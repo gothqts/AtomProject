@@ -3,8 +3,8 @@ import RootStore from './rootStore.ts'
 import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
 import { IUpcomingEvents } from '../screens/Home/types/homeTypes.ts'
-import { IBasicEventInfo, IFullInfoEventResponse } from '../models/Events/response/EventsResponse.ts'
-import rootStore from './rootStore.ts'
+import { IBasicEventInfo, MyCreatingEvent } from '../models/Events/response/EventsResponse.ts'
+import { IQueryParams } from '../models/Events/request/eventRequests.ts'
 
 interface ICity {
   label: string
@@ -16,19 +16,30 @@ type ICities = ICity[]
 export default class EventStore {
   rootStore: RootStore
   cities: ICities = []
-  creatingEvent: IBasicEventInfo = {
+  creatingEvent: MyCreatingEvent = {
     id: '',
-    description: '',
-    dateEnd: '',
-    dateStart: '',
-    isSignupOpened: false,
+    creationDate: '',
     isPublic: false,
-    isOnline: false,
     title: '',
-    address: '',
+    bannerImageFilepath: '',
+    isOnline: false,
+    isSignupOpened: false,
     city: '',
-    bannerImage: '',
+    address: '',
+    dateStart: '',
+    dateEnd: '',
+    description: '',
+    signupWindows: [],
+    signupForm: {
+      isFioRequired: false,
+      isEmailRequired: false,
+      isPhoneRequired: false,
+      dynamicFields: [],
+    },
+    contacts: [],
   }
+
+  allEvents: IBasicEventInfo[] = []
   upcomingEvents: IUpcomingEvents[] = []
   myEvents: IBasicEventInfo[] = []
   myPastEvents: IBasicEventInfo[] = []
@@ -41,12 +52,6 @@ export default class EventStore {
   }
 
   setCreatingEventData(field: keyof IBasicEventInfo, value: string | boolean) {
-    if (this.creatingEvent) {
-      this.creatingEvent = { ...this.creatingEvent, [field]: value }
-    }
-  }
-
-  setCreatingBooleanData(field: keyof IBasicEventInfo, value: boolean) {
     if (this.creatingEvent) {
       this.creatingEvent = { ...this.creatingEvent, [field]: value }
     }
@@ -72,8 +77,6 @@ export default class EventStore {
           value: city.name,
         }))
       })
-
-      console.log(response.data)
     } catch (error) {
       console.error('Ошибка при загрузке городов:', error)
     }
@@ -83,8 +86,7 @@ export default class EventStore {
     try {
       const response = await EventsService.createEvent()
       runInAction(() => {
-        this.creatingEvent = response.data
-        console.log(this.creatingEvent)
+        this.creatingEvent.id = response.data.id
       })
     } catch (error) {
       console.log(error, 'Ошибка создания меро')
@@ -158,9 +160,13 @@ export default class EventStore {
 
   async FetchEventInfoById(eventId: string) {
     try {
-      const response = await EventsService.FetchEventById(eventId)
+      const response = await EventsService.FetchFullInfoAboutMyEvent(eventId)
       runInAction(() => {
-        this.creatingEvent = response.data
+        if (response.data.title == 'Новое мероприятие') {
+          this.creatingEvent = { ...response.data, city: 'Введите город', address: 'Введите адрес' }
+        } else {
+          this.creatingEvent = response.data
+        }
       })
     } catch (err) {
       console.log(err)
@@ -172,6 +178,7 @@ export default class EventStore {
       const response = await EventsService.DeleteEventById(eventId)
       runInAction(() => {
         if (response.status == 200) {
+          this.creatingEvent.id = ''
           alert('Мероприятие удалено')
         }
       })
@@ -179,17 +186,67 @@ export default class EventStore {
       console.log(error, 'Ошибка удаления мероприятия')
     }
   }
+
   async UpdateBanner(ImgFile, eventId: string) {
     try {
       const response = await EventsService.UpdateEventBanner(ImgFile, eventId)
       runInAction(() => {
         if (response.status == 200) {
           alert('Баннер обновлен!')
-          this.creatingEvent.bannerImage = response.data.image
+          this.creatingEvent.bannerImageFilepath = response.data.image
         }
       })
     } catch (error) {
       console.log('Ошибка загрузки баннера')
+    }
+  }
+
+  async FetchFilteredEvents(queryParams: IQueryParams) {
+    try {
+      const response = await EventsService.FetchEventByFilters(queryParams)
+      runInAction(() => {
+        if (response.status === 200) {
+          this.allEvents = response.data.events
+        }
+      })
+    } catch (error) {
+      console.log(error, 'Ошибка получения отфильтрованных событий')
+    }
+  }
+
+  async CreateRegisterWindow(eventId: string, { title, date, time, maxVisitors, alreadyOccupiedPlaces }) {
+    try {
+      await EventsService.CreateWindow(eventId, {
+        title,
+        date,
+        time,
+        maxVisitors,
+        alreadyOccupiedPlaces,
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async DeleteRegisterWindow(eventId: string, windowsId: string) {
+    try {
+      await EventsService.DeleteWindow(eventId, windowsId)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async UpdateRegisterWindow(eventId: string, windowsId: string, { title, date, time, maxVisitors, alreadyOccupiedPlaces }) {
+    try {
+      await EventsService.UpdateWindow(eventId, windowsId, {
+        title,
+        date,
+        time,
+        maxVisitors,
+        alreadyOccupiedPlaces,
+      })
+    } catch (err) {
+      console.log(err)
     }
   }
 }

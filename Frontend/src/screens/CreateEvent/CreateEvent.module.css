@@ -29,3 +29,18 @@
   justify-content: space-between;
   margin-bottom: 10px;
 }
+.windows_container {
+}
+.windows_header {
+  font-weight: 600;
+  font-size: 38px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.windows_list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.create_window_btn {
+}

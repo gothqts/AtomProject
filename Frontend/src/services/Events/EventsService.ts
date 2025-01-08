@@ -1,8 +1,14 @@
 import { AxiosResponse } from 'axios'
 import { http } from '../http'
-import { IBasicEventInfo, IBasicEventResponse, IFullInfoEventResponse, IUpdatedEventBanner } from '../../models/Events/response/EventsResponse.ts'
+import {
+  IBasicEventInfo,
+  IBasicEventResponse,
+  IFullInfoEventResponse,
+  ISignupWindowResponse,
+  IUpdatedEventBanner,
+} from '../../models/Events/response/EventsResponse.ts'
 import { BaseStatusResponse } from '../../models/Auth/response/authResponse.ts'
-import IUpdateEventParams from '../../models/Events/request/eventRequests.ts'
+import IUpdateEventParams, { IQueryParams, IWindowsParams } from '../../models/Events/request/eventRequests.ts'
 
 export default class EventsService {
   static async createEvent(): Promise<AxiosResponse<IBasicEventInfo>> {
@@ -37,11 +43,32 @@ export default class EventsService {
     return http.get(`/api/events/${id}`)
   }
 
+  static async FetchFullInfoAboutMyEvent(id: string): Promise<AxiosResponse<IFullInfoEventResponse>> {
+    return http.get(`/api/my-events/${id}`)
+  }
+
   static async DeleteEventById(id: string): Promise<AxiosResponse<BaseStatusResponse>> {
     return http.delete(`/api/my-events/${id}`)
   }
 
   static async UpdateEventBanner(file, id: string): Promise<AxiosResponse<IUpdatedEventBanner>> {
     return http.post(`/api/my-events/${id}/image`, file)
+  }
+
+  static async FetchEventByFilters(queryParams: IQueryParams): Promise<AxiosResponse<IBasicEventResponse>> {
+    const { city, date, time, subject, online, skip, take } = queryParams
+    return http.get(`/api/events?city=${city}&date=${date}&time=${time}&subject=${subject}&online=${online}&skip=${skip}&take=${take}`)
+  }
+
+  static async CreateWindow(EventId: string, WindowsRequestParams: IWindowsParams): Promise<AxiosResponse<ISignupWindowResponse>> {
+    return http.post(`/api/my-events/${EventId}/windows`, WindowsRequestParams)
+  }
+
+  static async DeleteWindow(EventId: string, WindowId: string): Promise<AxiosResponse<BaseStatusResponse>> {
+    return http.delete(`/api/my-events/${EventId}/windows/${WindowId}`)
+  }
+
+  static async UpdateWindow(EventId: string, WindowId: string, WindowsRequestParams: IWindowsParams): Promise<AxiosResponse<ISignupWindowResponse>> {
+    return http.put(`/api/my-events/${EventId}/windows/${WindowId}`, WindowsRequestParams)
   }
 }

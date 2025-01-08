@@ -1,16 +1,21 @@
-import { ChangeEvent, FC, useEffect } from 'react'
+import { ChangeEvent, FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useStores } from '../../stores/rootStoreContext.ts'
 import styles from './CreateEvent.module.css'
 import MuiPicker from '../../shared/muiDatePicker/MuiPicker.tsx'
 import ProfileInput from '../../shared/ProfileInput'
-import { IBasicEventInfo } from '../../models/Events/response/EventsResponse.ts'
+import { IBasicEventInfo, MyCreatingEvent } from '../../models/Events/response/EventsResponse.ts'
 import { observer } from 'mobx-react-lite'
 import BannerUploader from './Components/BannerUploader'
 import dayjs from 'dayjs'
 import BooleanToggle from './Components/BooleanToogle/index.tsx'
 import SaveBtn from './Components/Buttons/SaveBtn'
 import DeleteBtn from './Components/Buttons/DeleteBtn'
+import Modal from '../../shared/Modal'
+import WindowForm from './Components/WindowForm'
+import RegisterWindow from './Components/RegisterWindow'
+import CreateWindowBtn from './Components/Buttons/CreateWindow'
+import { IWindowsParams } from '../../models/Events/request/eventRequests.ts'
 
 interface IRouteParams {
   id: string
@@ -18,13 +23,15 @@ interface IRouteParams {
 
 const CreateEvent: FC = () => {
   const { id } = useParams<IRouteParams>()
-
-  const { eventStore, authStore } = useStores()
-  const CreatingEvent: IBasicEventInfo = eventStore.creatingEvent
-
+  const { eventStore } = useStores()
+  const CreatingEvent: MyCreatingEvent = eventStore.creatingEvent
+  const [modalActive, setModalActive] = useState<boolean>(false)
+  // const [windowData, setWindowData] = useState(null)
+  const Windows = eventStore.creatingEvent.signupWindows
   useEffect(() => {
     if (id) {
       eventStore.FetchEventInfoById(id)
+      console.log(CreatingEvent.id)
     }
   }, [])
 
@@ -32,10 +39,13 @@ const CreateEvent: FC = () => {
     const value: string = event.target.value
     eventStore.setCreatingEventData(field, value)
   }
-
-  const handleDateChange = (field: 'dateStart' | 'dateEnd') => (newValue) => {
+  const handleUpdateWindow = (eventId, windowId, data: IWindowsParams) => {
+    eventStore.UpdateRegisterWindow(eventId, windowId, data)
+    setModalActive(false)
+  }
+  const handleDateChange = (field: 'dateStart' | 'dateEnd') => (newValue: string) => {
     if (newValue) {
-      eventStore.setCreatingEventData(field, newValue.toISOString())
+      eventStore.setCreatingEventData(field, newValue.toString())
     } else {
       eventStore.setCreatingEventData(field, '')
     }
@@ -43,7 +53,7 @@ const CreateEvent: FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>Новое мероприятие</div>
+      <div className={styles.header}>Создание мероприятия</div>
       <ProfileInput title='Название' type='text' value={CreatingEvent.title} placeholder='Введите название' onChange={handleInputChange('title')} />
       <div className={styles.dates_header}>Дата начала мероприятия</div>
       <MuiPicker title='Выберите время начала мероприятия' value={dayjs(CreatingEvent.dateStart)} onChange={handleDateChange('dateStart')} />
@@ -78,6 +88,26 @@ const CreateEvent: FC = () => {
         value={CreatingEvent.isSignupOpened}
         onChange={(newValue) => eventStore.setCreatingEventData('isSignupOpened', newValue)}
       />
+      <div className={styles.windows_container}>
+        <div className={styles.windows_header}>Окна записи</div>
+        <div className={styles.windows_list}>
+          {Windows.map((window) => (
+            <RegisterWindow
+              key={window.id}
+              title={window.title}
+              windowId={window.id}
+              eventId={id}
+              setModalActive={setModalActive}
+              handleUpdate={handleUpdateWindow}
+            />
+          ))}
+          <CreateWindowBtn className={styles.create_window_btn} setModalActive={setModalActive} />
+        </div>
+
+        <Modal active={modalActive} setActive={setModalActive}>
+          <WindowForm eventId={id} />
+        </Modal>
+      </div>
       <div className={styles.btn_container}>
         <DeleteBtn />
         <SaveBtn />
