@@ -18,6 +18,7 @@ export interface IQueryParams {
   online: boolean | string
   skip: number
   take: number
+  search: string
 }
 
 export interface IWindowsParams {

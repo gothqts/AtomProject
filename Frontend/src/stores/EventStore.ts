@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx'
 import RootStore from './rootStore.ts'
 import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
-import { IUpcomingEvents } from '../screens/Home/types/homeTypes.ts'
+import { IUpcomingEvent } from '../models/Events/response/EventsResponse.ts'
 import { IBasicEventInfo, MyCreatingEvent } from '../models/Events/response/EventsResponse.ts'
 import { IQueryParams } from '../models/Events/request/eventRequests.ts'
 
@@ -40,7 +40,7 @@ export default class EventStore {
   }
 
   allEvents: IBasicEventInfo[] = []
-  upcomingEvents: IUpcomingEvents[] = []
+  upcomingEvents: IUpcomingEvent[] = []
   myEvents: IBasicEventInfo[] = []
   myPastEvents: IBasicEventInfo[] = []
   userActivity: IBasicEventInfo[] = []
@@ -76,6 +76,10 @@ export default class EventStore {
           label: city.name,
           value: city.name,
         }))
+        this.cities.push({
+          label: 'Все',
+          value: '',
+        })
       })
     } catch (error) {
       console.error('Ошибка при загрузке городов:', error)

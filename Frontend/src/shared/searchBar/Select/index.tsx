@@ -3,11 +3,6 @@ import { useOnClickOutside } from './hooks/useOnClickOutside.ts'
 import { FC, useRef, useState } from 'react'
 import styles from './select.module.css'
 
-interface Option {
-  label: string
-  value: string
-}
-
 interface SelectProps {
   label: string
   options: Array<{ label: string; value: string }>
@@ -23,6 +18,7 @@ const Select: FC<SelectProps> = ({ label, options, onChange }) => {
     setOpenMenu(false)
   })
   const handleOptionClick = (value: string) => {
+    console.log(selectedValue === value)
     setSelectedValue(value)
     onChange(value)
   }
@@ -30,7 +26,7 @@ const Select: FC<SelectProps> = ({ label, options, onChange }) => {
   return (
     <div ref={ref} className={styles.container}>
       <div className={styles.option} onClick={() => setOpenMenu(!openMenu)}>
-        <label className={openMenu ? styles.label : ''}>{label}</label>
+        <label className={styles.label}>{label}</label>
         <img className={openMenu ? styles.arrow_top : styles.arrow_bottom} alt='arrow-bottom' src={arrowBottom} />
       </div>
 

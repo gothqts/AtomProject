@@ -21,7 +21,7 @@ export interface IFullInfoEventResponse {
   creationDate: string
   isPublic: boolean
   title: string
-  bannerImageFilepath: ''
+  bannerImageFilepath: string
   isOnline: boolean
   isSignupOpened: boolean
   city: string
@@ -70,4 +70,17 @@ export interface IUpdatedEventBanner {
   status: string
   message: string
   image: string
+}
+export interface IUpcomingEvent {
+  id: string
+  isPublic: boolean
+  title: string
+  bannerImage: string | FormData
+  dateStart: string
+  dateEnd: string
+  isOnline: boolean
+  city: string
+  address: string
+  isSignupOpened: boolean
+  description: string
 }

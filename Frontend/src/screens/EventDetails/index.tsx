@@ -10,7 +10,7 @@ const EventDetail: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.image_container}>
-        <img src={event.bannerImage} alt='Изображение мероприятия' />
+        <img className={styles.img} src={event.bannerImage} alt='Изображение мероприятия' />
       </div>
       <div className={styles.info_container}>
         <div className={styles.title}>{event.title}</div>

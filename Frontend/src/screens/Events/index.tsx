@@ -18,11 +18,12 @@ const Events: React.FC = () => {
     time: '',
     skip: 0,
     online: '',
+    search: '',
   })
 
   useEffect(() => {
     eventStore.FetchFilteredEvents(params)
-  }, [params, eventStore])
+  }, [params])
 
   return (
     <div className={styles.container}>

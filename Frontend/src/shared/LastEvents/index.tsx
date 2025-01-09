@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 import Arrow from '../../assets/images/arrow-right.svg?react'
-import { IUpcomingEvents } from '../../screens/Home/types/homeTypes.ts'
+import { IUpcomingEvent } from '../../models/Events/response/EventsResponse.ts'
 import styles from './LastEvents.module.css'
 import { formatDate } from '../../utils/formatingData/formatDate.ts'
+import { truncateString } from '../../utils/FormatingString/formatingString.ts'
 
 interface IPropsLastEvents {
-  events: IUpcomingEvents[]
+  events: IUpcomingEvent[]
 }
 
 const LastEvents: React.FC<IPropsLastEvents> = ({ events }) => {
@@ -27,7 +28,7 @@ const LastEvents: React.FC<IPropsLastEvents> = ({ events }) => {
             <div className={styles.event_info}>
               <div className={styles.event_header}>{event.title}</div>
               <div className={styles.date}>{formatDate(event.dateStart)}</div>
-              <div className={styles.event_description}>{event.description}</div>
+              <div className={styles.event_description}>{truncateString(event.description, 150)}</div>
             </div>
             <button onClick={() => navigateToDetails(event)} className={styles.detail_button}>
               Подробнее

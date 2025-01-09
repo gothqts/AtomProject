@@ -19,6 +19,7 @@ const SearchBar = observer(({ setParams }) => {
     take: 10,
     skip: 0,
     subject: '',
+    search: '',
   })
 
   const formatOptions = [
@@ -29,6 +30,10 @@ const SearchBar = observer(({ setParams }) => {
     {
       label: 'Оффлайн',
       value: 'false',
+    },
+    {
+      label: 'Все',
+      value: '',
     },
   ]
 
@@ -48,15 +53,24 @@ const SearchBar = observer(({ setParams }) => {
     <div className={styles.container}>
       <form className={styles.form} onSubmit={handleSearch}>
         <div className={styles.input_container}>
-          <input className={styles.search_input} placeholder='Поиск' value={value} onChange={(e) => setValue(e.target.value)} />
+          <input
+            className={styles.search_input}
+            placeholder='Поиск'
+            value={value}
+            onChange={(e) => {
+              const newValue = e.target.value
+              setValue(newValue)
+              setSelectedFilters((prevFilters) => ({ ...prevFilters, search: newValue }))
+            }}
+          />
           <button className={styles.search_button} type='submit'>
             <Lupe className={styles.icon} />
           </button>
         </div>
         <div className={styles.select_list}>
           <Select label='Город' options={eventStore.cities} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, city: selectedValue })} />
-          <SelectDate label='Дата начала' inputType='date' onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, date: selectedValue })} />
-          <SelectDate label='Время начала' inputType='time' onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, time: selectedValue })} />
+          <SelectDate label='Дата записи' inputType='date' onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, date: selectedValue })} />
+          <SelectDate label='Время записи ' inputType='time' onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, time: selectedValue })} />
           <Select label='Формат' options={formatOptions} onChange={(selectedValue) => setSelectedFilters({ ...selectedFilters, online: selectedValue })} />
         </div>
       </form>

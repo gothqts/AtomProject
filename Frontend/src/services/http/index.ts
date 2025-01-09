@@ -18,21 +18,24 @@ http.interceptors.response.use(
 
   async (error) => {
     const originalRequest = error.config
-    originalRequest._isRetry = false
-    if (error.response.status == 401) {
+
+    if (error.response.status === 401) {
       localStorage.removeItem('token')
+
       if (!originalRequest._isRetry) {
         originalRequest._isRetry = true
+
         try {
-          const resp = await http.post('http://localhost:8080/api/auth/refresh', { withCredentials: true })
+          const resp = await http.post('http://localhost:8080/api/auth/refresh', {}, { withCredentials: true })
           localStorage.setItem('token', resp.data.accessToken)
           return http.request(originalRequest)
         } catch (refreshError) {
-          console.log('Не авторизован, ошибка авторизации')
+          console.error('Не удалось обновить токен:', refreshError)
         }
       }
     }
 
-    throw error
+    // Бросаем ошибку дальше
+    return Promise.reject(error)
   }
 )

@@ -56,8 +56,8 @@ export default class EventsService {
   }
 
   static async FetchEventByFilters(queryParams: IQueryParams): Promise<AxiosResponse<IBasicEventResponse>> {
-    const { city, date, time, subject, online, skip, take } = queryParams
-    return http.get(`/api/events?city=${city}&date=${date}&time=${time}&subject=${subject}&online=${online}&skip=${skip}&take=${take}`)
+    const { city, date, time, subject, online, skip, take, search } = queryParams
+    return http.get(`/api/events?city=${city}&date=${date}&time=${time}&subject=${subject}&online=${online}&skip=${skip}&take=${take}&search=${search}`)
   }
 
   static async CreateWindow(EventId: string, WindowsRequestParams: IWindowsParams): Promise<AxiosResponse<ISignupWindowResponse>> {
