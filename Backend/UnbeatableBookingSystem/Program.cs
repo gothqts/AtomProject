@@ -42,7 +42,7 @@ app.UseCors("AllowReactHttpOrigin");
 
 app.UseMiddleware<RevokedAccessTokenMiddleware>();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.MapControllers();
 app.UseStaticFiles();
 

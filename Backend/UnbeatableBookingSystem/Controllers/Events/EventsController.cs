@@ -73,8 +73,8 @@ public class EventsController : Controller
     [ProducesResponseType(typeof(UpcomingEventsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetEvents([FromQuery] string? city, [FromQuery] string? date,
-        [FromQuery] string? time, [FromQuery] string? subject, [FromQuery] bool? online,
-        [FromQuery] int? skip, [FromQuery] int? take)
+        [FromQuery] string? time, [FromQuery] bool? online, [FromQuery] int? skip, 
+        [FromQuery] int? take, [FromQuery] string? search)
     {
         var filters = new List<Expression<Func<EventSignupWindow, bool>>>()
         {
@@ -99,13 +99,10 @@ public class EventsController : Controller
                 filters.Add(w => w.Time == timeOnly);
             }
         }
-
-        if (!string.IsNullOrWhiteSpace(subject))
+        if (!string.IsNullOrWhiteSpace(search))
         {
-            // TODO: Надо ли это добавлять? (тематика мероприятия)
-            // filters.Add(w => w.Event.Subject.ToLower() == subject.ToLower());
+            filters.Add(w => w.Event.Title.ToLower().Contains(search.ToLower()));
         }
-
         if (online != null)
         {
             filters.Add(e => e.Event.IsOnline == online.Value);
