@@ -16,7 +16,7 @@ const SearchBar = observer(({ setParams }) => {
     time: '',
     city: '',
     online: '',
-    take: 10,
+    take: 6,
     skip: 0,
     subject: '',
     search: '',

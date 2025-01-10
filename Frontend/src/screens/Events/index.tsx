@@ -14,7 +14,7 @@ const Events: React.FC = () => {
     city: '',
     subject: '',
     date: '',
-    take: 10,
+    take: 6,
     time: '',
     skip: 0,
     online: '',

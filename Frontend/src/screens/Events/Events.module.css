@@ -7,6 +7,6 @@
 .events_list {
   margin-top: 60px;
   display: flex;
-  flex-direction: row;
-  gap: 60px;
+  flex-wrap: wrap;
+  gap: 100px;
 }
