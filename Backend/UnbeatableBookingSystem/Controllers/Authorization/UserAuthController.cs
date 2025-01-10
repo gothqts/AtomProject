@@ -89,7 +89,7 @@ public class UserAuthController : Controller
         }
         try
         {
-            await RevokeAccessTokenAsync();
+            // await RevokeAccessTokenAsync();
         }
         catch (Exception e)
         {
@@ -138,7 +138,7 @@ public class UserAuthController : Controller
             });
         }
         var userId = new Guid(userIdClaim.Value);
-        await RevokeAccessTokenAsync();
+        // await RevokeAccessTokenAsync();
         await _authService.RemoveRefreshTokenAsync(userId);
         
         var res = new BaseStatusResponse
@@ -172,7 +172,7 @@ public class UserAuthController : Controller
         }
         var userId = new Guid(userIdClaim.Value);
         
-        await RevokeAccessTokenAsync();
+        // await RevokeAccessTokenAsync();
         await _authService.RemoveRefreshTokenAsync(userId);
         await _userService.TryRemoveAsync(userId);
         

@@ -39,10 +39,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors("AllowReactHttpOrigin");
-
-app.UseMiddleware<RevokedAccessTokenMiddleware>();
-
+app.UseAuthentication();
+app.UseAuthorization();
+// app.UseMiddleware<RevokedAccessTokenMiddleware>();
 // app.UseHttpsRedirection();
+
 app.MapControllers();
 app.UseStaticFiles();
 
