@@ -28,3 +28,15 @@ export interface IWindowsParams {
   maxVisitors: number
   alreadyOccupiedPlaces: number
 }
+
+export interface ISubscribeFormParams {
+  isFioRequired: boolean
+  isEmailRequired: boolean
+  isPhoneRequired: boolean
+}
+export interface ISignUpParams {
+  signupWindowId: string
+  phone: string
+  email: string
+  fio: string
+}

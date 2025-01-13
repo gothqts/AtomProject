@@ -47,7 +47,7 @@ const SearchBar = observer(({ setParams }) => {
 
   useEffect(() => {
     eventStore.fetchCities()
-  }, [eventStore])
+  }, [])
 
   return (
     <div className={styles.container}>

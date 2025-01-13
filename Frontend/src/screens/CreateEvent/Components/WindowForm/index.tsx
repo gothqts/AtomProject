@@ -11,7 +11,7 @@ interface IWindowValues {
   alreadyOccupiedPlaces: number
 }
 
-const WindowForm: React.FC = ({ eventId }) => {
+const WindowForm: React.FC = ({ eventId, setModalActive }) => {
   const { eventStore } = useStores()
   const generateInputValues = (): IWindowValues => ({
     title: '',
@@ -44,7 +44,9 @@ const WindowForm: React.FC = ({ eventId }) => {
       time: formattedTime,
       date: formattedDate,
     })
-    await eventStore.FetchEventInfoById(eventId)
+    await eventStore.FetchSignUpWindows(eventId)
+    setModalActive(false)
+    setValues(generateInputValues())
   }
 
   return (
@@ -52,14 +54,7 @@ const WindowForm: React.FC = ({ eventId }) => {
       <input className={styles.input} name='title' value={values.title} onChange={handleChange} placeholder='Введите название окна' />
       <input className={styles.input} name='date' type='date' value={values.date} onChange={handleChange} placeholder='Введите дату' />
       <input className={styles.input} name='time' type='time' value={values.time} onChange={handleChange} placeholder='Введите время' />
-      <input
-        className={styles.input}
-        name='maxVisitors'
-        type='text'
-        value={values.maxVisitors}
-        onChange={handleChange}
-        placeholder='Максимальное количество мест'
-      />
+      <input className={styles.input} name='maxVisitors' type='text' value={values.maxVisitors} onChange={handleChange} placeholder='Всего мест' />
       <input
         className={styles.input}
         name='alreadyOccupiedPlaces'

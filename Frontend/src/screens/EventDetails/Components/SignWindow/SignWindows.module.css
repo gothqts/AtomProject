@@ -3,29 +3,25 @@
   flex-direction: column;
   border: 3px solid #33adff;
   cursor: pointer;
-  font-size: 25px;
-  width: 400px;
+  font-size: 32px;
+  width: auto;
   background-color: #ffffff;
   transition:
     background-color 0.3s ease,
     box-shadow 0.3s ease;
   padding-left: 10px;
 }
-.header {
-  display: flex;
-  justify-content: space-between;
-}
-.pencil {
-  width: 25px;
-  height: 25px;
-  cursor: pointer;
-}
-.sharp {
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
+.container:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .title {
   font-size: 38px;
   font-weight: 600;
+}
+.date {
+}
+.ticketsLeft {
+}
+.visitors {
 }

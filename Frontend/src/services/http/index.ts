@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '../../config.ts'
+import { urls } from '../../navigate/app.urls.ts'
 
 export const http = axios.create({
   withCredentials: true,
@@ -12,30 +13,25 @@ http.interceptors.request.use((config) => {
 })
 
 http.interceptors.response.use(
-  (response) => {
-    return response
+  (config) => {
+    return config
   },
 
   async (error) => {
     const originalRequest = error.config
 
-    if (error.response.status === 401) {
+    if (error.config && error.response.status === 401 && !error.config._isRetry) {
       localStorage.removeItem('token')
-
-      if (!originalRequest._isRetry) {
-        originalRequest._isRetry = true
-
-        try {
-          const resp = await http.post('http://localhost:8080/api/auth/refresh', {}, { withCredentials: true })
-          localStorage.setItem('token', resp.data.accessToken)
-          return http.request(originalRequest)
-        } catch (refreshError) {
-          console.error('Не удалось обновить токен:', refreshError)
-        }
+      originalRequest._isRetry = true
+      try {
+        const resp = await http.post('http://localhost:8080/api/auth/refresh', {}, { withCredentials: true })
+        localStorage.setItem('token', resp.data.accessToken)
+        return http.request(originalRequest)
+      } catch (error) {
+        console.log('Не удалось обновить токен:', error)
+        location.replace(urls.login)
       }
+      throw error
     }
-
-    // Бросаем ошибку дальше
-    return Promise.reject(error)
   }
 )

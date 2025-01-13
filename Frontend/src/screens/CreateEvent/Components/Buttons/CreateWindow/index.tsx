@@ -10,7 +10,7 @@ const CreateWindowBtn: React.FC<CreateWindowBtnProps> = ({ setModalActive }) => 
 
   return (
     <button onClick={handleCreate} className={styles.btn}>
-      Создать окно записи
+      Создать окно
     </button>
   )
 }

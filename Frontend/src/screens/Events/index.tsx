@@ -30,7 +30,15 @@ const Events: React.FC = () => {
       <SearchBar setParams={setParams} params={params} />
       <div className={styles.events_list}>
         {allEvents.map((event) => (
-          <Event key={event.id} id={event.id} name={event.title} date={formatDate(event.dateStart)} description={event.description} image={event.bannerImage} />
+          <Event
+            key={event.id}
+            id={event.id}
+            name={event.title}
+            date={formatDate(event.dateStart)}
+            description={event.description}
+            image={event.bannerImage}
+            data={event}
+          />
         ))}
       </div>
     </div>

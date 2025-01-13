@@ -27,6 +27,7 @@
   padding-bottom: 25px;
 }
 .description {
+  margin-top: 20px;
   line-height: 135%;
   padding-right: 100px;
   font-size: 40px;
@@ -41,4 +42,9 @@
 .img {
   height: 700px;
   width: 760px;
+}
+.windows_container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }

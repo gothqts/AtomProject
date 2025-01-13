@@ -1,3 +1,5 @@
+import exp = require('constants')
+
 export interface IBasicEventInfo {
   id: string
   isPublic: boolean
@@ -15,7 +17,9 @@ export interface IBasicEventInfo {
 export interface IBasicEventResponse {
   events: IBasicEventInfo[]
 }
+
 export interface MyCreatingEvent extends IFullInfoEventResponse {}
+
 export interface IFullInfoEventResponse {
   id: string
   creationDate: string
@@ -71,11 +75,12 @@ export interface IUpdatedEventBanner {
   message: string
   image: string
 }
+
 export interface IUpcomingEvent {
   id: string
   isPublic: boolean
   title: string
-  bannerImage: string | FormData
+  bannerImage: string
   dateStart: string
   dateEnd: string
   isOnline: boolean
@@ -83,4 +88,23 @@ export interface IUpcomingEvent {
   address: string
   isSignupOpened: boolean
   description: string
+}
+
+export interface IWindowsList {
+  signupWindows: ISignupWindowResponse[]
+}
+
+export interface ISubscribeForm {
+  isFioRequired: boolean
+  isEmailRequired: boolean
+  isPhoneRequired: boolean
+}
+export interface ISignUpResponse {
+  entryId: string
+  eventId: string
+  phone: string
+  fio: string
+  email: string
+  dateTime: string
+  dynamicFields: dynamicFields[]
 }

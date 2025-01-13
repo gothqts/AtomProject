@@ -2,9 +2,10 @@ import { makeAutoObservable, runInAction } from 'mobx'
 import RootStore from './rootStore.ts'
 import { http } from '../services/http'
 import EventsService from '../services/Events/EventsService.ts'
-import { IUpcomingEvent } from '../models/Events/response/EventsResponse.ts'
+import { ISignupWindowResponse, ISubscribeForm, IUpcomingEvent } from '../models/Events/response/EventsResponse.ts'
 import { IBasicEventInfo, MyCreatingEvent } from '../models/Events/response/EventsResponse.ts'
 import { IQueryParams } from '../models/Events/request/eventRequests.ts'
+import { run } from 'node:test'
 
 interface ICity {
   label: string
@@ -32,8 +33,8 @@ export default class EventStore {
     signupWindows: [],
     signupForm: {
       isFioRequired: false,
-      isEmailRequired: false,
-      isPhoneRequired: false,
+      isEmailRequired: true,
+      isPhoneRequired: true,
       dynamicFields: [],
     },
     contacts: [],
@@ -45,6 +46,12 @@ export default class EventStore {
   myPastEvents: IBasicEventInfo[] = []
   userActivity: IBasicEventInfo[] = []
   userPastActivity: IBasicEventInfo[] = []
+  currentWindows: ISignupWindowResponse[] = []
+  currentSubscribeForm: ISubscribeForm = {
+    isFioRequired: true,
+    isEmailRequired: true,
+    isPhoneRequired: true,
+  }
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false })
@@ -54,6 +61,11 @@ export default class EventStore {
   setCreatingEventData(field: keyof IBasicEventInfo, value: string | boolean) {
     if (this.creatingEvent) {
       this.creatingEvent = { ...this.creatingEvent, [field]: value }
+    }
+  }
+  setCreatingEventSubForm(field, value) {
+    if (this.creatingEvent) {
+      this.creatingEvent.signupForm = { ...this.creatingEvent.signupForm, [field]: value }
     }
   }
 
@@ -249,6 +261,49 @@ export default class EventStore {
         maxVisitors,
         alreadyOccupiedPlaces,
       })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async FetchSignUpWindows(eventId: string) {
+    try {
+      const response = await EventsService.FetchListOfWindowsById(eventId)
+      runInAction(() => {
+        this.currentWindows = response.data.signupWindows
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async UpdateSubscribeForm(eventId: string, { isFioRequired, isEmailRequired, isPhoneRequired }) {
+    try {
+      const response = await EventsService.UpdateSubscribeForm(eventId, {
+        isFioRequired,
+        isEmailRequired,
+        isPhoneRequired,
+      })
+      runInAction(() => {
+        this.currentSubscribeForm = response.data
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  async FetchSubscribeForm(eventId: string) {
+    try {
+      const response = await EventsService.GetSubscribeForm(eventId)
+      runInAction(() => {
+        this.currentSubscribeForm = response.data
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  async SignUp(eventId: string, { windowId, phone, email, fio, signupWindowId }) {
+    try {
+      const response = await EventsService.SingUp(eventId, { windowId, phone, email, fio, signupWindowId })
     } catch (err) {
       console.log(err)
     }

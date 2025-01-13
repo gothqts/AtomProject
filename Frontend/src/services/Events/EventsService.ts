@@ -4,11 +4,15 @@ import {
   IBasicEventInfo,
   IBasicEventResponse,
   IFullInfoEventResponse,
+  ISignUpForm,
+  ISignUpResponse,
   ISignupWindowResponse,
+  ISubscribeForm,
   IUpdatedEventBanner,
+  IWindowsList,
 } from '../../models/Events/response/EventsResponse.ts'
 import { BaseStatusResponse } from '../../models/Auth/response/authResponse.ts'
-import IUpdateEventParams, { IQueryParams, IWindowsParams } from '../../models/Events/request/eventRequests.ts'
+import IUpdateEventParams, { IQueryParams, ISignUpParams, ISubscribeFormParams, IWindowsParams } from '../../models/Events/request/eventRequests.ts'
 
 export default class EventsService {
   static async createEvent(): Promise<AxiosResponse<IBasicEventInfo>> {
@@ -70,5 +74,20 @@ export default class EventsService {
 
   static async UpdateWindow(EventId: string, WindowId: string, WindowsRequestParams: IWindowsParams): Promise<AxiosResponse<ISignupWindowResponse>> {
     return http.put(`/api/my-events/${EventId}/windows/${WindowId}`, WindowsRequestParams)
+  }
+
+  static async FetchListOfWindowsById(EventId: string): Promise<AxiosResponse<IWindowsList>> {
+    return http.get(`/api/my-events/${EventId}/windows`)
+  }
+
+  static async GetSubscribeForm(EventId: string): Promise<AxiosResponse<ISubscribeForm>> {
+    return http.get(`/api/my-events/${EventId}/form`)
+  }
+
+  static async UpdateSubscribeForm(EventId: string, queryParams: ISubscribeFormParams): Promise<AxiosResponse<ISubscribeForm>> {
+    return http.put(`/api/my-events/${EventId}/form`, queryParams)
+  }
+  static async SingUp(EventId: string, queryParams: ISignUpParams): Promise<AxiosResponse<ISignUpResponse>> {
+    return http.post(`/api/events/${EventId}/sign-up`, queryParams)
   }
 }

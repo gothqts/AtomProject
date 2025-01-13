@@ -9,7 +9,7 @@ interface BooleanToggleProps {
 const BooleanToggle: React.FC<BooleanToggleProps> = ({ label, value, onChange }) => {
   return (
     <div className={styles.container}>
-      <div>{label}:</div>
+      <div className={styles.label}>{label}</div>
       <button onClick={() => onChange(true)} className={value ? styles.button_active : styles.button}>
         Да
       </button>

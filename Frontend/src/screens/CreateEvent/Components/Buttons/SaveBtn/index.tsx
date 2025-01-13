@@ -9,11 +9,12 @@ const SaveBtn = () => {
   const navigate = useNavigate()
   const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (CreatingEvent) {
-      const { id, ...UpdateEventData } = CreatingEvent
+      const { id, signupForm, ...UpdateEventData } = CreatingEvent
       if (CreatingEvent.bannerImageFilepath) {
         await eventStore.UpdateBanner(UpdateEventData.bannerImageFilepath, id)
       }
       await eventStore.UpdateEvent(UpdateEventData, id)
+      await eventStore.UpdateSubscribeForm(id, signupForm)
 
       navigate(urls.myEvents)
     }

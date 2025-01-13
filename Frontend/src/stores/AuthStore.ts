@@ -37,9 +37,6 @@ export default class AuthStore {
   }
 
   updateAuthState(userId: string, accessToken: string) {
-    const expiresIn = 720 // Время жизни токена в секундах (12 минут)
-    const expiryTime = Date.now() + expiresIn * 1000 // Переводим в миллисекунды
-
     runInAction(() => {
       this.AuthState.user = {
         id: userId,
@@ -57,7 +54,6 @@ export default class AuthStore {
       }
       this.AuthState.isAuth = true
       localStorage.setItem('token', accessToken)
-      localStorage.setItem('tokenExpiry', expiryTime.toString()) // Сохраняем время жизни токена
     })
   }
 
@@ -143,20 +139,4 @@ export default class AuthStore {
       this.setLoading(false)
     }
   }
-
-  // async checkAuth() {
-  //   this.setLoading(true)
-  //   try {
-  //     const response = await http.post('http://localhost:8080/api/auth/refresh', { withCredentials: true })
-  //     console.log(response)
-  //     localStorage.setItem('token', response.data.accessToken)
-  //     await this.fetchUser()
-  //     this.AuthState.isAuth = true
-  //     console.log(this.AuthState.isAuth)
-  //   } catch (e) {
-  //     console.log(e.response?.data?.message)
-  //   } finally {
-  //     this.setLoading(false)
-  //   }
-  // }
 }
