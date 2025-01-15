@@ -23,11 +23,13 @@ public class EventsController : Controller
     private readonly EventSignupService _eventSignupService;
     private readonly EventBannerImageService _eventImageService;
     private readonly BaseService<EventSignupEntry> _entriesService;
+    private readonly ControllerUtils _utils;
 
     public EventsController(BaseService<UserEvent> eventService, BaseService<EventSignupWindow> eventSignupWindowService,
         BaseService<OrganizerContacts> contactsService, BaseService<EventSignupForm> eventFormService,
         BaseService<FormDynamicField> formDynamicFieldsService, EventSignupService eventSignupService,
-        EventBannerImageService eventImageService, BaseService<EventSignupEntry> entriesService)
+        EventBannerImageService eventImageService, BaseService<EventSignupEntry> entriesService,
+        ControllerUtils utils)
     {
         _eventService = eventService;
         _eventSignupWindowService = eventSignupWindowService;
@@ -37,6 +39,7 @@ public class EventsController : Controller
         _eventSignupService = eventSignupService;
         _eventImageService = eventImageService;
         _entriesService = entriesService;
+        _utils = utils;
     }
     
     [HttpGet("upcoming/{count:int}")]
@@ -228,20 +231,17 @@ public class EventsController : Controller
     [ProducesResponseType(typeof(BaseStatusResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SignupForEvent([FromRoute] Guid id, [FromBody] SignupRequest request)
     {
-        var idClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == AuthOptions.ClaimTypeUserId);
-        Guid? userId = idClaim == null ? null : new Guid(idClaim.Value);
-        
+        if (request == null)
+        {
+            return CustomResults.FailedRequest("Предоставлен некорректный запрос, проверьте все поля.");
+        }
+        var userInfoRes = _utils.TryGetUserId(HttpContext);
         var window = await _eventSignupWindowService.GetByIdOrDefaultAsync(request.SignupWindowId);
         if (window == null)
         {
-            return BadRequest(new BaseStatusResponse
-            {
-                Completed = false,
-                Status = "Failed",
-                Message = "Window with provided signupWindowId not found."
-            });
+            return CustomResults.FailedRequest("Window with provided signupWindowId not found.");
         }
-        var signupInfo = await _eventSignupService.SignupUserToEventAsync(userId, request.SignupWindowId,
+        var signupInfo = await _eventSignupService.SignupUserToEventAsync(userInfoRes.UserId, request.SignupWindowId,
             request.Phone, request.Email, request.Fio, request.DynamicFieldsValues);
         if (!signupInfo.Completed || signupInfo.Entry == null)
         {
